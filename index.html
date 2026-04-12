@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLI 工具参考手册中心</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00d4ff;
+            --secondary: #ff00a0;
+            --accent: #39ff14;
+            --bg-dark: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-hover: #1a1a25;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --border: rgba(255, 255, 255, 0.08);
+            --glow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.4;
+            background-image: 
+                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        .bg-glow {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            pointer-events: none;
+            z-index: 0;
+            background: 
+                radial-gradient(circle at 30% 20%, rgba(0, 212, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(255, 0, 160, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(57, 255, 20, 0.05) 0%, transparent 50%);
+            animation: bgPulse 15s ease-in-out infinite;
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(5deg); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        header {
+            padding: 80px 0 60px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 60px;
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: var(--primary);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            display: inline-block;
+            padding: 8px 16px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 4px;
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #fff 0%, var(--primary) 50%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        /* Stats */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 4px;
+        }
+
+        /* Search */
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 60px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 20px 24px 20px 56px;
+            font-size: 1rem;
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 1.25rem;
+        }
+
+        /* Tools Grid */
+        .tools-section {
+            margin-bottom: 80px;
+        }
+
+        .section-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--border), transparent);
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .tool-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: block;
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), var(--glow);
+        }
+
+        .tool-card:hover::before {
+            opacity: 1;
+        }
+
+        .tool-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .tool-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            flex-shrink: 0;
+        }
+
+        .tool-card:nth-child(1) .tool-icon { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+        .tool-card:nth-child(2) .tool-icon { background: linear-gradient(135deg, #10b981, #34d399); }
+        .tool-card:nth-child(3) .tool-icon { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
+        .tool-card:nth-child(4) .tool-icon { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+        .tool-card:nth-child(5) .tool-icon { background: linear-gradient(135deg, #ec4899, #f472b6); }
+        .tool-card:nth-child(6) .tool-icon { background: linear-gradient(135deg, #14b8a6, #2dd4bf); }
+        .tool-card:nth-child(7) .tool-icon { background: linear-gradient(135deg, #f97316, #fb923c); }
+        .tool-card:nth-child(8) .tool-icon { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
+        .tool-card:nth-child(9) .tool-icon { background: linear-gradient(135deg, #06b6d4, #22d3ee); }
+
+        .tool-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .tool-tag {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+
+        .tool-desc {
+            font-size: 0.9375rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .tool-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .tool-commands {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .command-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 4px;
+            color: var(--primary);
+        }
+
+        .tool-arrow {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--bg-hover);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: all 0.3s;
+        }
+
+        .tool-card:hover .tool-arrow {
+            background: var(--primary);
+            color: var(--bg-dark);
+            transform: translateX(4px);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 0;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                padding: 60px 0 40px;
+            }
+
+            .stats {
+                gap: 30px;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* No results */
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+            display: none;
+        }
+
+        .no-results.visible {
+            display: block;
+        }
+
+        /* Category filter */
+        .filter-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-tab {
+            padding: 10px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-tab:hover,
+        .filter-tab.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--bg-dark);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="bg-glow"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">CLI Reference Center</div>
+            <h1>CLI 工具参考手册</h1>
+            <p class="subtitle">精心整理的命令行工具速查手册，涵盖 AI 编程、设计、开发、多媒体处理等多个领域</p>
+            
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number">9</div>
+                    <div class="stat-label">参考手册</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">1000+</div>
+                    <div class="stat-label">命令示例</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">生产力</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="searchInput" placeholder="搜索 CLI 工具...">
+        </div>
+
+        <div class="filter-tabs">
+            <div class="filter-tab active" data-category="all">全部</div>
+            <div class="filter-tab" data-category="ai">AI 编程</div>
+            <div class="filter-tab" data-category="dev">开发工具</div>
+            <div class="filter-tab" data-category="design">设计</div>
+            <div class="filter-tab" data-category="media">多媒体</div>
+        </div>
+
+        <div class="tools-section">
+            <div class="section-title">CLI 参考手册</div>
+            <div class="tools-grid" id="toolsGrid">
+                <a href="./html/claude-cli-reference.html" class="tool-card" data-name="claude" data-category="ai">
+                    <div class="tool-header">
+                        <div class="tool-icon">C</div>
+                        <div>
+                            <div class="tool-name">Claude Code</div>
+                            <div class="tool-tag">Anthropic</div>
+                        </div>
+                    </div>
+                    <div class="tool-desc">Anthropic 官方 AI 编程助手，支持代码编写、调试、重构、测试等全栈开发任务</div>
+                    <div class="tool-meta">
+                        <div class="tool-commands">
+                            <span class="command-tag">claude</span>
+                        </div>
+                        <div class="tool-arrow">→</div>
+                    </div>
+                </a>
+
+                <a href="./html/ffmpeg-cli-reference.html" class="tool-card" data-name="ffmpeg" data-category="media">
+                    <div class="tool-header">
+                        <div class="tool-icon">FF</div>
+                        <div>
+                            <div class="tool-name">FFmpeg</div>
+                            <div class="tool-tag">多媒体</div>
+                        </div>
+                    </div>
+                    <div class="tool-desc">强大的音视频处理工具，支持格式转换、剪辑、合并、流媒体处理等</div>
+                    <div class="tool-meta">
+                        <div class="tool-commands">
+                            <span class="command-tag">ffmpeg</span>
+                            <span class="command-tag">ffprobe</span>
+                        </div>
+                        <div class="tool-arrow">→</div>
+                    </div>
+                </a>
+
+                <a href="./html/github-cli-reference.html" class="tool-card" data-name="github" data-category="dev">
+                    <div class="tool-header">
+                        <div class="tool-icon">GH</div>
+                        <div>
+                            <div class="tool-name">GitHub CLI</div>
+                            <div class="tool-tag">GitHub 官方</div>
+                        </div>
+                    </div>
+                    <div class="tool-desc">GitHub 官方命令行工具，在终端完成仓库管理、PR、Issue、Actions 等操作</div>
+                    <div class="tool-meta">
+                        <div class="tool-commands">
+                            <span class="command-tag">gh</span>
+                        </div>
+                        <div class="tool-arrow">→</div>
+                    </div>
+                </a>
+
+                <a href="./html/lark-cli-reference.html" class="tool-card" data-name="lark" data-category="dev">
+                    <div class="tool-header">
+                        <div class="tool-icon">L</div>
+                        <div>
+                            <div class="tool-name">Lark CLI</div>
+                            <div class="tool-tag">飞书开放平台</div>
+                        </div>
+                    </div>
+                    <div class="tool-desc">飞书/Lark 开放平台 CLI，用于开发飞书应用、机器人、插件等</div>
+                    <div class="tool-meta">
+                        <div class="tool-commands">
+                            <span class="command-tag">lark</span>
+                        </div>
+                        <div class="tool-arrow">→</div>
+                    </div>
+                </a>
+
+                <a href="./html/opencode-cli-reference.html" class="tool-card" data-name="opencode" data-category="ai">
+                    <div class="tool-header">
+                        <div class="tool-icon">OC</div>
+                        <div>
+                            <div class="tool-name">OpenCode</div>
+                            <div class="tool-tag">AI 编程</div>
+                        </div>
+                    </div>
+                    <div class="tool-desc">终端 AI 编程工具，支持多种 AI 模型，代码生成、重构、调试一站式解决</div>
+                    <div class="tool-meta">
+                        <div class="tool-commands">
+                            <span class="command-tag">opencode</span>
+                        </div>
+                        <div class="tool-arrow">→</div>
+                    </div>
+                </a>
+
+                <a href="./html/pencil-cli-reference.html" class="tool-card" data-name="pencil" data-category="design">
+                    <div class="tool-header">
+                        <div class="tool-icon">P</div>
+                        <div>
+                            <div class="tool-name">Pencil</div>
+                            <div class="tool-tag">AI 设计</div>
+                        </div>
+                    </div>
+                    <div class="tool-desc">AI 驱动设计文件操作工具，自动化设计工作流程，批量处理设计文件</div>
+                    <div class="tool-meta">
+                        <div class="tool-commands">
+                            <span class="command-tag">pencil</span>
+                        </div>
+                        <div class="tool-arrow">→</div>
+                    </div>
+                </a>
+
+                <a href="./html/playwright-cli-reference.html" class="tool-card" data-name="playwright" data-category="dev">
+                    <div class="tool-header">
+                        <div class="tool-icon">PW</div>
+                        <div>
+                            <div class="tool-name">Playwright</div>
+                            <div class="tool-tag">E2E 测试</div>
+                        </div>
+                    </div>
+                    <div class="tool-desc">微软官方 E2E 测试框架，支持多浏览器、自动测试生成、性能监控</div>
+                    <div class="tool-meta">
+                        <div class="tool-commands">
+                            <span class="command-tag">playwright</span>
+                            <span class="command-tag">npx</span>
+                        </div>
+                        <div class="tool-arrow">→</div>
+                    </div>
+                </a>
+
+                <a href="./html/pandoc-cli-reference.html" class="tool-card" data-name="pandoc" data-category="dev">
+                    <div class="tool-header">
+                        <div class="tool-icon">PD</div>
+                        <div>
+                            <div class="tool-name">Pandoc</div>
+                            <div class="tool-tag">文档转换</div>
+                        </div>
+                    </div>
+                    <div class="tool-desc">通用文档格式转换工具，支持 Markdown、Word、PDF、LaTeX 等数十种格式互转</div>
+                    <div class="tool-meta">
+                        <div class="tool-commands">
+                            <span class="command-tag">pandoc</span>
+                        </div>
+                        <div class="tool-arrow">→</div>
+                    </div>
+                </a>
+
+                <a href="./html/design-skills-reference.html" class="tool-card" data-name="design" data-category="design">
+                    <div class="tool-header">
+                        <div class="tool-icon">DS</div>
+                        <div>
+                            <div class="tool-name">Design Skills</div>
+                            <div class="tool-tag">设计风格</div>
+                        </div>
+                    </div>
+                    <div class="tool-desc">62 个品牌设计风格速查 + 10 个主题工厂 + 设计技能总览</div>
+                    <div class="tool-meta">
+                        <div class="tool-commands">
+                            <span class="command-tag">design</span>
+                            <span class="command-tag">theme</span>
+                        </div>
+                        <div class="tool-arrow">→</div>
+                    </div>
+                </a>
+            </div>
+            <div class="no-results" id="noResults">
+                没有找到匹配的 CLI 工具，试试其他关键词？
+            </div>
+        </div>
+
+        <footer>
+            <p>基于 <a href="./docs/cli-tools-inventory.md">CLI 工具清单</a> 构建 | 使用 GitHub Pages 部署</p>
+            <p style="margin-top: 8px; opacity: 0.6;">持续更新中，欢迎贡献</p>
+        </footer>
+    </div>
+
+    <script>
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const toolsGrid = document.getElementById('toolsGrid');
+        const toolCards = document.querySelectorAll('.tool-card');
+        const noResults = document.getElementById('noResults');
+        const filterTabs = document.querySelectorAll('.filter-tab');
+
+        let currentCategory = 'all';
+
+        function filterTools() {
+            const searchTerm = searchInput.value.toLowerCase();
+            let visibleCount = 0;
+
+            toolCards.forEach(card => {
+                const name = card.dataset.name.toLowerCase();
+                const category = card.dataset.category;
+                const desc = card.querySelector('.tool-desc').textContent.toLowerCase();
+                const tag = card.querySelector('.tool-tag').textContent.toLowerCase();
+
+                const matchesSearch = name.includes(searchTerm) || 
+                                     desc.includes(searchTerm) || 
+                                     tag.includes(searchTerm);
+                const matchesCategory = currentCategory === 'all' || category === currentCategory;
+
+                if (matchesSearch && matchesCategory) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                    // Add stagger animation
+                    card.style.animation = 'none';
+                    setTimeout(() => {
+                        card.style.animation = '';
+                    }, 10);
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            noResults.classList.toggle('visible', visibleCount === 0);
+        }
+
+        searchInput.addEventListener('input', filterTools);
+
+        // Category filter
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                filterTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentCategory = tab.dataset.category;
+                filterTools();
+            });
+        });
+
+        // Entrance animation
+        window.addEventListener('load', () => {
+            toolCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 80);
+            });
+        });
+    </script>
+</body>
+</html>
