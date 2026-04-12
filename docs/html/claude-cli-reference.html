@@ -1,0 +1,765 @@
+<!-- Claude Style - Claude CLI Reference -->
+<!-- Brand: Claude (Anthropic) - Warm terracotta accent, editorial typography, parchment tones -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code CLI 参考手册</title>
+    <style>
+        /* Claude Design System Variables */
+        :root {
+            /* Colors */
+            --anthropic-near-black: #141413;
+            --terracotta-brand: #c96442;
+            --coral-accent: #d97757;
+            --error-crimson: #b53333;
+            --focus-blue: #3898ec;
+            
+            /* Surfaces */
+            --parchment: #f5f4ed;
+            --ivory: #faf9f5;
+            --pure-white: #ffffff;
+            --warm-sand: #e8e6dc;
+            --dark-surface: #30302e;
+            --deep-dark: #141413;
+            
+            /* Text */
+            --charcoal-warm: #4d4c48;
+            --olive-gray: #5e5d59;
+            --stone-gray: #87867f;
+            --dark-warm: #3d3d3a;
+            --warm-silver: #b0aea5;
+            
+            /* Borders */
+            --border-cream: #f0eee6;
+            --border-warm: #e8e6dc;
+            --border-dark: #30302e;
+            --ring-warm: #d1cfc5;
+            --ring-subtle: #dedc01;
+            --ring-deep: #c2c0b6;
+            
+            /* Typography */
+            --font-serif: Georgia, 'Times New Roman', serif;
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--parchment);
+            color: var(--anthropic-near-black);
+            line-height: 1.6;
+            font-size: 16px;
+        }
+        
+        /* Layout */
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background-color: var(--ivory);
+            border-right: 1px solid var(--border-cream);
+            padding: 32px 24px;
+            overflow-y: auto;
+            z-index: 100;
+        }
+        
+        .sidebar-header {
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-cream);
+        }
+        
+        .sidebar-title {
+            font-family: var(--font-serif);
+            font-size: 24px;
+            font-weight: 500;
+            color: var(--anthropic-near-black);
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+        
+        .sidebar-subtitle {
+            font-size: 14px;
+            color: var(--olive-gray);
+            margin-top: 8px;
+        }
+        
+        .nav-section {
+            margin-bottom: 24px;
+        }
+        
+        .nav-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--stone-gray);
+            margin-bottom: 12px;
+        }
+        
+        .nav-list {
+            list-style: none;
+        }
+        
+        .nav-item {
+            margin-bottom: 4px;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 8px 12px;
+            color: var(--olive-gray);
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 8px;
+            transition: all 0.15s ease;
+        }
+        
+        .nav-link:hover {
+            background-color: var(--warm-sand);
+            color: var(--anthropic-near-black);
+        }
+        
+        .nav-link.active {
+            background-color: var(--terracotta-brand);
+            color: var(--ivory);
+        }
+        
+        /* Main Content */
+        .main {
+            margin-left: 280px;
+            flex: 1;
+            padding: 48px 64px;
+            max-width: 900px;
+        }
+        
+        /* Typography */
+        h1 {
+            font-family: var(--font-serif);
+            font-size: 48px;
+            font-weight: 500;
+            line-height: 1.1;
+            color: var(--anthropic-near-black);
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+        }
+        
+        h2 {
+            font-family: var(--font-serif);
+            font-size: 32px;
+            font-weight: 500;
+            line-height: 1.2;
+            color: var(--anthropic-near-black);
+            margin-top: 64px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-warm);
+            letter-spacing: -0.01em;
+        }
+        
+        h3 {
+            font-family: var(--font-serif);
+            font-size: 24px;
+            font-weight: 500;
+            line-height: 1.3;
+            color: var(--anthropic-near-black);
+            margin-top: 48px;
+            margin-bottom: 16px;
+        }
+        
+        h4 {
+            font-family: var(--font-sans);
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1.4;
+            color: var(--charcoal-warm);
+            margin-top: 32px;
+            margin-bottom: 12px;
+        }
+        
+        p {
+            margin-bottom: 16px;
+            color: var(--olive-gray);
+            line-height: 1.7;
+        }
+        
+        a {
+            color: var(--terracotta-brand);
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+        
+        a:hover {
+            color: var(--coral-accent);
+            text-decoration: underline;
+        }
+        
+        /* Blockquote / Info Box */
+        blockquote, .info-box {
+            background-color: var(--ivory);
+            border-left: 3px solid var(--terracotta-brand);
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        blockquote p, .info-box p {
+            margin: 0;
+            color: var(--charcoal-warm);
+        }
+        
+        /* Code Blocks */
+        pre {
+            background-color: var(--dark-surface);
+            color: var(--warm-silver);
+            padding: 24px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 24px 0;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            line-height: 1.6;
+            box-shadow: 0px 0px 0px 1px var(--border-dark);
+        }
+        
+        code {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            background-color: var(--warm-sand);
+            color: var(--anthropic-near-black);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        
+        pre code {
+            background-color: transparent;
+            color: var(--warm-silver);
+            padding: 0;
+            border-radius: 0;
+        }
+        
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background-color: var(--ivory);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0px 0px 0px 1px var(--border-cream);
+        }
+        
+        th {
+            background-color: var(--warm-sand);
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--charcoal-warm);
+            border-bottom: 1px solid var(--border-warm);
+        }
+        
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-cream);
+            color: var(--olive-gray);
+            font-size: 14px;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:hover td {
+            background-color: var(--parchment);
+        }
+        
+        /* Lists */
+        ul, ol {
+            margin: 16px 0;
+            padding-left: 24px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+            color: var(--olive-gray);
+        }
+        
+        /* Horizontal Rule */
+        hr {
+            border: none;
+            border-top: 1px solid var(--border-warm);
+            margin: 48px 0;
+        }
+        
+        /* Header Info */
+        .header-meta {
+            background-color: var(--ivory);
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            font-size: 14px;
+            color: var(--stone-gray);
+            box-shadow: 0px 0px 0px 1px var(--border-cream);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .main {
+                margin-left: 0;
+                padding: 32px;
+            }
+            
+            h1 {
+                font-size: 36px;
+            }
+            
+            h2 {
+                font-size: 28px;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .main {
+                padding: 24px;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+            
+            h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">Claude Code CLI</div>
+                <div class="sidebar-subtitle">参考手册</div>
+            </div>
+            
+            <nav>
+                <div class="nav-section">
+                    <div class="nav-title">目录</div>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="#quickstart" class="nav-link">快速入门</a></li>
+                        <li class="nav-item"><a href="#basic" class="nav-link">基础用法</a></li>
+                        <li class="nav-item"><a href="#options" class="nav-link">选项参数</a></li>
+                        <li class="nav-item"><a href="#subcommands" class="nav-link">子命令详解</a></li>
+                        <li class="nav-item"><a href="#permissions" class="nav-link">权限模式</a></li>
+                        <li class="nav-item"><a href="#output" class="nav-link">输出格式</a></li>
+                        <li class="nav-item"><a href="#models" class="nav-link">模型选择</a></li>
+                        <li class="nav-item"><a href="#sessions" class="nav-link">会话管理</a></li>
+                        <li class="nav-item"><a href="#git-worktree" class="nav-link">Git Worktree</a></li>
+                        <li class="nav-item"><a href="#config" class="nav-link">配置与设置</a></li>
+                        <li class="nav-item"><a href="#examples" class="nav-link">常见用例</a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-title">子命令</div>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="#auth" class="nav-link">auth - 认证</a></li>
+                        <li class="nav-item"><a href="#mcp" class="nav-link">mcp - MCP服务器</a></li>
+                        <li class="nav-item"><a href="#plugin" class="nav-link">plugin - 插件</a></li>
+                        <li class="nav-item"><a href="#agents" class="nav-link">agents - Agent</a></li>
+                        <li class="nav-item"><a href="#install" class="nav-link">install - 安装</a></li>
+                        <li class="nav-item"><a href="#doctor" class="nav-link">doctor - 检查</a></li>
+                        <li class="nav-item"><a href="#update" class="nav-link">update - 更新</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main">
+            <h1>Claude Code CLI 参考手册</h1>
+            
+            <div class="header-meta">
+                版本：2.1.89 | 安装路径：~/.nvm/versions/node/v22.22.1/bin/claude
+            </div>
+            
+            <p>Claude Code 是 Anthropic 推出的 AI 编程助手命令行工具，默认启动交互式会话，也可通过 <code>-p</code> 参数进行非交互式输出。</p>
+            
+            <hr>
+            
+            <h2 id="quickstart">快速入门</h2>
+            
+            <pre><code># 启动交互式会话
+claude
+
+# 非交互式执行（适合管道和脚本）
+claude -p "解释这个项目的结构"
+
+# 指定模型
+claude --model sonnet -p "帮我写一个 Python 函数"
+
+# 继续上次对话
+claude -c</code></pre>
+            
+            <h2 id="basic">基础用法</h2>
+            
+            <pre><code>claude [选项] [命令] [prompt]</code></pre>
+            
+            <ul>
+                <li>直接运行 <code>claude</code> 启动交互式终端会话</li>
+                <li>附加 prompt 参数可直接提问</li>
+                <li>使用 <code>claude -p "prompt"</code> 进入非交互模式，输出结果后退出</li>
+            </ul>
+            
+            <h2 id="options">选项参数</h2>
+            
+            <h3>会话控制</h3>
+            <table>
+                <tr><th>参数</th><th>说明</th></tr>
+                <tr><td><code>-c, --continue</code></td><td>继续当前目录下最近的一次对话</td></tr>
+                <tr><td><code>-r, --resume [value]</code></td><td>通过会话 ID 恢复对话，或打开交互式选择器</td></tr>
+                <tr><td><code>--session-id &lt;uuid&gt;</code></td><td>为当前会话指定一个 UUID</td></tr>
+                <tr><td><code>-n, --name &lt;name&gt;</code></td><td>设置会话显示名称</td></tr>
+                <tr><td><code>--fork-session</code></td><td>恢复时创建新会话 ID</td></tr>
+                <tr><td><code>--from-pr [value]</code></td><td>通过 PR 编号/URL 恢复关联会话</td></tr>
+                <tr><td><code>--no-session-persistence</code></td><td>禁用会话持久化（仅 -p 模式可用）</td></tr>
+            </table>
+            
+            <h3>非交互模式（-p）</h3>
+            <table>
+                <tr><th>参数</th><th>说明</th></tr>
+                <tr><td><code>-p, --print</code></td><td>打印响应后退出（适合管道/脚本）</td></tr>
+                <tr><td><code>--output-format &lt;format&gt;</code></td><td>输出格式：text、json、stream-json</td></tr>
+                <tr><td><code>--input-format &lt;format&gt;</code></td><td>输入格式：text、stream-json</td></tr>
+                <tr><td><code>--max-budget-usd &lt;amount&gt;</code></td><td>API 调用的最大花费限额（美元）</td></tr>
+                <tr><td><code>--fallback-model &lt;model&gt;</code></td><td>默认模型过载时的回退模型</td></tr>
+                <tr><td><code>--json-schema &lt;schema&gt;</code></td><td>结构化输出的 JSON Schema 验证</td></tr>
+            </table>
+            
+            <h3>模型与推理</h3>
+            <table>
+                <tr><th>参数</th><th>说明</th></tr>
+                <tr><td><code>--model &lt;model&gt;</code></td><td>指定模型（别名如 sonnet、opus）</td></tr>
+                <tr><td><code>--effort &lt;level&gt;</code></td><td>推理投入等级：low、medium、high、max</td></tr>
+            </table>
+            
+            <h3>工具与权限</h3>
+            <table>
+                <tr><th>参数</th><th>说明</th></tr>
+                <tr><td><code>--allowedTools</code></td><td>允许的工具列表（如 Bash(git:*) Edit）</td></tr>
+                <tr><td><code>--disallowedTools</code></td><td>禁止的工具列表</td></tr>
+                <tr><td><code>--tools</code></td><td>指定可用工具集</td></tr>
+                <tr><td><code>--permission-mode &lt;mode&gt;</code></td><td>权限模式</td></tr>
+                <tr><td><code>--dangerously-skip-permissions</code></td><td>跳过所有权限检查</td></tr>
+            </table>
+            
+            <h2 id="subcommands">子命令详解</h2>
+            
+            <h3 id="auth">auth — 认证管理</h3>
+            <p>管理 Claude Code 的 Anthropic 账户认证。</p>
+            
+            <h4>auth login — 登录</h4>
+            <pre><code># 使用 Claude 订阅登录（默认）
+claude auth login
+
+# 使用 Anthropic Console（API 计费）登录
+claude auth login --console
+
+# 使用 SSO 登录
+claude auth login --sso
+
+# 预填邮箱地址
+claude auth login --email user@example.com</code></pre>
+            
+            <table>
+                <tr><th>参数</th><th>说明</th></tr>
+                <tr><td><code>--claudeai</code></td><td>使用 Claude 订阅（默认）</td></tr>
+                <tr><td><code>--console</code></td><td>使用 Anthropic Console（API 计费）</td></tr>
+                <tr><td><code>--sso</code></td><td>强制 SSO 登录流程</td></tr>
+                <tr><td><code>--email &lt;email&gt;</code></td><td>预填邮箱地址</td></tr>
+            </table>
+            
+            <h4>auth logout — 登出</h4>
+            <pre><code>claude auth logout</code></pre>
+            
+            <h4>auth status — 查看认证状态</h4>
+            <pre><code># JSON 格式输出（默认）
+claude auth status
+
+# 人类可读文本输出
+claude auth status --text
+
+# JSON 格式输出
+claude auth status --json</code></pre>
+            
+            <h3 id="mcp">mcp — MCP 服务器管理</h3>
+            <p>管理 Model Context Protocol (MCP) 服务器配置。</p>
+            
+            <h4>mcp add — 添加 MCP 服务器</h4>
+            <pre><code># 添加 HTTP 服务器
+claude mcp add --transport http sentry https://mcp.sentry.dev/mcp
+
+# 添加带请求头的 HTTP 服务器
+claude mcp add --transport http corridor https://app.corridor.dev/api/mcp --header "Authorization: Bearer ..."
+
+# 添加带环境变量的 stdio 服务器
+claude mcp add -e API_KEY=xxx my-server -- npx my-mcp-server
+
+# 添加带子进程参数的 stdio 服务器
+claude mcp add my-server -- my-command --some-flag arg1</code></pre>
+            
+            <table>
+                <tr><th>参数</th><th>说明</th></tr>
+                <tr><td><code>-t, --transport</code></td><td>传输类型：stdio、sse、http</td></tr>
+                <tr><td><code>-s, --scope</code></td><td>配置范围：local、user、project</td></tr>
+                <tr><td><code>-e, --env</code></td><td>环境变量（如 -e KEY=value）</td></tr>
+                <tr><td><code>-H, --header</code></td><td>WebSocket 请求头</td></tr>
+            </table>
+            
+            <h4>其他 MCP 命令</h4>
+            <ul>
+                <li><code>claude mcp add-json</code> — 通过 JSON 添加 MCP 服务器</li>
+                <li><code>claude mcp add-from-claude-desktop</code> — 从 Claude Desktop 导入</li>
+                <li><code>claude mcp list</code> — 列出 MCP 服务器</li>
+                <li><code>claude mcp get &lt;name&gt;</code> — 查看 MCP 服务器详情</li>
+                <li><code>claude mcp remove &lt;name&gt;</code> — 移除 MCP 服务器</li>
+                <li><code>claude mcp reset-project-choices</code> — 重置项目 MCP 选择</li>
+                <li><code>claude mcp serve</code> — 启动 MCP 服务器</li>
+            </ul>
+            
+            <h3 id="plugin">plugin — 插件管理</h3>
+            <p>管理 Claude Code 插件和 marketplace。</p>
+            
+            <h4>plugin install — 安装插件</h4>
+            <pre><code># 安装插件
+claude plugin install &lt;plugin&gt;
+
+# 从指定 marketplace 安装
+claude plugin install plugin@marketplace
+
+# 指定安装范围
+claude plugin install -s project &lt;plugin&gt;</code></pre>
+            
+            <h4>其他插件命令</h4>
+            <ul>
+                <li><code>claude plugin uninstall &lt;plugin&gt;</code> — 卸载插件</li>
+                <li><code>claude plugin enable &lt;plugin&gt;</code> — 启用插件</li>
+                <li><code>claude plugin disable [plugin]</code> — 禁用插件</li>
+                <li><code>claude plugin update &lt;plugin&gt;</code> — 更新插件</li>
+                <li><code>claude plugin list</code> — 列出已安装插件</li>
+                <li><code>claude plugin validate &lt;path&gt;</code> — 验证插件</li>
+                <li><code>claude plugin marketplace list</code> — 列出所有 marketplace</li>
+            </ul>
+            
+            <h3 id="agents">agents — 查看配置的 Agent</h3>
+            <pre><code>claude agents
+
+# 指定配置来源
+claude agents --setting-sources user,project</code></pre>
+            
+            <h3 id="install">install — 安装指定版本</h3>
+            <pre><code># 安装稳定版
+claude install stable
+
+# 安装最新版
+claude install latest
+
+# 安装指定版本
+claude install 2.1.0
+
+# 强制安装
+claude install --force stable</code></pre>
+            
+            <h3 id="doctor">doctor — 健康检查</h3>
+            <pre><code>claude doctor</code></pre>
+            <p>检查 Claude Code 自动更新器的健康状态。</p>
+            
+            <h3 id="update">update / upgrade — 更新</h3>
+            <pre><code>claude update</code></pre>
+            <p>检查更新并安装可用更新。</p>
+            
+            <h2 id="permissions">权限模式</h2>
+            <p>通过 <code>--permission-mode</code> 参数设置：</p>
+            
+            <table>
+                <tr><th>模式</th><th>说明</th></tr>
+                <tr><td><code>default</code></td><td>默认模式，每次操作需确认</td></tr>
+                <tr><td><code>plan</code></td><td>计划模式，先制定计划再执行</td></tr>
+                <tr><td><code>auto</code></td><td>自动模式，根据规则自动决定是否需要确认</td></tr>
+                <tr><td><code>acceptEdits</code></td><td>自动接受编辑，但其他操作仍需确认</td></tr>
+                <tr><td><code>dontAsk</code></td><td>不询问，直接执行</td></tr>
+                <tr><td><code>bypassPermissions</code></td><td>绕过所有权限检查</td></tr>
+            </table>
+            
+            <h2 id="output">输出格式</h2>
+            <p>在 <code>-p</code>（print）模式下，通过 <code>--output-format</code> 控制：</p>
+            
+            <table>
+                <tr><th>格式</th><th>说明</th></tr>
+                <tr><td><code>text</code></td><td>纯文本输出（默认）</td></tr>
+                <tr><td><code>json</code></td><td>单个 JSON 结果</td></tr>
+                <tr><td><code>stream-json</code></td><td>实时流式 JSON 输出</td></tr>
+            </table>
+            
+            <h3>示例</h3>
+            <pre><code># JSON 输出
+claude -p --output-format json "列出当前目录的文件"
+
+# 流式 JSON（适合程序解析）
+claude -p --output-format stream-json "解释这段代码"</code></pre>
+            
+            <h2 id="models">模型选择</h2>
+            <p>使用 <code>--model</code> 参数选择模型：</p>
+            
+            <pre><code># 使用模型别名
+claude --model sonnet
+claude --model opus
+
+# 使用完整模型名称
+claude --model claude-sonnet-4-6
+
+# 设置推理投入等级
+claude --effort high -p "深入分析这段代码的性能"</code></pre>
+            
+            <h2 id="sessions">会话管理</h2>
+            <p>Claude Code 支持会话持久化和恢复：</p>
+            
+            <pre><code># 继续上次对话
+claude -c
+
+# 通过会话 ID 恢复
+claude -r &lt;session-id&gt;
+
+# 交互式选择会话恢复
+claude -r
+
+# 搜索特定会话
+claude -r "搜索关键词"
+
+# 恢复 PR 关联会话
+claude --from-pr 123
+claude --from-pr https://github.com/org/repo/pull/123
+
+# 恢复时创建新分支（不覆盖原会话）
+claude -c --fork-session
+
+# 为会话命名
+claude -n "bugfix-session"</code></pre>
+            
+            <h2 id="git-worktree">Git Worktree 集成</h2>
+            <p>Claude Code 支持在 Git Worktree 中工作：</p>
+            
+            <pre><code># 创建新 worktree 会话
+claude -w
+
+# 创建命名 worktree
+claude -w feature-branch
+
+# 使用 tmux（推荐）
+claude -w --tmux
+
+# 使用传统 tmux
+claude -w --tmux=classic</code></pre>
+            
+            <h2 id="config">配置与设置</h2>
+            
+            <h3>配置范围</h3>
+            <table>
+                <tr><th>范围</th><th>说明</th><th>存储位置</th></tr>
+                <tr><td><code>local</code></td><td>本地（仅当前项目）</td><td><code>.claude/</code></td></tr>
+                <tr><td><code>user</code></td><td>用户级（所有项目）</td><td><code>~/.claude/</code></td></tr>
+                <tr><td><code>project</code></td><td>项目级（团队共享）</td><td>项目根目录配置</td></tr>
+            </table>
+            
+            <h3>加载配置来源</h3>
+            <pre><code># 仅加载用户级配置
+claude --setting-sources user
+
+# 加载用户和项目级
+claude --setting-sources user,project
+
+# 加载全部
+claude --setting-sources user,project,local</code></pre>
+            
+            <h3>额外设置文件</h3>
+            <pre><code># 从 JSON 文件加载
+claude --settings ./my-settings.json
+
+# 从 JSON 字符串加载
+claude --settings '{"allowedTools": ["Bash", "Edit"]}'</code></pre>
+            
+            <h2 id="examples">常见用例</h2>
+            
+            <h3>脚本集成</h3>
+            <pre><code># 获取 JSON 输出用于脚本处理
+claude -p --output-format json "分析 package.json 中的依赖"
+
+# 设置花费上限
+claude -p --max-budget-usd 0.5 "重构这段代码"
+
+# 使用管道
+cat error.log | claude -p "分析这些错误日志"</code></pre>
+            
+            <h3>CI/CD 集成</h3>
+            <pre><code># 非交互模式，跳过权限
+claude -p --dangerously-skip-permissions "运行测试并修复失败的用例"
+
+# 指定工具集
+claude -p --tools "Bash,Read,Write" "只使用基础工具完成任务"</code></pre>
+            
+            <h3>结构化输出</h3>
+            <pre><code># 使用 JSON Schema 约束输出
+claude -p --json-schema '{"type":"object","properties":{"files":{"type":"array"}}}' "列出需要修改的文件"</code></pre>
+            
+            <h3>MCP 服务器工作流</h3>
+            <pre><code># 添加多个 MCP 服务器
+claude mcp add -s project -e API_KEY=$KEY github-mcp -- npx @anthropic/github-mcp
+claude mcp add -s project -t http sentry https://mcp.sentry.dev/mcp
+
+# 查看已配置的服务器
+claude mcp list
+
+# 启动 MCP 服务器模式
+claude mcp serve</code></pre>
+            
+            <h3>极简模式</h3>
+            <pre><code># 极简模式（跳过 hooks、LSP、插件同步等，适合 CI）
+claude --bare -p "完成任务"</code></pre>
+            
+            <hr>
+            
+            <p style="color: var(--stone-gray); font-size: 14px;">
+                本手册基于 Claude Code v2.1.89 生成，命令和选项可能随版本更新而变化。使用 <code>claude --help</code> 查看最新信息。
+            </p>
+        </main>
+    </div>
+</body>
+</html>

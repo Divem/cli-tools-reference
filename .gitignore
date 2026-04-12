@@ -1,0 +1,16 @@
+node_modules/
+.DS_Store
+*.log
+.playwright-cli/
+.ruff_cache/
+
+# Data files
+douyin_comments.json
+douyin_videos.json
+douyin_cookies.json
+douyin_links_debug.json
+douyin_opencl_videos.json
+douyin_openclaw_videos.json
+
+# Output
+html/

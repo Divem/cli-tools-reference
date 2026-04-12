@@ -1,0 +1,440 @@
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - list [ref=e5]:
+      - listitem [ref=e6]:
+        - link "首页" [ref=e7] [cursor=pointer]:
+          - /url: //www.bilibili.com
+          - img [ref=e8]
+          - generic [ref=e10]:
+            - text: 首页
+            - img [ref=e11]
+      - listitem [ref=e14]:
+        - link "番剧" [ref=e15] [cursor=pointer]:
+          - /url: //www.bilibili.com/anime/
+      - listitem [ref=e16]:
+        - link "直播" [ref=e17] [cursor=pointer]:
+          - /url: //live.bilibili.com/
+      - listitem [ref=e18]:
+        - link "游戏中心" [ref=e19] [cursor=pointer]:
+          - /url: //game.bilibili.com/
+      - listitem [ref=e20]:
+        - link "会员购" [ref=e21] [cursor=pointer]:
+          - /url: //show.bilibili.com/platform/home.html?msource=pc_web
+      - listitem [ref=e22]:
+        - link "漫画" [ref=e23] [cursor=pointer]:
+          - /url: //manga.bilibili.com?from=bill_top_mnav
+      - listitem [ref=e24]:
+        - link "赛事" [ref=e25] [cursor=pointer]:
+          - /url: //www.bilibili.com/v/game/match/
+    - list [ref=e26]:
+      - listitem [ref=e27] [cursor=pointer]:
+        - generic [ref=e28]:
+          - img [ref=e29]
+          - generic [ref=e32]: 投稿
+  - generic [ref=e33]:
+    - generic [ref=e34]:
+      - generic [ref=e35]:
+        - heading "告别一切重复枯燥任务，CLI+Skill搭建浏览器AI自动化框架" [level=1] [ref=e38]
+        - generic [ref=e40]:
+          - generic [ref=e41]:
+            - img [ref=e42]
+            - generic [ref=e43]: 2.8万
+          - generic [ref=e44]:
+            - img [ref=e45]
+            - generic [ref=e46]: "30"
+          - generic [ref=e48]: 2026-04-11 21:54:14
+          - generic [ref=e49]:
+            - img [ref=e50]
+            - generic [ref=e51]: 未经作者授权，禁止转载
+      - generic "哔哩哔哩播放器" [ref=e61]
+      - generic [ref=e73]:
+        - generic [ref=e75]:
+          - generic "点赞（Q）" [ref=e77] [cursor=pointer]:
+            - img [ref=e78]
+            - generic [ref=e80]: "1654"
+          - generic "投币（W）" [ref=e82] [cursor=pointer]:
+            - img [ref=e83]
+            - generic [ref=e85]: "765"
+          - generic "收藏（E）" [ref=e87] [cursor=pointer]:
+            - img [ref=e88]
+            - generic [ref=e90]: "3072"
+          - generic [ref=e93] [cursor=pointer]:
+            - img [ref=e94]
+            - generic [ref=e96]: "428"
+        - img [ref=e99] [cursor=pointer]
+      - generic [ref=e102]: 这套流程可以让AI自动操作浏览器，代替你完成一切机械重复性工作。 而且特别省Token，很多工作流甚至全程不用AI参与，0 Token 就能把自动化任务跑起来。本期视频我们使用的AI Agent框架是 Claude Code 或 Codex（任选其一），浏览器自动化方案是 playwright-cli 搭配配套的skill。Playwright CLI 比起传统的 PlaywrightMCP方案，差不多能减少4倍的Token消耗。
+      - generic [ref=e104]:
+        - link "软件" [ref=e107] [cursor=pointer]:
+          - /url: //search.bilibili.com/all?keyword=%E8%BD%AF%E4%BB%B6&from_source=video_tag
+        - link "科技" [ref=e110] [cursor=pointer]:
+          - /url: //search.bilibili.com/all?keyword=%E7%A7%91%E6%8A%80&from_source=video_tag
+        - link "AI" [ref=e113] [cursor=pointer]:
+          - /url: //search.bilibili.com/all?keyword=AI&from_source=video_tag
+        - link "计算机" [ref=e116] [cursor=pointer]:
+          - /url: //search.bilibili.com/all?keyword=%E8%AE%A1%E7%AE%97%E6%9C%BA&from_source=video_tag
+        - link "浏览器" [ref=e119] [cursor=pointer]:
+          - /url: //search.bilibili.com/all?keyword=%E6%B5%8F%E8%A7%88%E5%99%A8&from_source=video_tag
+        - link "人工智能" [ref=e122] [cursor=pointer]:
+          - /url: //search.bilibili.com/all?keyword=%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD&from_source=video_tag
+        - link "AI自动化" [ref=e125] [cursor=pointer]:
+          - /url: //search.bilibili.com/all?keyword=AI%E8%87%AA%E5%8A%A8%E5%8C%96&from_source=video_tag
+        - link "MCP" [ref=e128] [cursor=pointer]:
+          - /url: //search.bilibili.com/all?keyword=MCP&from_source=video_tag
+        - link "Github" [ref=e131] [cursor=pointer]:
+          - /url: //search.bilibili.com/all?keyword=Github&from_source=video_tag
+        - link "Agent" [ref=e134] [cursor=pointer]:
+          - /url: //search.bilibili.com/all?keyword=Agent&from_source=video_tag
+    - generic:
+      - generic:
+        - generic [ref=e136]:
+          - link [ref=e139] [cursor=pointer]:
+            - /url: //space.bilibili.com/316183842/?spm_id_from=333.788.upinfo.head.click
+          - generic [ref=e142]:
+            - generic [ref=e143]:
+              - link "技术爬爬虾" [ref=e144] [cursor=pointer]:
+                - /url: //space.bilibili.com/316183842/?spm_id_from=333.788.upinfo.detail.click
+              - link " 发消息" [ref=e145] [cursor=pointer]:
+                - /url: //message.bilibili.com/?spm_id_from=333.788.upinfo.detail.click#whisper/mid316183842
+                - generic [ref=e146]: 
+                - text: 发消息
+            - 'generic "分享好玩实用的软件DIY，全网同名，商务合作: zaihengderen" [ref=e147]'
+        - generic [ref=e155]:
+          - link "只需略“微”出手，就已经是这个水平 微粒贷" [ref=e157] [cursor=pointer]:
+            - /url: javascript:void(0);
+            - generic [ref=e160]:
+              - generic "只需略“微”出手，就已经是这个水平" [ref=e161]
+              - generic [ref=e162]:
+                - img [ref=e163]
+                - generic [ref=e167]: 微粒贷
+          - img [ref=e169]
+        - generic [ref=e170]:
+          - generic [ref=e171]:
+            - generic [ref=e172]:
+              - generic [ref=e173]:
+                - generic [ref=e174]: 接下来播放
+                - generic [ref=e176] [cursor=pointer]: 自动连播
+              - generic [ref=e180]:
+                - link [ref=e184] [cursor=pointer]:
+                  - /url: /video/BV1BXQABNE4y/?spm_id_from=333.788.recommend_more_video.-1&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                - generic [ref=e185]:
+                  - link "我蒸馏了17个大佬给我打工（开源免费）" [ref=e186] [cursor=pointer]:
+                    - /url: /video/BV1BXQABNE4y/?spm_id_from=333.788.recommend_more_video.-1&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                    - paragraph [ref=e187]: 我蒸馏了17个大佬给我打工（开源免费）
+                  - link "花叔v" [ref=e189] [cursor=pointer]:
+                    - /url: //space.bilibili.com/14097567/
+                    - img [ref=e190]
+                    - generic [ref=e191]: 花叔v
+                  - generic [ref=e192]:
+                    - img [ref=e193]
+                    - text: 7.0万
+                    - img [ref=e194]
+                    - text: "271"
+            - generic [ref=e196]:
+              - generic [ref=e198]:
+                - link [ref=e202] [cursor=pointer]:
+                  - /url: /video/BV1PtD1BbE8m/?spm_id_from=333.788.recommend_more_video.0&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                - generic [ref=e203]:
+                  - link "删掉 OpenClaw！Hermes Agent 才是真王炸，一键本地部署 +模型接入全教程（避坑指南） | 零度解说" [ref=e204] [cursor=pointer]:
+                    - /url: /video/BV1PtD1BbE8m/?spm_id_from=333.788.recommend_more_video.0&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                    - paragraph [ref=e205]: 删掉 OpenClaw！Hermes Agent 才是真王炸，一键本地部署 +模型接入全教程（避坑指南） | 零度解说
+                  - link "零度解说" [ref=e207] [cursor=pointer]:
+                    - /url: //space.bilibili.com/625267185/
+                    - img [ref=e208]
+                    - generic [ref=e209]: 零度解说
+                  - generic [ref=e210]:
+                    - img [ref=e211]
+                    - text: 2.0万
+                    - img [ref=e212]
+                    - text: "20"
+              - generic [ref=e214]:
+                - link [ref=e218] [cursor=pointer]:
+                  - /url: /video/BV1VgPaz6EHU/?spm_id_from=333.788.recommend_more_video.1&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                - generic [ref=e219]:
+                  - link "Claude Code + Playwright = 疯狂的浏览器自动化" [ref=e220] [cursor=pointer]:
+                    - /url: /video/BV1VgPaz6EHU/?spm_id_from=333.788.recommend_more_video.1&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                    - paragraph [ref=e221]: Claude Code + Playwright = 疯狂的浏览器自动化
+                  - link "云桥网络" [ref=e223] [cursor=pointer]:
+                    - /url: //space.bilibili.com/435159930/
+                    - img [ref=e224]
+                    - generic [ref=e225]: 云桥网络
+                  - generic [ref=e226]:
+                    - img [ref=e227]
+                    - text: 1.5万
+                    - img [ref=e228]
+                    - text: "2"
+              - generic [ref=e230]:
+                - link [ref=e234] [cursor=pointer]:
+                  - /url: /video/BV12zP7zWExf/?spm_id_from=333.788.recommend_more_video.2&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                - generic [ref=e235]:
+                  - link "为何 Anthropic 如此反华？" [ref=e236] [cursor=pointer]:
+                    - /url: /video/BV12zP7zWExf/?spm_id_from=333.788.recommend_more_video.2&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                    - paragraph [ref=e237]: 为何 Anthropic 如此反华？
+                  - link "希德昵称太短了" [ref=e239] [cursor=pointer]:
+                    - /url: //space.bilibili.com/485469015/
+                    - img [ref=e240]
+                    - generic [ref=e241]: 希德昵称太短了
+                  - generic [ref=e242]:
+                    - img [ref=e243]
+                    - text: 9.5万
+                    - img [ref=e244]
+                    - text: "138"
+              - generic [ref=e246]:
+                - link [ref=e250] [cursor=pointer]:
+                  - /url: /video/BV16zDfBtECQ/?spm_id_from=333.788.recommend_more_video.3&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                - generic [ref=e251]:
+                  - link "为什么越来越多的人抛弃 MCP，转向 CLI？" [ref=e252] [cursor=pointer]:
+                    - /url: /video/BV16zDfBtECQ/?spm_id_from=333.788.recommend_more_video.3&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                    - paragraph [ref=e253]: 为什么越来越多的人抛弃 MCP，转向 CLI？
+                  - link "马克的技术工作坊" [ref=e255] [cursor=pointer]:
+                    - /url: //space.bilibili.com/1815948385/
+                    - img [ref=e256]
+                    - generic [ref=e257]: 马克的技术工作坊
+                  - generic [ref=e258]:
+                    - img [ref=e259]
+                    - text: 6.7万
+                    - img [ref=e260]
+                    - text: "211"
+              - generic [ref=e262]:
+                - link [ref=e266] [cursor=pointer]:
+                  - /url: /video/BV1eywfz5Ebi/?spm_id_from=333.788.recommend_more_video.4&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                - generic [ref=e267]:
+                  - link "Superpowers 从头脑风暴、方案设计，到拆任务、写代码、系统化调试、测试驱动开发，子智能体协作、分支交付，全流程AI帮你搞定！#superpowers" [ref=e268] [cursor=pointer]:
+                    - /url: /video/BV1eywfz5Ebi/?spm_id_from=333.788.recommend_more_video.4&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                    - paragraph [ref=e269]: Superpowers 从头脑风暴、方案设计，到拆任务、写代码、系统化调试、测试驱动开发，子智能体协作、分支交付，全流程AI帮你搞定！#superpowers
+                  - link "AI铁匠部" [ref=e271] [cursor=pointer]:
+                    - /url: //space.bilibili.com/1275425851/
+                    - img [ref=e272]
+                    - generic [ref=e273]: AI铁匠部
+                  - generic [ref=e274]:
+                    - img [ref=e275]
+                    - text: 1.6万
+                    - img [ref=e276]
+                    - text: "10"
+              - generic [ref=e278]:
+                - link [ref=e282] [cursor=pointer]:
+                  - /url: /video/BV1G29EBGE8b/?spm_id_from=333.788.recommend_more_video.5&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                - generic [ref=e283]:
+                  - link "为什么巨头都在做CLI(命令行界面)？比MCP有哪些优势？" [ref=e284] [cursor=pointer]:
+                    - /url: /video/BV1G29EBGE8b/?spm_id_from=333.788.recommend_more_video.5&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                    - paragraph [ref=e285]: 为什么巨头都在做CLI(命令行界面)？比MCP有哪些优势？
+                  - link "技术爬爬虾" [ref=e287] [cursor=pointer]:
+                    - /url: //space.bilibili.com/316183842/
+                    - img [ref=e288]
+                    - generic [ref=e289]: 技术爬爬虾
+                  - generic [ref=e290]:
+                    - img [ref=e291]
+                    - text: 6.0万
+                    - img [ref=e292]
+                    - text: "85"
+              - generic [ref=e294]:
+                - link [ref=e298] [cursor=pointer]:
+                  - /url: /video/BV1cGigBQE6n/?spm_id_from=333.788.recommend_more_video.6&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                - generic [ref=e299]:
+                  - link "Agent Skill 从使用到原理，一次讲清" [ref=e300] [cursor=pointer]:
+                    - /url: /video/BV1cGigBQE6n/?spm_id_from=333.788.recommend_more_video.6&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                    - paragraph [ref=e301]: Agent Skill 从使用到原理，一次讲清
+                  - link "马克的技术工作坊" [ref=e303] [cursor=pointer]:
+                    - /url: //space.bilibili.com/1815948385/
+                    - img [ref=e304]
+                    - generic [ref=e305]: 马克的技术工作坊
+                  - generic [ref=e306]:
+                    - img [ref=e307]
+                    - text: 49.0万
+                    - img [ref=e308]
+                    - text: "654"
+              - generic [ref=e310]:
+                - link [ref=e314] [cursor=pointer]:
+                  - /url: /video/BV1P8wQzrEWn/?spm_id_from=333.788.recommend_more_video.7&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                - generic [ref=e315]:
+                  - link "opencli：网站直接变 CLI 工具" [ref=e316] [cursor=pointer]:
+                    - /url: /video/BV1P8wQzrEWn/?spm_id_from=333.788.recommend_more_video.7&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                    - paragraph [ref=e317]: opencli：网站直接变 CLI 工具
+                  - link "GitHub很棒" [ref=e319] [cursor=pointer]:
+                    - /url: //space.bilibili.com/515518876/
+                    - img [ref=e320]
+                    - generic [ref=e321]: GitHub很棒
+                  - generic [ref=e322]:
+                    - img [ref=e323]
+                    - text: 1.1万
+                    - img [ref=e324]
+                    - text: "1"
+              - generic [ref=e326]:
+                - link [ref=e330] [cursor=pointer]:
+                  - /url: /video/BV1ntQBBuEBK/?spm_id_from=333.788.recommend_more_video.8&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                - generic [ref=e331]:
+                  - link "掌握 OpenClaw 完全接管 Chrome 浏览器，Chrome MCP 协议使用，OpenClaw 控制浏览器实操案例分享！" [ref=e332] [cursor=pointer]:
+                    - /url: /video/BV1ntQBBuEBK/?spm_id_from=333.788.recommend_more_video.8&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                    - paragraph [ref=e333]: 掌握 OpenClaw 完全接管 Chrome 浏览器，Chrome MCP 协议使用，OpenClaw 控制浏览器实操案例分享！
+                  - link "余子越TalkTalk" [ref=e335] [cursor=pointer]:
+                    - /url: //space.bilibili.com/3493266750179909/
+                    - img [ref=e336]
+                    - generic [ref=e337]: 余子越TalkTalk
+                  - generic [ref=e338]:
+                    - img [ref=e339]
+                    - text: 2.6万
+                    - img [ref=e340]
+                    - text: "2"
+              - generic [ref=e342]:
+                - link [ref=e346] [cursor=pointer]:
+                  - /url: /video/BV1wm4UzfEbr/?spm_id_from=333.788.recommend_more_video.9&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                - generic [ref=e347]:
+                  - link "AI编程新王Codex详细攻略，一期视频精通，附免费使用方法" [ref=e348] [cursor=pointer]:
+                    - /url: /video/BV1wm4UzfEbr/?spm_id_from=333.788.recommend_more_video.9&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                    - paragraph [ref=e349]: AI编程新王Codex详细攻略，一期视频精通，附免费使用方法
+                  - link "技术爬爬虾" [ref=e351] [cursor=pointer]:
+                    - /url: //space.bilibili.com/316183842/
+                    - img [ref=e352]
+                    - generic [ref=e353]: 技术爬爬虾
+                  - generic [ref=e354]:
+                    - img [ref=e355]
+                    - text: 36.5万
+                    - img [ref=e356]
+                    - text: "149"
+              - generic [ref=e358]:
+                - link [ref=e362] [cursor=pointer]:
+                  - /url: /video/BV16qDiBhErJ/?spm_id_from=333.788.recommend_more_video.10&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                - generic [ref=e363]:
+                  - link "字节大佬的Claude Code保姆级全栈教程：从入门到精通，搞定所有开发场景，新手必看！" [ref=e364] [cursor=pointer]:
+                    - /url: /video/BV16qDiBhErJ/?spm_id_from=333.788.recommend_more_video.10&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                    - paragraph [ref=e365]: 字节大佬的Claude Code保姆级全栈教程：从入门到精通，搞定所有开发场景，新手必看！
+                  - link "AI智能体搭建湿" [ref=e367] [cursor=pointer]:
+                    - /url: //space.bilibili.com/1078108818/
+                    - img [ref=e368]
+                    - generic [ref=e369]: AI智能体搭建湿
+                  - generic [ref=e370]:
+                    - img [ref=e371]
+                    - text: 3.8万
+                    - img [ref=e372]
+                    - text: "128"
+              - generic [ref=e374]:
+                - link [ref=e378] [cursor=pointer]:
+                  - /url: /video/BV1qW65BeEFQ/?spm_id_from=333.788.recommend_more_video.11&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                - generic [ref=e379]:
+                  - link "比Playwright更省token,Vercel新开源浏览器自动化工具Agent Browser" [ref=e380] [cursor=pointer]:
+                    - /url: /video/BV1qW65BeEFQ/?spm_id_from=333.788.recommend_more_video.11&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                    - paragraph [ref=e381]: 比Playwright更省token,Vercel新开源浏览器自动化工具Agent Browser
+                  - link "码里奥Ziho" [ref=e383] [cursor=pointer]:
+                    - /url: //space.bilibili.com/3546804396230870/
+                    - img [ref=e384]
+                    - generic [ref=e385]: 码里奥Ziho
+                  - generic [ref=e386]:
+                    - img [ref=e387]
+                    - text: 2.3万
+                    - img [ref=e388]
+                    - text: "14"
+              - generic [ref=e390]:
+                - link [ref=e394] [cursor=pointer]:
+                  - /url: /video/BV1vZfKYeEDk/?spm_id_from=333.788.recommend_more_video.12&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                - generic [ref=e395]:
+                  - link "一句话命令AI操作浏览器替我打工，Browser Use原理+实战" [ref=e396] [cursor=pointer]:
+                    - /url: /video/BV1vZfKYeEDk/?spm_id_from=333.788.recommend_more_video.12&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                    - paragraph [ref=e397]: 一句话命令AI操作浏览器替我打工，Browser Use原理+实战
+                  - link "技术爬爬虾" [ref=e399] [cursor=pointer]:
+                    - /url: //space.bilibili.com/316183842/
+                    - img [ref=e400]
+                    - generic [ref=e401]: 技术爬爬虾
+                  - generic [ref=e402]:
+                    - img [ref=e403]
+                    - text: 8.1万
+                    - img [ref=e404]
+                    - text: "53"
+              - generic [ref=e406]:
+                - link [ref=e410] [cursor=pointer]:
+                  - /url: /video/BV1zXJxzrEdc/?spm_id_from=333.788.recommend_more_video.13&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                - generic [ref=e411]:
+                  - link "Gemini 突然真香了？如何用好用透Gemini" [ref=e412] [cursor=pointer]:
+                    - /url: /video/BV1zXJxzrEdc/?spm_id_from=333.788.recommend_more_video.13&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                    - paragraph [ref=e413]: Gemini 突然真香了？如何用好用透Gemini
+                  - link "技术爬爬虾" [ref=e415] [cursor=pointer]:
+                    - /url: //space.bilibili.com/316183842/
+                    - img [ref=e416]
+                    - generic [ref=e417]: 技术爬爬虾
+                  - generic [ref=e418]:
+                    - img [ref=e419]
+                    - text: 29.3万
+                    - img [ref=e420]
+                    - text: "304"
+              - generic [ref=e422]:
+                - link [ref=e426] [cursor=pointer]:
+                  - /url: /video/BV1NxqbBUE1t/?spm_id_from=333.788.recommend_more_video.14&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                - generic [ref=e427]:
+                  - link "OpenCode桌面版：地表最强AI编程助手！免费开源，告别Gemini-Claude！" [ref=e428] [cursor=pointer]:
+                    - /url: /video/BV1NxqbBUE1t/?spm_id_from=333.788.recommend_more_video.14&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                    - paragraph [ref=e429]: OpenCode桌面版：地表最强AI编程助手！免费开源，告别Gemini-Claude！
+                  - link "烟神殿副殿主" [ref=e431] [cursor=pointer]:
+                    - /url: //space.bilibili.com/3546779786151966/
+                    - img [ref=e432]
+                    - generic [ref=e433]: 烟神殿副殿主
+                  - generic [ref=e434]:
+                    - img [ref=e435]
+                    - text: 3.2万
+                    - img [ref=e436]
+                    - text: "0"
+              - generic [ref=e438]:
+                - link [ref=e442] [cursor=pointer]:
+                  - /url: /video/BV12eDkBoEjM/?spm_id_from=333.788.recommend_more_video.15&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                - generic [ref=e443]:
+                  - link "躺着办公这么爽？AI时代好东西分享1.0" [ref=e444] [cursor=pointer]:
+                    - /url: /video/BV12eDkBoEjM/?spm_id_from=333.788.recommend_more_video.15&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                    - paragraph [ref=e445]: 躺着办公这么爽？AI时代好东西分享1.0
+                  - link "秋芝2046" [ref=e447] [cursor=pointer]:
+                    - /url: //space.bilibili.com/385670211/
+                    - img [ref=e448]
+                    - generic [ref=e449]: 秋芝2046
+                  - generic [ref=e450]:
+                    - img [ref=e451]
+                    - text: 1.9万
+                    - img [ref=e452]
+                    - text: "342"
+              - generic [ref=e454]:
+                - link [ref=e458] [cursor=pointer]:
+                  - /url: /video/BV1Nx4y147n3/?spm_id_from=333.788.recommend_more_video.16&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                - generic [ref=e459]:
+                  - link "windows为什么有两个命令行工具？命令提示符与PowerShell有什么区别？" [ref=e460] [cursor=pointer]:
+                    - /url: /video/BV1Nx4y147n3/?spm_id_from=333.788.recommend_more_video.16&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                    - paragraph [ref=e461]: windows为什么有两个命令行工具？命令提示符与PowerShell有什么区别？
+                  - link "技术爬爬虾" [ref=e463] [cursor=pointer]:
+                    - /url: //space.bilibili.com/316183842/
+                    - img [ref=e464]
+                    - generic [ref=e465]: 技术爬爬虾
+                  - generic [ref=e466]:
+                    - img [ref=e467]
+                    - text: 90.1万
+                    - img [ref=e468]
+                    - text: "1968"
+              - generic [ref=e470]:
+                - link [ref=e474] [cursor=pointer]:
+                  - /url: /video/BV1s4QMBbEwT/?spm_id_from=333.788.recommend_more_video.17&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                - generic [ref=e475]:
+                  - link "Hermes Agent vs Openclaw 详细拆解" [ref=e476] [cursor=pointer]:
+                    - /url: /video/BV1s4QMBbEwT/?spm_id_from=333.788.recommend_more_video.17&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                    - paragraph [ref=e477]: Hermes Agent vs Openclaw 详细拆解
+                  - link "MEMO先生ALLAN" [ref=e479] [cursor=pointer]:
+                    - /url: //space.bilibili.com/544427839/
+                    - img [ref=e480]
+                    - generic [ref=e481]: MEMO先生ALLAN
+                  - generic [ref=e482]:
+                    - img [ref=e483]
+                    - text: "6956"
+                    - img [ref=e484]
+                    - text: "3"
+              - generic [ref=e486]:
+                - link [ref=e490] [cursor=pointer]:
+                  - /url: /video/BV1NUDZBYEeD/?spm_id_from=333.788.recommend_more_video.18&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                - generic [ref=e491]:
+                  - link "Qwen3.6-Plus 太猛了！免费+百万上下文+Agent，多模态能力直接拉满！| 零度解说" [ref=e492] [cursor=pointer]:
+                    - /url: /video/BV1NUDZBYEeD/?spm_id_from=333.788.recommend_more_video.18&trackid=web_related_0.router-related-2479604-97qjn.1776003337950.716
+                    - paragraph [ref=e493]: Qwen3.6-Plus 太猛了！免费+百万上下文+Agent，多模态能力直接拉满！| 零度解说
+                  - link "零度解说" [ref=e495] [cursor=pointer]:
+                    - /url: //space.bilibili.com/625267185/
+                    - img [ref=e496]
+                    - generic [ref=e497]: 零度解说
+                  - generic [ref=e498]:
+                    - img [ref=e499]
+                    - text: 1.9万
+                    - img [ref=e500]
+                    - text: "16"
+            - generic [ref=e501] [cursor=pointer]: 展开
+          - link "校园小剧场来咯！投稿赢千元奖金" [ref=e503] [cursor=pointer]:
+            - /url: javascript:void(0);
+            - generic [ref=e504]: 校园小剧场来咯！投稿赢千元奖金

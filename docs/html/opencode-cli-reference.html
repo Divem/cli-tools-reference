@@ -1,0 +1,708 @@
+<!-- Cursor Style - OpenCode CLI Reference -->
+<!-- Brand: Cursor - Dark theme #0d1117, gradient accent, CursorGothic/jjannon/berkeleyMono fonts -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenCode CLI 参考手册</title>
+    <style>
+        /* Cursor Design System Variables */
+        :root {
+            /* Colors */
+            --cursor-dark: #26251e;
+            --cursor-cream: #f2f1ed;
+            --cursor-light: #e6e5e0;
+            --pure-white: #ffffff;
+            --true-black: #000000;
+            
+            /* Accents */
+            --cursor-orange: #f54e00;
+            --gold: #c08532;
+            --error: #cf2d56;
+            --success: #1f8a65;
+            
+            /* Timeline Colors */
+            --thinking: #dfa88f;
+            --grep: #9fc9a2;
+            --read: #9fbbe0;
+            --edit: #c0a8dd;
+            
+            /* Surfaces */
+            --surface-100: #f7f7f4;
+            --surface-200: #f2f1ed;
+            --surface-300: #ebeae5;
+            --surface-400: #e6e5e0;
+            --surface-500: #e1e0db;
+            
+            /* Borders */
+            --border-primary: rgba(38, 37, 30, 0.1);
+            --border-medium: rgba(38, 37, 30, 0.2);
+            --border-strong: rgba(38, 37, 30, 0.55);
+            
+            /* Typography */
+            --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-serif: 'Georgia', 'Times New Roman', serif;
+            --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-display);
+            background-color: var(--cursor-cream);
+            color: var(--cursor-dark);
+            line-height: 1.5;
+            font-size: 16px;
+            letter-spacing: -0.11px;
+        }
+        
+        /* Layout */
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 300px;
+            height: 100vh;
+            background-color: var(--surface-100);
+            border-right: 1px solid var(--border-primary);
+            padding: 40px 28px;
+            overflow-y: auto;
+            z-index: 100;
+        }
+        
+        .sidebar-header {
+            margin-bottom: 40px;
+            padding-bottom: 28px;
+            border-bottom: 1px solid var(--border-primary);
+        }
+        
+        .sidebar-title {
+            font-size: 26px;
+            font-weight: 400;
+            color: var(--cursor-dark);
+            line-height: 1.3;
+            letter-spacing: -0.325px;
+        }
+        
+        .sidebar-subtitle {
+            font-family: var(--font-serif);
+            font-size: 15px;
+            font-weight: 400;
+            color: rgba(38, 37, 30, 0.55);
+            margin-top: 8px;
+            line-height: 1.35;
+        }
+        
+        .nav-section {
+            margin-bottom: 32px;
+        }
+        
+        .nav-title {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: rgba(38, 37, 30, 0.4);
+            margin-bottom: 14px;
+            text-transform: uppercase;
+        }
+        
+        .nav-list {
+            list-style: none;
+        }
+        
+        .nav-item {
+            margin-bottom: 3px;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 8px 12px;
+            color: rgba(38, 37, 30, 0.7);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 400;
+            border-radius: 8px;
+            transition: all 0.15s ease;
+            letter-spacing: 0.08px;
+        }
+        
+        .nav-link:hover {
+            background-color: var(--surface-300);
+            color: var(--cursor-dark);
+        }
+        
+        .nav-link.active {
+            background-color: var(--cursor-orange);
+            color: var(--pure-white);
+        }
+        
+        /* Main Content */
+        .main {
+            margin-left: 300px;
+            flex: 1;
+            padding: 64px 80px;
+            max-width: 1000px;
+        }
+        
+        /* Typography */
+        h1 {
+            font-size: 48px;
+            font-weight: 400;
+            line-height: 1.1;
+            color: var(--cursor-dark);
+            margin-bottom: 24px;
+            letter-spacing: -2.16px;
+        }
+        
+        h2 {
+            font-size: 32px;
+            font-weight: 400;
+            line-height: 1.2;
+            color: var(--cursor-dark);
+            margin-top: 64px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-primary);
+            letter-spacing: -0.72px;
+        }
+        
+        h3 {
+            font-size: 24px;
+            font-weight: 400;
+            line-height: 1.25;
+            color: var(--cursor-dark);
+            margin-top: 48px;
+            margin-bottom: 16px;
+            letter-spacing: -0.325px;
+        }
+        
+        h4 {
+            font-size: 20px;
+            font-weight: 600;
+            line-height: 1.33;
+            color: var(--cursor-dark);
+            margin-top: 32px;
+            margin-bottom: 12px;
+        }
+        
+        p {
+            margin-bottom: 16px;
+            color: rgba(38, 37, 30, 0.8);
+            line-height: 1.7;
+            font-size: 17px;
+            font-family: var(--font-serif);
+            font-weight: 400;
+            letter-spacing: normal;
+        }
+        
+        a {
+            color: var(--cursor-orange);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(245, 78, 0, 0.3);
+            transition: all 0.15s ease;
+        }
+        
+        a:hover {
+            border-bottom-color: var(--cursor-orange);
+        }
+        
+        /* Code Blocks */
+        pre {
+            background-color: var(--cursor-dark);
+            color: var(--cursor-cream);
+            padding: 28px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 28px 0;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            line-height: 1.67;
+            box-shadow: rgba(0,0,0,0.14) 0px 28px 70px, rgba(0,0,0,0.1) 0px 14px 32px;
+        }
+        
+        code {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            background-color: var(--surface-300);
+            color: var(--cursor-dark);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        
+        pre code {
+            background-color: transparent;
+            color: var(--cursor-cream);
+            padding: 0;
+            border-radius: 0;
+        }
+        
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 28px 0;
+            background-color: var(--surface-100);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0px 0px 0px 1px var(--border-primary);
+        }
+        
+        th {
+            background-color: var(--surface-300);
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            color: var(--cursor-dark);
+            border-bottom: 1px solid var(--border-primary);
+        }
+        
+        td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-primary);
+            color: rgba(38, 37, 30, 0.75);
+            font-size: 15px;
+            font-family: var(--font-serif);
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:hover td {
+            background-color: var(--surface-200);
+        }
+        
+        /* Lists */
+        ul, ol {
+            margin: 20px 0;
+            padding-left: 24px;
+        }
+        
+        li {
+            margin-bottom: 10px;
+            color: rgba(38, 37, 30, 0.8);
+            font-size: 16px;
+            font-family: var(--font-serif);
+            line-height: 1.6;
+        }
+        
+        /* Horizontal Rule */
+        hr {
+            border: none;
+            border-top: 1px solid var(--border-primary);
+            margin: 56px 0;
+        }
+        
+        /* Header Info */
+        .header-meta {
+            background-color: var(--surface-100);
+            padding: 16px 24px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            font-size: 14px;
+            color: rgba(38, 37, 30, 0.6);
+            box-shadow: 0px 0px 0px 1px var(--border-primary);
+            font-family: var(--font-mono);
+        }
+        
+        /* Info Box */
+        .info-box {
+            background-color: var(--surface-100);
+            border-left: 3px solid var(--cursor-orange);
+            padding: 24px 28px;
+            margin: 28px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .info-box p {
+            margin: 0;
+            font-size: 16px;
+        }
+        
+        /* Tag/Pill */
+        .tag {
+            display: inline-block;
+            background-color: var(--surface-400);
+            color: rgba(38, 37, 30, 0.7);
+            padding: 3px 10px;
+            border-radius: 9999px;
+            font-size: 13px;
+            font-weight: 400;
+            margin-right: 8px;
+        }
+        
+        .tag:hover {
+            color: var(--error);
+        }
+        
+        /* Command Card */
+        .command-card {
+            background-color: var(--surface-100);
+            border-radius: 8px;
+            padding: 28px;
+            margin: 28px 0;
+            box-shadow: 0px 0px 0px 1px var(--border-primary);
+        }
+        
+        .command-header {
+            font-family: var(--font-mono);
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--cursor-dark);
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-primary);
+        }
+        
+        /* Timeline Colors Demo */
+        .timeline-demo {
+            display: flex;
+            gap: 16px;
+            margin: 24px 0;
+        }
+        
+        .timeline-item {
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .timeline-thinking { background-color: var(--thinking); color: var(--cursor-dark); }
+        .timeline-grep { background-color: var(--grep); color: var(--cursor-dark); }
+        .timeline-read { background-color: var(--read); color: var(--cursor-dark); }
+        .timeline-edit { background-color: var(--edit); color: var(--cursor-dark); }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            
+            .main {
+                margin-left: 0;
+                padding: 32px;
+            }
+            
+            h1 {
+                font-size: 36px;
+                letter-spacing: -1.5px;
+            }
+            
+            h2 {
+                font-size: 28px;
+                letter-spacing: -0.5px;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .main {
+                padding: 24px;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+            
+            h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">OpenCode</div>
+                <div class="sidebar-subtitle">CLI 参考手册</div>
+            </div>
+            
+            <nav>
+                <div class="nav-section">
+                    <div class="nav-title">目录</div>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="#overview" class="nav-link">概述</a></li>
+                        <li class="nav-item"><a href="#quickstart" class="nav-link">快速开始</a></li>
+                        <li class="nav-item"><a href="#global" class="nav-link">全局选项</a></li>
+                        <li class="nav-item"><a href="#core" class="nav-link">核心命令</a></li>
+                        <li class="nav-item"><a href="#session" class="nav-link">会话管理</a></li>
+                        <li class="nav-item"><a href="#models" class="nav-link">模型与提供商</a></li>
+                        <li class="nav-item"><a href="#agent" class="nav-link">Agent 管理</a></li>
+                        <li class="nav-item"><a href="#mcp" class="nav-link">MCP 服务器</a></li>
+                        <li class="nav-item"><a href="#plugin" class="nav-link">插件管理</a></li>
+                        <li class="nav-item"><a href="#github" class="nav-link">GitHub 集成</a></li>
+                        <li class="nav-item"><a href="#config" class="nav-link">配置文件</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main">
+            <h1>OpenCode CLI</h1>
+            
+            <div class="header-meta">
+                版本：1.3.15 | 安装路径：/opt/homebrew/bin/opencode
+            </div>
+            
+            <p>OpenCode 是一个交互式 CLI 工具，提供 TUI（终端用户界面）和 headless 模式，用于与 AI 模型交互、管理会话、操作代码等。它支持多种 AI 提供商、MCP/ACP 协议、GitHub 集成和插件扩展。</p>
+            
+            <hr>
+            
+            <h2 id="quickstart">快速开始</h2>
+            
+            <pre><code># 在当前目录启动 TUI 交互界面
+opencode
+
+# 在指定项目目录启动
+opencode /path/to/project
+
+# 直接运行一条命令（非交互模式）
+opencode run "帮我写一个 hello world"
+
+# 继续上一次的会话
+opencode -c
+
+# 查看版本
+opencode -v</code></pre>
+            
+            <h2 id="global">全局选项</h2>
+            
+            <table>
+                <tr><th>选项</th><th>说明</th><th>默认值</th></tr>
+                <tr><td><code>-h, --help</code></td><td>显示帮助信息</td><td>-</td></tr>
+                <tr><td><code>-v, --version</code></td><td>显示版本号</td><td>-</td></tr>
+                <tr><td><code>--print-logs</code></td><td>将日志输出到 stderr</td><td>false</td></tr>
+                <tr><td><code>--log-level</code></td><td>日志级别：DEBUG / INFO / WARN / ERROR</td><td>-</td></tr>
+                <tr><td><code>--pure</code></td><td>不加载外部插件运行</td><td>false</td></tr>
+            </table>
+            
+            <h3>网络选项</h3>
+            
+            <table>
+                <tr><th>选项</th><th>说明</th><th>默认值</th></tr>
+                <tr><td><code>--port</code></td><td>监听端口</td><td>0（随机）</td></tr>
+                <tr><td><code>--hostname</code></td><td>监听主机名</td><td>127.0.0.1</td></tr>
+                <tr><td><code>--mdns</code></td><td>启用 mDNS 服务发现</td><td>false</td></tr>
+                <tr><td><code>--cors</code></td><td>额外允许的 CORS 域名</td><td>[]</td></tr>
+            </table>
+            
+            <h2 id="core">核心命令</h2>
+            
+            <h3>opencode — 启动 TUI</h3>
+            
+            <div class="command-card">
+                <div class="command-header">opencode [project]</div>
+                <p>启动 OpenCode 的终端交互界面（默认命令）</p>
+                
+                <table>
+                    <tr><th>选项</th><th>说明</th></tr>
+                    <tr><td><code>-m, --model &lt;provider/model&gt;</code></td><td>指定使用的模型</td></tr>
+                    <tr><td><code>-c, --continue</code></td><td>继续上一次会话</td></tr>
+                    <tr><td><code>-s, --session &lt;id&gt;</code></td><td>继续指定会话</td></tr>
+                    <tr><td><code>--fork</code></td><td>以 fork 模式继续会话</td></tr>
+                    <tr><td><code>--prompt &lt;text&gt;</code></td><td>指定系统提示词</td></tr>
+                    <tr><td><code>--agent &lt;name&gt;</code></td><td>指定使用的 Agent</td></tr>
+                </table>
+            </div>
+            
+            <h3>opencode run — 非交互模式</h3>
+            
+            <pre><code># 简单执行
+opencode run "解释这段代码的作用"
+
+# 附加文件
+opencode run "审查这个文件" -f src/main.ts
+
+# JSON 输出（适合管道处理）
+opencode run "列出所有 TODO" --format json
+
+# 使用特定模型和推理强度
+opencode run "重构这段代码" -m anthropic/claude-sonnet-4-20250514 --variant high</code></pre>
+            
+            <h3>opencode serve — 启动服务器</h3>
+            
+            <pre><code># 启动服务，监听 8080 端口
+opencode serve --port 8080
+
+# 允许局域网访问
+opencode serve --hostname 0.0.0.0 --port 4096
+
+# 启用 mDNS 发现
+opencode serve --mdns</code></pre>
+            
+            <h3>opencode web — Web 界面</h3>
+            
+            <pre><code># 启动 Web 界面
+opencode web --port 3000
+
+# 局域网访问 Web 界面
+opencode web --hostname 0.0.0.0 --port 3000 --cors http://myapp.local</code></pre>
+            
+            <h2 id="session">会话管理</h2>
+            
+            <h3>opencode session</h3>
+            
+            <table>
+                <tr><th>子命令</th><th>说明</th></tr>
+                <tr><td><code>session list</code></td><td>列出所有会话</td></tr>
+                <tr><td><code>session delete &lt;sessionID&gt;</code></td><td>删除指定会话</td></tr>
+            </table>
+            
+            <h3>opencode export / import</h3>
+            
+            <pre><code># 将会话数据导出为 JSON
+opencode export [sessionID]
+
+# 从 JSON 文件或 URL 导入会话数据
+opencode import &lt;file&gt;</code></pre>
+            
+            <h3>opencode stats</h3>
+            
+            <p>显示 Token 使用和费用统计。</p>
+            
+            <pre><code># 最近 7 天统计
+opencode stats --days 7
+
+# 按项目过滤
+opencode stats --project "my-app"
+
+# 显示模型统计
+opencode stats --models</code></pre>
+            
+            <h2 id="models">模型与提供商</h2>
+            
+            <h3>opencode models</h3>
+            
+            <p>列出所有可用模型。</p>
+            
+            <pre><code># 列出所有模型
+opencode models
+
+# 列出 anthropic 的模型
+opencode models anthropic
+
+# 详细模式
+opencode models --verbose
+
+# 刷新缓存
+opencode models --refresh</code></pre>
+            
+            <h3>opencode providers</h3>
+            
+            <table>
+                <tr><th>子命令</th><th>说明</th></tr>
+                <tr><td><code>providers list</code></td><td>列出所有已配置的提供商</td></tr>
+                <tr><td><code>providers login [url]</code></td><td>登录提供商</td></tr>
+                <tr><td><code>providers logout</code></td><td>登出已配置的提供商</td></tr>
+            </table>
+            
+            <h2 id="agent">Agent 管理</h2>
+            
+            <h3>opencode agent</h3>
+            
+            <table>
+                <tr><th>子命令</th><th>说明</th></tr>
+                <tr><td><code>agent list</code></td><td>列出所有可用 Agent</td></tr>
+                <tr><td><code>agent create</code></td><td>创建新的 Agent</td></tr>
+            </table>
+            
+            <h4>创建 Agent 选项</h4>
+            
+            <table>
+                <tr><th>选项</th><th>说明</th></tr>
+                <tr><td><code>--path &lt;dir&gt;</code></td><td>生成 Agent 文件的目录路径</td></tr>
+                <tr><td><code>--description &lt;text&gt;</code></td><td>Agent 功能描述</td></tr>
+                <tr><td><code>--mode &lt;all|primary|subagent&gt;</code></td><td>Agent 模式</td></tr>
+                <tr><td><code>--tools &lt;list&gt;</code></td><td>启用的工具列表（逗号分隔）</td></tr>
+                <tr><td><code>-m, --model</code></td><td>使用的模型</td></tr>
+            </table>
+            
+            <p>可用工具：<code>bash</code>, <code>read</code>, <code>write</code>, <code>edit</code>, <code>list</code>, <code>glob</code>, <code>grep</code>, <code>webfetch</code>, <code>task</code>, <code>todowrite</code></p>
+            
+            <h2 id="mcp">MCP 服务器管理</h2>
+            
+            <h3>opencode mcp</h3>
+            
+            <table>
+                <tr><th>子命令</th><th>说明</th></tr>
+                <tr><td><code>mcp add</code></td><td>添加 MCP 服务器（交互式）</td></tr>
+                <tr><td><code>mcp list</code></td><td>列出 MCP 服务器及其状态</td></tr>
+                <tr><td><code>mcp auth [name]</code></td><td>对 OAuth 支持的 MCP 服务器进行认证</td></tr>
+                <tr><td><code>mcp logout [name]</code></td><td>移除 MCP 服务器的 OAuth 凭证</td></tr>
+                <tr><td><code>mcp debug &lt;name&gt;</code></td><td>调试 MCP 服务器的 OAuth 连接</td></tr>
+            </table>
+            
+            <h2 id="plugin">插件管理</h2>
+            
+            <h3>opencode plugin</h3>
+            
+            <pre><code># 安装插件
+opencode plugin @opencode/plugin-example
+
+# 全局安装
+opencode plugin @opencode/plugin-example -g
+
+# 强制替换
+opencode plugin @opencode/plugin-example -f</code></pre>
+            
+            <h2 id="github">GitHub 集成</h2>
+            
+            <h3>opencode github</h3>
+            
+            <table>
+                <tr><th>子命令</th><th>说明</th></tr>
+                <tr><td><code>github install</code></td><td>安装 GitHub Agent</td></tr>
+                <tr><td><code>github run</code></td><td>运行 GitHub Agent</td></tr>
+            </table>
+            
+            <h3>opencode pr</h3>
+            
+            <p>拉取并检出 GitHub PR 分支，然后启动 OpenCode。</p>
+            
+            <pre><code># 检出 PR #42 并启动
+opencode pr 42</code></pre>
+            
+            <h2 id="config">配置文件</h2>
+            
+            <p>OpenCode 的配置文件位于 <code>~/.config/opencode/</code> 目录下。</p>
+            
+            <table>
+                <tr><th>路径类型</th><th>默认路径</th><th>说明</th></tr>
+                <tr><td><code>home</code></td><td><code>~</code></td><td>用户主目录</td></tr>
+                <tr><td><code>data</code></td><td><code>~/.local/share/opencode</code></td><td>数据目录（会话、快照等）</td></tr>
+                <tr><td><code>config</code></td><td><code>~/.config/opencode</code></td><td>配置文件目录</td></tr>
+                <tr><td><code>cache</code></td><td><code>~/.cache/opencode</code></td><td>缓存目录</td></tr>
+                <tr><td><code>log</code></td><td><code>~/.local/share/opencode/log</code></td><td>日志目录</td></tr>
+            </table>
+            
+            <div class="info-box">
+                <p>使用 <code>opencode debug config</code> 命令查看完整的已解析配置。</p>
+            </div>
+            
+            <hr>
+            
+            <p style="color: rgba(38, 37, 30, 0.55); font-size: 14px; font-family: var(--font-serif);">
+                本手册基于 OpenCode v1.3.15 生成，命令和选项可能随版本更新而变化。使用 <code>opencode --help</code> 查看最新信息。
+            </p>
+        </main>
+    </div>
+</body>
+</html>
