@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>飞书开发方式颗粒度对比：API · CLI · MCP · SKILL</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<!-- Brand: Figma — DESIGN.md tokens applied. -->
+<!-- Fonts: Outfit (variable, approximates figmaSans), JetBrains Mono (approximates figmaMono) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;320;340;400;450;500;540;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===================================================================
+   Figma Design System Tokens
+   - Interface: #000 + #fff only
+   - Hero/accent: vibrant multi-color gradients
+   - Buttons: pill (50px) / circle (50%)
+   - Focus: dashed 2px outline
+   - Letter-spacing: negative on body, positive on mono labels
+   - Font weights: 300–700 via Outfit variable
+   =================================================================== */
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --black: #000000;
+  --white: #ffffff;
+  --glass-dark: rgba(0, 0, 0, 0.08);
+  --glass-light: rgba(255, 255, 255, 0.16);
+  --font-sans: 'Outfit', 'Noto Sans SC', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', menlo, monospace;
+  --radius-pill: 50px;
+  --radius-card: 8px;
+  --radius-sm: 6px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--white);
+  color: var(--black);
+  font-feature-settings: "kern" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection { background: rgba(0,0,0,0.12); }
+
+/* ====== NAV ====== */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 56px;
+  background: var(--white);
+  border-bottom: 1px solid var(--black);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px;
+}
+
+.nav-left { display: flex; align-items: center; gap: 24px; }
+
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none; color: var(--black);
+}
+
+.nav-logo svg { width: 24px; height: 36px; }
+
+.nav-title {
+  font-size: 16px; font-weight: 450;
+  letter-spacing: -0.14px;
+}
+
+.nav-tabs {
+  display: flex; gap: 4px;
+  position: absolute; left: 50%; transform: translateX(-50%);
+}
+
+.nav-tab {
+  padding: 6px 20px;
+  border-radius: var(--radius-pill);
+  font-size: 14px; font-weight: 400;
+  letter-spacing: -0.14px;
+  color: var(--black);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: background 0.15s;
+}
+.nav-tab:hover { background: var(--glass-dark); }
+.nav-tab:focus-visible { outline: 2px dashed var(--black); outline-offset: 2px; }
+.nav-tab.active { background: var(--black); color: var(--white); }
+
+.nav-right { display: flex; align-items: center; gap: 12px; }
+.nav-cta {
+  padding: 8px 20px 9px;
+  border-radius: var(--radius-pill);
+  background: var(--black);
+  color: var(--white);
+  font-size: 14px; font-weight: 400;
+  letter-spacing: -0.14px;
+  border: none; cursor: pointer;
+  font-family: var(--font-sans);
+  text-decoration: none;
+}
+.nav-cta:focus-visible { outline: 2px dashed var(--black); outline-offset: 2px; }
+
+/* ====== HERO — vibrant gradient (Figma signature) ====== */
+.hero {
+  margin-top: 56px;
+  padding: 120px 32px 100px;
+  background:
+    linear-gradient(135deg,
+      #0acf83 0%,
+      #a259ff 25%,
+      #f24822 50%,
+      #ff7262 65%,
+      #1abcfe 85%,
+      #0acf83 100%
+    );
+  background-size: 200% 200%;
+  animation: gradientShift 12s ease infinite;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 80%, rgba(255,255,255,0.1) 0%, transparent 50%);
+}
+
+.hero-label {
+  font-family: var(--font-mono);
+  font-size: 12px; font-weight: 400;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--white);
+  opacity: 0.85;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.hero h1 {
+  font-size: 86px; font-weight: 400;
+  line-height: 1.0;
+  letter-spacing: -1.72px;
+  color: var(--white);
+  max-width: 800px; margin: 0 auto 24px;
+  position: relative;
+}
+
+.hero-desc {
+  font-size: 20px; font-weight: 330;
+  line-height: 1.4;
+  letter-spacing: -0.14px;
+  color: var(--white);
+  opacity: 0.9;
+  max-width: 520px; margin: 0 auto 48px;
+  position: relative;
+}
+
+.hero-task-pill {
+  display: inline-flex; align-items: center; gap: 16px;
+  padding: 12px 32px;
+  background: var(--white);
+  border-radius: var(--radius-pill);
+  color: var(--black);
+  font-family: var(--font-mono);
+  font-size: 14px; font-weight: 400;
+  letter-spacing: 0.54px;
+  position: relative;
+}
+
+.hero-task-pill .arr { opacity: 0.3; }
+
+/* ====== MAIN CONTENT ====== */
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* ====== SECTION ====== */
+.section {
+  padding: 80px 0;
+  border-bottom: 1px solid var(--black);
+}
+.section:last-child { border-bottom: none; }
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 12px; font-weight: 400;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--black);
+  opacity: 0.5;
+  margin-bottom: 16px;
+}
+
+.section-heading {
+  font-size: 64px; font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.96px;
+  color: var(--black);
+  margin-bottom: 12px;
+}
+
+.section-subheading {
+  font-size: 26px; font-weight: 340;
+  line-height: 1.35;
+  letter-spacing: -0.26px;
+  color: var(--black);
+  opacity: 0.6;
+  margin-bottom: 48px;
+}
+
+/* ====== STEP LIST ====== */
+.steps { display: flex; flex-direction: column; gap: 2px; }
+
+.step {
+  border: 1px solid var(--black);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+.step:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+
+.step-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 20px;
+  background: var(--white);
+  cursor: pointer;
+}
+
+.step-num {
+  width: 24px; height: 24px;
+  border: 1.5px solid var(--black);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 540;
+  letter-spacing: -0.1px;
+  flex-shrink: 0;
+}
+
+.step-name {
+  flex: 1;
+  font-size: 16px; font-weight: 450;
+  letter-spacing: -0.14px;
+}
+
+.step-meta {
+  font-family: var(--font-mono);
+  font-size: 12px; font-weight: 400;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  opacity: 0.4;
+}
+
+.step-code {
+  padding: 20px 24px;
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 13px; font-weight: 400;
+  line-height: 1.7;
+  letter-spacing: 0;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* Syntax — minimal: just dim vs bright */
+.syn-dim { opacity: 0.4; }
+.syn-key { opacity: 0.7; }
+.syn-str { color: #0acf83; }
+.syn-url { opacity: 0.85; }
+.syn-ret { color: #1abcfe; }
+
+/* ====== STATS ROW ====== */
+.stats {
+  display: flex; gap: 1px;
+  margin-top: 40px;
+  background: var(--black);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.stat {
+  flex: 1; padding: 32px 24px;
+  background: var(--white);
+  text-align: center;
+}
+
+.stat-num {
+  font-size: 48px; font-weight: 300;
+  letter-spacing: -0.96px;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: 12px; font-weight: 400;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  opacity: 0.4;
+}
+
+/* ====== BULLET LISTS ====== */
+.bullet-list {
+  display: flex; flex-direction: column; gap: 8px;
+  margin-top: 32px;
+}
+
+.bullet {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 16px; font-weight: 340;
+  letter-spacing: -0.14px;
+  line-height: 1.45;
+}
+
+.bullet.pain {
+  background: var(--black);
+  color: var(--white);
+}
+
+.bullet.gain { background: var(--glass-dark); }
+.bullet.warn { border: 1px dashed var(--black); }
+
+.bullet-icon {
+  width: 20px; height: 20px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+  margin-top: 2px;
+}
+
+/* ====== TOKEN VISUALIZER (MCP section) ====== */
+.token-viz { margin-top: 40px; }
+
+.token-viz-title {
+  font-size: 18px; font-weight: 540;
+  letter-spacing: -0.26px;
+  margin-bottom: 8px;
+}
+
+.token-viz-desc {
+  font-size: 16px; font-weight: 320;
+  letter-spacing: -0.14px;
+  opacity: 0.5;
+  margin-bottom: 24px;
+}
+
+.bar-row {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 12px;
+}
+
+.bar-label {
+  width: 140px; text-align: right; flex-shrink: 0;
+  font-size: 13px; font-weight: 400;
+  letter-spacing: -0.1px;
+  opacity: 0.5;
+}
+
+.bar-track {
+  flex: 1; height: 32px;
+  background: var(--glass-dark);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.bar-fill {
+  height: 100%;
+  display: flex; align-items: center;
+  padding-left: 12px;
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.6px;
+  color: var(--white);
+  border-radius: 4px;
+  transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bar-fill.fill-black { background: var(--black); }
+.bar-fill.fill-gradient {
+  background: linear-gradient(90deg, #f24822, #a259ff);
+}
+.bar-fill.fill-ref {
+  background: var(--glass-dark);
+  color: var(--black);
+  opacity: 0.6;
+}
+
+.token-footnote {
+  margin-top: 16px;
+  font-size: 14px; font-weight: 320;
+  letter-spacing: -0.14px;
+  opacity: 0.4;
+  text-align: center;
+  font-style: italic;
+}
+
+/* ====== SKILL TREE ====== */
+.skill-tree {
+  padding: 24px 28px;
+  border: 1px solid var(--black);
+  border-radius: var(--radius-card);
+  font-family: var(--font-mono);
+  font-size: 13px; font-weight: 400;
+  line-height: 2.2;
+  letter-spacing: 0;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.tree-name { font-weight: 500; }
+.tree-dim { opacity: 0.35; }
+.tree-hl { opacity: 0.7; }
+
+/* ====== COMPARE TABLE ====== */
+.compare-wrap {
+  border: 1px solid var(--black);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px; font-weight: 400;
+  letter-spacing: -0.14px;
+}
+
+.compare-table thead th {
+  padding: 16px 18px;
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 400;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.compare-table tbody td {
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  vertical-align: middle;
+}
+.compare-table tbody tr:last-child td { border-bottom: none; }
+.compare-table tbody tr:hover { background: var(--glass-dark); }
+
+.method-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-weight: 540;
+  letter-spacing: -0.1px;
+}
+
+.method-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  border: 1.5px solid var(--black);
+}
+
+.rating-pill {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 12px; font-weight: 450;
+  letter-spacing: -0.1px;
+}
+.rating-pill.high { background: var(--black); color: var(--white); }
+.rating-pill.mid { background: var(--glass-dark); color: var(--black); }
+.rating-pill.low { border: 1px dashed var(--black); }
+.rating-pill.dep { border: 1px solid rgba(0,0,0,0.15); opacity: 0.5; }
+
+/* ====== COMBO CARDS ====== */
+.combo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  background: var(--black);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+
+.combo-card {
+  padding: 24px;
+  background: var(--white);
+}
+.combo-card.featured {
+  grid-column: 1 / -1;
+  background: var(--black);
+  color: var(--white);
+}
+
+.combo-name {
+  font-size: 16px; font-weight: 540;
+  letter-spacing: -0.14px;
+  margin-bottom: 6px;
+}
+
+.combo-desc {
+  font-size: 14px; font-weight: 320;
+  letter-spacing: -0.14px;
+  opacity: 0.5;
+  margin-bottom: 12px;
+}
+
+.combo-formula {
+  display: flex; align-items: center; gap: 8px;
+  flex-wrap: wrap;
+}
+
+.combo-chip {
+  padding: 4px 14px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.chip-black { background: var(--black); color: var(--white); }
+.chip-outline { border: 1px solid currentColor; }
+.chip-white { background: var(--white); color: var(--black); }
+.chip-glass { background: var(--glass-light); color: var(--white); }
+
+.combo-op {
+  font-size: 16px; font-weight: 300;
+  opacity: 0.3;
+}
+.combo-card.featured .combo-op { color: var(--white); }
+
+/* Code block in combo section */
+.combo-code {
+  margin-top: 8px;
+  padding: 16px 20px;
+  background: var(--black);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 13px; font-weight: 400;
+  line-height: 1.8;
+  letter-spacing: 0;
+  color: var(--white);
+  white-space: pre;
+  overflow-x: auto;
+}
+.combo-card.featured .combo-code { background: rgba(255,255,255,0.08); }
+
+/* ====== GUIDE SECTION ====== */
+.recommendation {
+  display: flex; align-items: center; gap: 20px;
+  padding: 24px 28px;
+  background: var(--black);
+  color: var(--white);
+  border-radius: var(--radius-card);
+  margin-bottom: 40px;
+}
+
+.rec-check {
+  width: 40px; height: 40px; flex-shrink: 0;
+  border: 2px solid var(--white);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 700;
+}
+
+.rec-text {
+  font-size: 20px; font-weight: 340;
+  letter-spacing: -0.14px;
+  line-height: 1.4;
+}
+.rec-text strong { font-weight: 540; }
+
+.guide-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px; font-weight: 400;
+  letter-spacing: -0.14px;
+  margin-bottom: 48px;
+}
+
+.guide-table th {
+  padding: 14px 18px;
+  background: var(--glass-dark);
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 400;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  text-align: left;
+}
+.guide-table th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+.guide-table th:last-child { border-radius: 0 var(--radius-sm) 0 0; }
+
+.guide-table td {
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.guide-table tbody tr:last-child td { border-bottom: none; }
+
+/* ====== METAPHOR ====== */
+.metaphor {
+  padding: 48px;
+  background: var(--glass-dark);
+  border-radius: var(--radius-card);
+}
+
+.metaphor-label {
+  font-family: var(--font-mono);
+  font-size: 12px; font-weight: 400;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  opacity: 0.4;
+  margin-bottom: 32px;
+}
+
+.metaphor-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  background: var(--black);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+
+.metaphor-card {
+  padding: 32px 16px;
+  background: var(--white);
+  text-align: center;
+}
+
+.metaphor-icon { font-size: 36px; margin-bottom: 12px; }
+
+.metaphor-name {
+  font-size: 18px; font-weight: 540;
+  letter-spacing: -0.26px;
+  margin-bottom: 4px;
+}
+
+.metaphor-sub {
+  font-size: 14px; font-weight: 320;
+  letter-spacing: -0.14px;
+  opacity: 0.4;
+}
+
+.metaphor-quote {
+  font-size: 20px; font-weight: 330;
+  line-height: 1.6;
+  letter-spacing: -0.14px;
+  opacity: 0.7;
+}
+
+/* ====== FOOTER ====== */
+footer {
+  padding: 48px 32px;
+  background: var(--black);
+  color: var(--white);
+  text-align: center;
+}
+
+.footer-text {
+  font-size: 14px; font-weight: 320;
+  letter-spacing: -0.14px;
+  opacity: 0.4;
+}
+
+.footer-brand {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin-bottom: 12px;
+}
+
+.footer-brand svg { opacity: 0.6; }
+
+/* ====== SCROLL ANIMATIONS ====== */
+.reveal {
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 768px) {
+  nav { padding: 0 16px; }
+  .nav-tabs { display: none; }
+  .hero { padding: 80px 20px 64px; }
+  .hero h1 { font-size: 48px; letter-spacing: -0.96px; }
+  .hero-desc { font-size: 16px; }
+  main { padding: 0 20px; }
+  .section { padding: 48px 0; }
+  .section-heading { font-size: 36px; letter-spacing: -0.72px; }
+  .section-subheading { font-size: 20px; margin-bottom: 32px; }
+  .stats { flex-direction: column; }
+  .stat-num { font-size: 36px; }
+  .combo-grid { grid-template-columns: 1fr; }
+  .metaphor-grid { grid-template-columns: repeat(2, 1fr); }
+  .metaphor { padding: 28px; }
+  .bar-label { width: 100px; font-size: 11px; }
+  .compare-table { font-size: 12px; }
+  .compare-table thead th { font-size: 10px; padding: 12px 10px; }
+  .compare-table tbody td { padding: 10px; }
+}
+
+@media (max-width: 480px) {
+  .hero h1 { font-size: 36px; }
+  .section-heading { font-size: 28px; }
+  .metaphor-grid { grid-template-columns: 1fr 1fr; }
+  .hero-task-pill { font-size: 12px; padding: 10px 20px; gap: 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ====== NAV ====== -->
+<nav>
+  <div class="nav-left">
+    <a href="#" class="nav-logo">
+      <svg viewBox="0 0 38 57" fill="none">
+        <path d="M19 28.5a9.5 9.5 0 1 1 0-19h9.5v19H19Z" fill="#FF7262"/>
+        <path d="M0 9.5A9.5 9.5 0 0 1 9.5 0H19v19H9.5A9.5 9.5 0 0 1 0 9.5Z" fill="#F24822"/>
+        <path d="M0 28.5A9.5 9.5 0 0 1 9.5 19H19v19H9.5A9.5 9.5 0 0 1 0 28.5Z" fill="#A259FF"/>
+        <path d="M0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 0 1-19 0Z" fill="#0ACF83"/>
+        <path d="M19 38h9.5a9.5 9.5 0 0 1 0 19H19V38Z" fill="#1ABCFE"/>
+      </svg>
+      <span class="nav-title">颗粒度对比</span>
+    </a>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="scrollToSection('hero')">概览</button>
+    <button class="nav-tab" onclick="scrollToSection('api')">API</button>
+    <button class="nav-tab" onclick="scrollToSection('cli')">CLI</button>
+    <button class="nav-tab" onclick="scrollToSection('mcp')">MCP</button>
+    <button class="nav-tab" onclick="scrollToSection('skill')">SKILL</button>
+    <button class="nav-tab" onclick="scrollToSection('compare')">对比</button>
+  </div>
+  <div class="nav-right">
+    <a href="#guide" class="nav-cta">选型指南</a>
+  </div>
+</nav>
+
+<!-- ====== HERO ====== -->
+<header class="hero" id="hero">
+  <div class="hero-label">FEISHU DEVELOPMENT · GRANULARITY COMPARISON</div>
+  <h1>同一个任务<br>四种打开方式</h1>
+  <p class="hero-desc">
+    开发者在接入飞书等平台时，常纠结于用 API、CLI、MCP 还是 SKILL。用同一个真实任务走一遍四种方式，帮你建立选型直觉。
+  </p>
+  <div class="hero-task-pill">
+    B站评论 <span class="arr">→</span> 飞书表格 <span class="arr">→</span> 群通知
+  </div>
+</header>
+
+<main>
+
+  <!-- ====== API ====== -->
+  <section class="section reveal" id="api">
+    <div class="section-label">01 / API</div>
+    <h2 class="section-heading">最细颗粒度</h2>
+    <p class="section-subheading">每次调用只做一件事，一个 HTTP 请求 = 一个原子操作。</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-head"><span class="step-num">1</span><span class="step-name">创建电子表格</span><span class="step-meta">1x API</span></div>
+        <div class="step-code"><span class="syn-key">POST</span> <span class="syn-url">/open-apis/sheets/v3/spreadsheets</span>
+<span class="syn-dim">Authorization: Bearer t-xxx</span>
+
+{
+  <span class="syn-str">"title"</span>: <span class="syn-str">"B站视频评论 - BV1ooDyBmE6v"</span>
+}
+<span class="syn-ret">→ 返回 spreadsheet_token</span></div>
+      </div>
+
+      <div class="step">
+        <div class="step-head"><span class="step-num">2</span><span class="step-name">写入表头</span><span class="step-meta">1x API</span></div>
+        <div class="step-code"><span class="syn-key">PUT</span> <span class="syn-url">/open-apis/sheets/v2/spreadsheets/{token}/values</span>
+<span class="syn-dim">Range: Sheet1!A1:H1</span>
+
+Body: [[<span class="syn-str">"序号","用户名","等级","评论内容","点赞数","发布时间","回复数","是否一级"</span>]]</div>
+      </div>
+
+      <div class="step">
+        <div class="step-head"><span class="step-num">3</span><span class="step-name">批量写入数据</span><span class="step-meta">1x API</span></div>
+        <div class="step-code"><span class="syn-key">PUT</span> <span class="syn-url">/open-apis/sheets/v2/spreadsheets/{token}/values</span>
+<span class="syn-dim">Range: Sheet1!A2:H51</span>
+
+Body: [[<span class="syn-str">1,"lmpker",6,"不错",79,"2026/04/12",8,"yes"</span>], ...]</div>
+      </div>
+
+      <div class="step">
+        <div class="step-head"><span class="step-num">4</span><span class="step-name">设置列宽</span><span class="step-meta">1x API</span></div>
+        <div class="step-code"><span class="syn-key">PUT</span> <span class="syn-url">/open-apis/sheets/v2/spreadsheets/{token}/dimension_range</span>
+Body: {<span class="syn-str">"dimension"</span>: {...}, <span class="syn-str">"dimensionProperties"</span>: {<span class="syn-str">"fixedSize"</span>: 20}}</div>
+      </div>
+
+      <div class="step">
+        <div class="step-head"><span class="step-num">5</span><span class="step-name">获取群聊信息</span><span class="step-meta">1x API</span></div>
+        <div class="step-code"><span class="syn-key">GET</span> <span class="syn-url">/open-apis/im/v1/chats?page_size=20&query_type=group</span>
+<span class="syn-ret">→ 返回 chat_id</span></div>
+      </div>
+
+      <div class="step">
+        <div class="step-head"><span class="step-num">6</span><span class="step-name">发送飞书消息</span><span class="step-meta">1x API</span></div>
+        <div class="step-code"><span class="syn-key">POST</span> <span class="syn-url">/open-apis/im/v1/messages?receive_id_type=chat_id</span>
+Body: {
+  <span class="syn-str">"receive_id"</span>: <span class="syn-str">"oc_xxxx"</span>,
+  <span class="syn-str">"msg_type"</span>: <span class="syn-str">"interactive"</span>,
+  <span class="syn-str">"content"</span>: <span class="syn-str">"{...卡片消息 JSON...}"</span>
+}</div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-num">6</div><div class="stat-label">API CALLS</div></div>
+      <div class="stat"><div class="stat-num">0</div><div class="stat-label">AI TOKEN COST</div></div>
+    </div>
+
+    <div class="bullet-list">
+      <div class="bullet pain"><span class="bullet-icon">×</span>处理 OAuth 鉴权 token 刷新</div>
+      <div class="bullet pain"><span class="bullet-icon">×</span>手动管理 spreadsheet_token、sheet_id、chat_id 等中间状态</div>
+      <div class="bullet pain"><span class="bullet-icon">×</span>拼接请求 URL、构造 JSON body、解析响应</div>
+      <div class="bullet pain"><span class="bullet-icon">×</span>处理分页、限流、错误重试</div>
+    </div>
+  </section>
+
+  <!-- ====== CLI ====== -->
+  <section class="section reveal" id="cli">
+    <div class="section-label">02 / CLI</div>
+    <h2 class="section-heading">中颗粒度</h2>
+    <p class="section-subheading">一条 CLI 命令封装了多次 API 调用 + 状态管理 + 错误处理。</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-head"><span class="step-num">1</span><span class="step-name">创建表格并写入数据</span><span class="step-meta">2x CLI</span></div>
+        <div class="step-code"><span class="syn-dim"># +create 内部：创建表格 API + 设置列宽 API</span>
+<span class="syn-key">lark-cli</span> sheets +create \
+  --title <span class="syn-str">"B站视频评论 - BV1ooDyBmE6v"</span> \
+  --headers <span class="syn-str">'["序号","用户名","等级","评论内容","点赞数","发布时间","回复数","是否一级"]'</span> \
+  --data <span class="syn-str">'[[1,"lmpker",6,"不错",79,"2026/04/12",8,"yes"], ...]'</span>
+
+<span class="syn-dim"># +append 内部：写入值 API（自动处理分页）</span>
+<span class="syn-key">lark-cli</span> sheets +append \
+  --spreadsheet-token <span class="syn-str">"A0StsA30qh..."</span> \
+  --sheet-id <span class="syn-str">"eb15be"</span> \
+  --range <span class="syn-str">"A52:H101"</span> \
+  --values <span class="syn-str">'[[51,...],[52,...],...]'</span></div>
+      </div>
+
+      <div class="step">
+        <div class="step-head"><span class="step-num">2</span><span class="step-name">发送飞书消息</span><span class="step-meta">1x CLI</span></div>
+        <div class="step-code"><span class="syn-dim"># 内部：查找群聊 API + 发消息 API</span>
+<span class="syn-key">lark-cli</span> im +send \
+  --chat-name <span class="syn-str">"产品群"</span> \
+  --msg <span class="syn-str">"已采集 170 条B站评论，已写入飞书表格"</span></div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-num">3</div><div class="stat-label">CLI COMMANDS</div></div>
+      <div class="stat"><div class="stat-num">~0</div><div class="stat-label">AI TOKEN COST</div></div>
+    </div>
+
+    <div class="bullet-list">
+      <div class="bullet gain"><span class="bullet-icon">✓</span>不用关心 OAuth token 刷新（lark-cli 内置处理）</div>
+      <div class="bullet gain"><span class="bullet-icon">✓</span>不用手动拼接 URL 和 JSON body（参数直接传）</div>
+      <div class="bullet gain"><span class="bullet-icon">✓</span>不用管理中间状态（--spreadsheet-token 传入即可）</div>
+    </div>
+  </section>
+
+  <!-- ====== MCP ====== -->
+  <section class="section reveal" id="mcp">
+    <div class="section-label">03 / MCP</div>
+    <h2 class="section-heading">粗颗粒度</h2>
+    <p class="section-subheading">一个 MCP tool 封装了整个业务流程，AI 只需一次调用。</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-head"><span class="step-num">T</span><span class="step-name">Tool 定义</span><span class="step-meta">JSON SCHEMA</span></div>
+        <div class="step-code">{
+  <span class="syn-str">"name"</span>: <span class="syn-str">"bilibili_comments_to_feishu"</span>,
+  <span class="syn-str">"description"</span>: <span class="syn-str">"采集B站视频评论并写入飞书表格，完成后发送群通知"</span>,
+  <span class="syn-str">"parameters"</span>: {
+    <span class="syn-str">"bv_id"</span>:       {<span class="syn-dim">"type": "string", "description": "B站视频BV号"</span>},
+    <span class="syn-str">"limit"</span>:       {<span class="syn-dim">"type": "number", "default": 100</span>},
+    <span class="syn-str">"notify_chat"</span>: {<span class="syn-dim">"type": "string", "description": "飞书群名"</span>}
+  }
+}</div>
+      </div>
+
+      <div class="step">
+        <div class="step-head"><span class="step-num">→</span><span class="step-name">AI 调用：一次搞定</span><span class="step-meta">1x MCP</span></div>
+        <div class="step-code">{
+  <span class="syn-str">"tool"</span>: <span class="syn-str">"bilibili_comments_to_feishu"</span>,
+  <span class="syn-str">"input"</span>: {
+    <span class="syn-str">"bv_id"</span>: <span class="syn-str">"BV1ooDyBmE6v"</span>,
+    <span class="syn-str">"limit"</span>: <span class="syn-ret">100</span>,
+    <span class="syn-str">"notify_chat"</span>: <span class="syn-str">"产品群"</span>
+  }
+}</div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-num">1</div><div class="stat-label">MCP CALL</div></div>
+      <div class="stat"><div class="stat-num">5K–30K+</div><div class="stat-label">TOKENS / ROUND</div></div>
+    </div>
+
+    <div class="token-viz">
+      <div class="token-viz-title">Token 隐性成本</div>
+      <div class="token-viz-desc">MCP 协议要求每轮对话都注入所有已注册 tool 的完整 schema</div>
+
+      <div class="bar-row">
+        <span class="bar-label">单个 tool</span>
+        <div class="bar-track">
+          <div class="bar-fill fill-black" style="width:3%;">~200</div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">1 个 MCP Server<br><span style="font-size:11px;opacity:0.4">20–50 tools</span></span>
+        <div class="bar-track">
+          <div class="bar-fill fill-black" style="width:30%;">5K–15K tokens</div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">多个 MCP Server<br><span style="font-size:11px;opacity:0.4">飞书+GitHub+Slack</span></span>
+        <div class="bar-track">
+          <div class="bar-fill fill-gradient" style="width:70%;">30,000+ tokens</div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label" style="font-weight:540;">普通对话上下文</span>
+        <div class="bar-track">
+          <div class="bar-fill fill-ref" style="width:100%;">4K–8K tokens</div>
+        </div>
+      </div>
+
+      <div class="token-footnote">每轮都要重复发送，无论本轮是否调用任何 tool，直接推高 API 费用</div>
+    </div>
+  </section>
+
+  <!-- ====== SKILL ====== -->
+  <section class="section reveal" id="skill">
+    <div class="section-label">04 / SKILL</div>
+    <h2 class="section-heading">编排层</h2>
+    <p class="section-subheading">SKILL 不是接口，不是协议，而是一份操作手册。告诉 AI 如何组合 CLI / MCP / API 完成任务。</p>
+
+    <div class="skill-tree"><span class="tree-name">SKILL: bilibili-comment-crawler</span>
+├── SKILL.md <span class="tree-dim">（操作手册）</span>
+│   ├── 采集：<span class="tree-hl">python3 scripts/bilibili_comments.py</span> --cookie ...
+│   ├── 创建表格：<span class="tree-hl">lark-cli sheets +create</span> --title "..." --headers ...
+│   └── 通知群聊：<span class="tree-hl">lark-cli im +send</span> --chat-name "..." --msg "..."
+├── scripts/bilibili_comments.py <span class="tree-dim">（Python 采集脚本）</span>
+│   └── 内部调用 curl → B站 API <span class="tree-dim">（3–6 次 HTTP 请求）</span>
+└── cookie.json <span class="tree-dim">（配置文件）</span></div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-num">0</div><div class="stat-label">IDLE TOKEN COST</div></div>
+      <div class="stat"><div class="stat-num">~2K</div><div class="stat-label">LOADED ONCE</div></div>
+    </div>
+
+    <div class="bullet-list">
+      <div class="bullet gain"><span class="bullet-icon">✓</span>未触发时不消耗 Token，只在匹配任务时加载 SKILL.md 到上下文</div>
+      <div class="bullet warn"><span class="bullet-icon">!</span>依赖 AI 的理解和执行能力，复杂编排可能执行出错或漏步骤</div>
+      <div class="bullet warn"><span class="bullet-icon">!</span>SKILL.md 需要人工维护，底层 CLI/API 接口变了 SKILL 也要更新</div>
+    </div>
+  </section>
+
+  <!-- ====== COMPARE ====== -->
+  <section class="section reveal" id="compare">
+    <div class="section-label">05 / COMPARISON</div>
+    <h2 class="section-heading">总览</h2>
+    <p class="section-subheading">以"B站评论 → 飞书表格"这个任务为例</p>
+
+    <div class="compare-wrap">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>方式</th>
+            <th>调用次数</th>
+            <th>AI 开销</th>
+            <th>灵活性</th>
+            <th>安全性</th>
+            <th>稳定性</th>
+            <th>开发成本</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="method-pill"><span class="method-dot"></span>API</span></td>
+            <td><strong>6 次</strong></td>
+            <td>0</td>
+            <td><span class="rating-pill high">最高</span></td>
+            <td><span class="rating-pill low">最低</span></td>
+            <td><span class="rating-pill low">最低</span></td>
+            <td><span class="rating-pill low">高</span></td>
+          </tr>
+          <tr>
+            <td><span class="method-pill"><span class="method-dot"></span>CLI</span></td>
+            <td><strong>3 条</strong></td>
+            <td>~0</td>
+            <td><span class="rating-pill high">高</span></td>
+            <td><span class="rating-pill mid">中</span></td>
+            <td><span class="rating-pill high">高</span></td>
+            <td><span class="rating-pill mid">中</span></td>
+          </tr>
+          <tr>
+            <td><span class="method-pill"><span class="method-dot"></span>MCP</span></td>
+            <td><strong>1 次</strong></td>
+            <td>5K–30K+</td>
+            <td><span class="rating-pill low">低</span></td>
+            <td><span class="rating-pill high">最高</span></td>
+            <td><span class="rating-pill high">最高</span></td>
+            <td><span class="rating-pill low">高</span></td>
+          </tr>
+          <tr>
+            <td><span class="method-pill"><span class="method-dot"></span>SKILL</span></td>
+            <td><strong>1 次</strong></td>
+            <td>~2K</td>
+            <td><span class="rating-pill high">最高</span></td>
+            <td><span class="rating-pill dep">取决于底层</span></td>
+            <td><span class="rating-pill dep">取决于底层</span></td>
+            <td><span class="rating-pill high">低</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ====== COMBO ====== -->
+  <section class="section reveal" id="combo">
+    <div class="section-label">06 / COMPOSITION</div>
+    <h2 class="section-heading">SKILL 的组合模式</h2>
+    <p class="section-subheading">SKILL 是编排层，它组合底层的能力。同一个任务可以用不同的底层实现。</p>
+
+    <div class="combo-grid">
+      <div class="combo-card featured">
+        <div class="combo-name">⭐ 最常见：SKILL = 多个 CLI</div>
+        <div class="combo-desc">CLI 命令串联，平衡灵活性和效率</div>
+        <div class="combo-formula">
+          <span class="combo-chip chip-white">SKILL</span>
+          <span class="combo-op">=</span>
+          <span class="combo-chip chip-glass">CLI</span>
+          <span class="combo-op">+</span>
+          <span class="combo-chip chip-glass">CLI</span>
+          <span class="combo-op">+</span>
+          <span class="combo-chip chip-glass">CLI</span>
+        </div>
+        <div class="combo-code"><span class="syn-dim"># SKILL: bilibili-comment-crawler</span>
+Step 1: python3 scripts/bilibili_comments.py  <span class="syn-dim"># 内部调 6 次 API</span>
+Step 2: lark-cli sheets +create ...
+Step 3: lark-cli sheets +append ...
+Step 4: lark-cli im +send ...
+<span class="syn-ret">→ 底层：3 条 CLI 命令 + 1 个脚本</span></div>
+      </div>
+
+      <div class="combo-card">
+        <div class="combo-name">SKILL = 多个 API</div>
+        <div class="combo-desc">人工写每个 curl 调用，最灵活最累</div>
+        <div class="combo-formula">
+          <span class="combo-chip chip-black">SKILL</span>
+          <span class="combo-op">=</span>
+          <span class="combo-chip chip-outline">API</span>
+          <span class="combo-op">×</span>
+          <span style="font-size:13px;opacity:0.4">N</span>
+        </div>
+      </div>
+
+      <div class="combo-card">
+        <div class="combo-name">SKILL = 1 个 MCP</div>
+        <div class="combo-desc">直接调一个 MCP tool，最省事</div>
+        <div class="combo-formula">
+          <span class="combo-chip chip-black">SKILL</span>
+          <span class="combo-op">=</span>
+          <span class="combo-chip chip-outline">MCP</span>
+        </div>
+      </div>
+
+      <div class="combo-card">
+        <div class="combo-name">混合模式</div>
+        <div class="combo-desc">灵活操作走 CLI，权限操作走 MCP</div>
+        <div class="combo-formula">
+          <span class="combo-chip chip-black">SKILL</span>
+          <span class="combo-op">=</span>
+          <span class="combo-chip chip-outline">CLI</span>
+          <span class="combo-op">+</span>
+          <span class="combo-chip chip-outline">MCP</span>
+        </div>
+      </div>
+
+      <div class="combo-card">
+        <div class="combo-name">嵌套编排</div>
+        <div class="combo-desc">高级 SKILL 编排多个子 SKILL</div>
+        <div class="combo-formula">
+          <span class="combo-chip chip-black">SKILL</span>
+          <span class="combo-op">=</span>
+          <span class="combo-chip chip-outline">SKILL</span>
+          <span class="combo-op">+</span>
+          <span class="combo-chip chip-outline">SKILL</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== GUIDE ====== -->
+  <section class="section reveal" id="guide">
+    <div class="section-label">07 / GUIDE</div>
+    <h2 class="section-heading">如何选择</h2>
+    <p class="section-subheading">一句话：默认从 SKILL + CLI 开始，除非有明确理由选其他。</p>
+
+    <div class="recommendation">
+      <div class="rec-check">✓</div>
+      <div class="rec-text"><strong>默认推荐：SKILL + CLI</strong> — SKILL 编排，CLI 执行。</div>
+    </div>
+
+    <table class="guide-table">
+      <thead>
+        <tr><th>场景</th><th>推荐</th><th>原因</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>AI 需要自由组合工具</td><td><strong>CLI</strong></td><td>管道符组合，非预置流程</td></tr>
+        <tr><td>企业部署，权限控制</td><td><strong>MCP</strong></td><td>tool 白名单，预置流程</td></tr>
+        <tr><td>多步复杂工作流</td><td><strong>SKILL + CLI</strong></td><td>SKILL 编排，CLI 执行</td></tr>
+        <tr><td>偶尔调用一个固定能力</td><td><strong>MCP</strong></td><td>一次调用搞定</td></tr>
+        <tr><td>共享给团队使用</td><td><strong>SKILL</strong></td><td>一份文档 + 脚本 = 完整能力包</td></tr>
+      </tbody>
+    </table>
+
+    <div class="metaphor">
+      <div class="metaphor-label">CORE METAPHOR</div>
+      <div class="metaphor-grid">
+        <div class="metaphor-card">
+          <div class="metaphor-icon">🧱</div>
+          <div class="metaphor-name">API</div>
+          <div class="metaphor-sub">砖块</div>
+        </div>
+        <div class="metaphor-card">
+          <div class="metaphor-icon">🏗</div>
+          <div class="metaphor-name">CLI</div>
+          <div class="metaphor-sub">预制板</div>
+        </div>
+        <div class="metaphor-card">
+          <div class="metaphor-icon">🏠</div>
+          <div class="metaphor-name">MCP</div>
+          <div class="metaphor-sub">精装房</div>
+        </div>
+        <div class="metaphor-card">
+          <div class="metaphor-icon">📋</div>
+          <div class="metaphor-name">SKILL</div>
+          <div class="metaphor-sub">施工方案</div>
+        </div>
+      </div>
+      <div class="metaphor-quote">
+        砖块最灵活但最累，精装房最省事但最难改。<br>
+        施工方案指挥用哪些材料、按什么顺序组装——可以同时用砖块和预制板。
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ====== FOOTER (dark, Figma style) ====== -->
+<footer>
+  <div class="footer-brand">
+    <svg width="18" height="27" viewBox="0 0 38 57" fill="none">
+      <path d="M19 28.5a9.5 9.5 0 1 1 0-19h9.5v19H19Z" fill="#FF7262"/>
+      <path d="M0 9.5A9.5 9.5 0 0 1 9.5 0H19v19H9.5A9.5 9.5 0 0 1 0 9.5Z" fill="#F24822"/>
+      <path d="M0 28.5A9.5 9.5 0 0 1 9.5 19H19v19H9.5A9.5 9.5 0 0 1 0 28.5Z" fill="#A259FF"/>
+      <path d="M0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 0 1-19 0Z" fill="#0ACF83"/>
+      <path d="M19 38h9.5a9.5 9.5 0 0 1 0 19H19V38Z" fill="#1ABCFE"/>
+    </svg>
+  </div>
+  <div class="footer-text">飞书开发方式颗粒度对比 — API · CLI · MCP · SKILL</div>
+</footer>
+
+<script>
+// Scroll reveal
+const reveals = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+reveals.forEach(r => revealObserver.observe(r));
+
+// Nav tab active state
+function scrollToSection(id) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+const navTabs = document.querySelectorAll('.nav-tab');
+const sectionEls = document.querySelectorAll('.section[id], .hero');
+
+const sectionObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      navTabs.forEach(tab => {
+        const target = tab.getAttribute('onclick')?.match(/'(\w+)'/)?.[1];
+        tab.classList.toggle('active', target === id);
+      });
+    }
+  });
+}, { rootMargin: '-40% 0px -50% 0px' });
+
+sectionEls.forEach(s => sectionObserver.observe(s));
+
+// Animate token bars on viewport entry
+const tokenViz = document.querySelector('.token-viz');
+if (tokenViz) {
+  const bars = tokenViz.querySelectorAll('.bar-fill');
+  bars.forEach(b => { b.style.width = '0%'; });
+  const tObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const fills = [3, 30, 70, 100];
+        bars.forEach((b, i) => {
+          setTimeout(() => { b.style.width = fills[i] + '%'; }, i * 150);
+        });
+        tObs.disconnect();
+      }
+    });
+  }, { threshold: 0.3 });
+  tObs.observe(tokenViz);
+}
+</script>
+</body>
+</html>
