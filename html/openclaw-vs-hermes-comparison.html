@@ -357,15 +357,23 @@
       background: var(--accent-hm);
       display: inline-block;
     }
-    .arch-box pre {
+    .arch-box    pre {
       background: rgba(0,0,0,0.3);
-      padding: 1rem;
+      padding: 1.25rem 1.5rem 1.25rem 2.6rem;
       border-radius: 8px;
-      font-size: 0.78rem;
-      line-height: 1.65;
       overflow-x: auto;
-      font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace;
-      color: #aeaeb2;
+      margin: 1.5rem 0;
+      position: relative;
+    }
+    pre::before {
+      content: '❯';
+      position: absolute;
+      top: 1.25rem;
+      left: 1rem;
+      color: #4ade80;
+      font-size: 0.875rem;
+      font-weight: 600;
+      line-height: 1.7;
     }
     .arch-diff {
       margin-top: 1.5rem;
