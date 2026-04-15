@@ -17,7 +17,23 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--color-bg); color: var(--color-text); line-height: 1.6; font-size: 16px; }
     .container { display: flex; max-width: 1400px; margin: 0 auto; }
-    .sidebar { width: 260px; padding: 1.5rem; overflow-y: auto; background: #fff; border-right: 1px solid var(--color-border); }
+    .sidebar {
+      width: 280px;
+      padding: 1.5rem;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--color-border);
+      background: var(--color-sidebar-bg);
+      z-index: 1000;
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: none;
+    }
     .sidebar h2 { font-size: 0.75rem; font-weight: 600; color: var(--color-gray); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; }
     .sidebar a { display: block; padding: 0.5rem 0.75rem; color: var(--color-gray); text-decoration: none; font-size: 0.875rem; border-radius: 6px; transition: all 0.15s; }
     .sidebar a:hover { background: rgba(94,106,210,0.1); color: var(--color-accent); }
@@ -65,11 +81,6 @@
     }
     .drawer-toggle { background: #fff; }
     
-    .sidebar {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-    }
     .sidebar-back {
       display: flex;
       align-items: center;
