@@ -105,6 +105,191 @@ function generateToc(markdown) {
   return toc;
 }
 
+// 共享的粘性标题 + 返回按钮 + 导航 CSS（桌面端常驻侧边栏 + 移动端抽屉）
+function sharedDrawerCss() {
+  return `
+    /* 桌面端：菜单按钮和遮罩层隐藏 */
+    .drawer-toggle { display: none; }
+    .overlay { display: none; }
+    /* 粘性标题 */
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--color-bg, #fff);
+      padding: 12px 1.5rem;
+      margin: 0 -4rem 1.5rem;
+      border-bottom: 1px solid var(--color-border);
+      display: none;
+    }
+    .sticky-header.visible { display: block; }
+    .sticky-header h1 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin: 0;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }`;
+}
+
+// 桌面端侧边栏：sticky 常驻
+function sharedSidebarOverrides() {
+  return `
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+    .sidebar-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      margin-bottom: 1rem;
+      color: #666;
+      text-decoration: none;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      border-radius: 8px;
+      border: 1px solid var(--color-border);
+      transition: all 0.2s;
+    }
+    .sidebar-back:hover {
+      color: var(--color-accent, #333);
+      border-color: var(--color-accent, #333);
+    }
+    .sidebar nav { display: flex; flex-direction: column; gap: 2px; }`;
+}
+
+// 移动端响应式：抽屉菜单 + 菜单按钮 + 遮罩层
+function sharedMobileCss() {
+  return `
+    @media (max-width: 768px) {
+      .container { flex-direction: column; }
+      /* 移动端：侧边栏变为抽屉 */
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 280px;
+        height: 100vh;
+        z-index: 1000;
+        padding: 1.5rem;
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: none;
+      }
+      .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 4px 0 24px rgba(0,0,0,0.1);
+      }
+      /* 移动端：显示菜单按钮 */
+      .drawer-toggle {
+        display: flex;
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        z-index: 1100;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        border: 1px solid var(--color-border);
+        background: var(--color-bg, #fff);
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        transition: all 0.2s;
+      }
+      .drawer-toggle:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+      .drawer-toggle svg { transition: transform 0.3s ease; }
+      .drawer-toggle.active svg { transform: rotate(180deg); }
+      /* 移动端：显示遮罩层 */
+      .overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.2);
+        z-index: 999;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+      }
+      .overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      /* 移动端粘性标题：左侧留出菜单按钮空间 */
+      .sticky-header { margin: 0 -1.5rem 1rem; padding: 12px 1rem 12px 64px; }
+      .main { padding: 2.5rem 1.5rem 2rem; }
+      h1 { font-size: 1.75rem; }
+      h2 { font-size: 1.375rem; }
+      pre { padding: 1rem; font-size: 0.8125rem; }
+      table { font-size: 0.8125rem; display: block; overflow-x: auto; }
+      th, td { padding: 0.5rem; min-width: 60px; }
+    }
+    @media (max-width: 480px) {
+      .main { padding: 1.25rem 1rem; }
+      h1 { font-size: 1.5rem; }
+      h2 { font-size: 1.25rem; }
+      pre { padding: 0.75rem; font-size: 0.75rem; border-radius: 6px; }
+      code { font-size: 0.8125rem; }
+      table { font-size: 0.75rem; }
+    }`;
+}
+
+// 共享的 HTML（抽屉按钮 + 遮罩层 + 返回按钮 + JS）
+function sharedDrawerHtml() {
+  return `
+  <button class="drawer-toggle" id="drawerToggle" onclick="toggleDrawer()" title="打开目录">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <div class="overlay" id="overlay" onclick="toggleDrawer()"></div>
+  <script>
+    function toggleDrawer() {
+      var s = document.querySelector('.sidebar');
+      var o = document.getElementById('overlay');
+      var t = document.getElementById('drawerToggle');
+      s.classList.toggle('open');
+      o.classList.toggle('active');
+      t.classList.toggle('active');
+    }
+    // 点击侧边栏链接后自动关闭抽屉
+    document.querySelectorAll('.sidebar nav a').forEach(function(a) {
+      a.addEventListener('click', function() {
+        if (document.querySelector('.sidebar').classList.contains('open')) toggleDrawer();
+      });
+    });
+    // 粘性标题
+    (function() {
+      var h1el = document.querySelector('.main > h1');
+      if (!h1el) return;
+      var title = h1el.textContent;
+      var header = document.createElement('div');
+      header.className = 'sticky-header';
+      header.innerHTML = '<h1>' + title + '</h1>';
+      h1el.parentNode.insertBefore(header, h1el.nextSibling);
+      window.addEventListener('scroll', function() {
+        var rect = h1el.getBoundingClientRect();
+        header.classList.toggle('visible', rect.bottom < 0);
+      }, { passive: true });
+    })();
+  </script>`;
+}
+
+// 返回按钮 HTML
+function sidebarBackLink() {
+  return `<a href="./index.html" class="sidebar-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        返回文档列表
+      </a>`;
+}
+
+// favicon
+const favicon = '<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect rx=%2212%22 width=%22100%22 height=%22100%22 fill=%22%231a1a2e%22/><text x=%2250%22 y=%2268%22 font-size=%2255%22 font-family=%22monospace%22 font-weight=%22bold%22 text-anchor=%22middle%22 fill=%22%2300d4aa%22>&gt;_</text></svg>">';
+
 // Claude 风格模板
 function claudeTemplate(content, toc, title) {
   const tocHtml = toc.map(item => {
@@ -118,6 +303,7 @@ function claudeTemplate(content, toc, title) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${title} - Claude Style</title>
+  ${favicon}
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -139,10 +325,7 @@ function claudeTemplate(content, toc, title) {
     .container { display: flex; max-width: 1400px; margin: 0 auto; }
     .sidebar {
       width: 280px;
-      padding: 2rem 1.5rem;
-      position: sticky;
-      top: 0;
-      height: 100vh;
+      padding: 1.5rem;
       overflow-y: auto;
       border-right: 1px solid var(--color-border);
       background: #fff;
@@ -157,109 +340,54 @@ function claudeTemplate(content, toc, title) {
     }
     .sidebar a {
       display: block;
-      padding: 0.5rem 0;
+      padding: 0.4rem 0.75rem;
       color: #666;
       text-decoration: none;
-      font-size: 0.9rem;
-      border-left: 2px solid transparent;
-      padding-left: 0.75rem;
-      margin-left: -0.75rem;
-      transition: all 0.2s;
+      font-size: 0.875rem;
+      border-radius: 6px;
+      transition: all 0.15s;
     }
     .sidebar a:hover {
       color: var(--color-accent);
-      border-left-color: var(--color-accent);
+      background: rgba(0,0,0,0.03);
     }
     .main {
       flex: 1;
-      padding: 3rem 4rem;
+      padding: 3.75rem 4rem 3rem;
       max-width: 900px;
     }
-    h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 1.5rem;
-      color: var(--color-text);
-      letter-spacing: -0.02em;
-    }
-    h2 {
-      font-size: 1.75rem;
-      font-weight: 600;
-      margin-top: 2.5rem;
-      margin-bottom: 1rem;
-      color: var(--color-text);
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid var(--color-accent);
-    }
-    h3 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-top: 2rem;
-      margin-bottom: 0.75rem;
-      color: var(--color-text);
-    }
+    h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--color-text); letter-spacing: -0.02em; }
+    h2 { font-size: 1.75rem; font-weight: 600; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--color-text); padding-bottom: 0.5rem; border-bottom: 2px solid var(--color-accent); }
+    h3 { font-size: 1.25rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--color-text); }
     p { margin-bottom: 1rem; }
-    code {
-      font-family: 'SF Mono', Monaco, monospace;
-      background: var(--color-code-bg);
-      padding: 0.2rem 0.4rem;
-      border-radius: 4px;
-      font-size: 0.9em;
-      color: var(--color-accent);
-    }
-    pre {
-      background: var(--color-code-bg);
-      padding: 1.25rem;
-      border-radius: 8px;
-      overflow-x: auto;
-      margin: 1.5rem 0;
-      border-left: 4px solid var(--color-accent);
-    }
-    pre code {
-      background: none;
-      padding: 0;
-      color: var(--color-text);
-      font-size: 0.875rem;
-      line-height: 1.7;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1.5rem 0;
-      font-size: 0.9rem;
-    }
-    th, td {
-      padding: 0.75rem;
-      text-align: left;
-      border-bottom: 1px solid var(--color-border);
-    }
-    th {
-      font-weight: 600;
-      background: var(--color-accent-light);
-      color: var(--color-accent);
-    }
-    blockquote {
-      border-left: 4px solid var(--color-accent);
-      padding-left: 1rem;
-      margin: 1.5rem 0;
-      color: #666;
-      font-style: italic;
-    }
+    code { font-family: 'SF Mono', Monaco, monospace; background: var(--color-code-bg); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.9em; color: var(--color-accent); }
+    pre { background: var(--color-code-bg); padding: 1.25rem; border-radius: 8px; overflow-x: auto; margin: 1.5rem 0; border-left: 4px solid var(--color-accent); }
+    pre code { background: none; padding: 0; color: var(--color-text); font-size: 0.875rem; line-height: 1.7; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem; }
+    th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--color-border); }
+    th { font-weight: 600; background: var(--color-accent-light); color: var(--color-accent); }
+    blockquote { border-left: 4px solid var(--color-accent); padding-left: 1rem; margin: 1.5rem 0; color: #666; font-style: italic; }
     ul { margin: 1rem 0; padding-left: 1.5rem; }
     li { margin: 0.5rem 0; }
     hr { border: none; border-top: 1px solid var(--color-border); margin: 2rem 0; }
     a { color: var(--color-accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
+    ${sharedDrawerCss()}
+    .drawer-toggle { background: #fff; }
+    ${sharedSidebarOverrides()}
+    ${sharedMobileCss()}
   </style>
 </head>
 <body>
   <div class="container">
     <aside class="sidebar">
+      ${sidebarBackLink()}
       <h2>目录</h2>
       <nav>${tocHtml}</nav>
     </aside>
     <main class="main">${content}</main>
   </div>
+  ${sharedDrawerHtml()}
 </body>
 </html>`;
 }
@@ -277,6 +405,7 @@ function figmaTemplate(content, toc, title) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${title} - Figma Style</title>
+  ${favicon}
   <style>
     :root {
       --color-bg: #ffffff;
@@ -286,124 +415,47 @@ function figmaTemplate(content, toc, title) {
       --color-code-bg: #f5f5f5;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--color-bg);
-      color: var(--color-text);
-      line-height: 1.5;
-      font-size: 16px;
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--color-bg); color: var(--color-text); line-height: 1.5; font-size: 16px; }
     .container { display: flex; max-width: 1400px; margin: 0 auto; }
-    .sidebar {
-      width: 260px;
-      padding: 2rem 1.5rem;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow-y: auto;
-      background: #fff;
-      border-right: 1px solid var(--color-border);
-    }
-    .sidebar h2 {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: #000;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 1rem;
-    }
-    .sidebar a {
-      display: block;
-      padding: 0.5rem 1rem;
-      color: #666;
-      text-decoration: none;
-      font-size: 0.875rem;
-      border-radius: 50px;
-      margin-bottom: 0.25rem;
-      transition: all 0.15s;
-    }
-    .sidebar a:hover {
-      background: #000;
-      color: #fff;
-    }
-    .main {
-      flex: 1;
-      padding: 3rem 4rem;
-      max-width: 900px;
-    }
-    h1 {
-      font-size: 3rem;
-      font-weight: 700;
-      margin-bottom: 1.5rem;
-      letter-spacing: -0.03em;
-    }
-    h2 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-top: 2.5rem;
-      margin-bottom: 1rem;
-    }
-    h3 {
-      font-size: 1.125rem;
-      font-weight: 600;
-      margin-top: 1.5rem;
-      margin-bottom: 0.5rem;
-    }
+    .sidebar { width: 260px; padding: 1.5rem; overflow-y: auto; background: #fff; border-right: 1px solid var(--color-border); }
+    .sidebar h2 { font-size: 0.75rem; font-weight: 700; color: #000; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; }
+    .sidebar a { display: block; padding: 0.5rem 1rem; color: #666; text-decoration: none; font-size: 0.875rem; border-radius: 50px; margin-bottom: 0.25rem; transition: all 0.15s; }
+    .sidebar a:hover { background: #000; color: #fff; }
+    .main { flex: 1; padding: 3.75rem 4rem 3rem; max-width: 900px; }
+    h1 { font-size: 3rem; font-weight: 700; margin-bottom: 1.5rem; letter-spacing: -0.03em; }
+    h2 { font-size: 1.5rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; }
+    h3 { font-size: 1.125rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; }
     p { margin-bottom: 1rem; }
-    code {
-      font-family: 'SF Mono', Monaco, monospace;
-      background: var(--color-code-bg);
-      padding: 0.2rem 0.4rem;
-      border-radius: 4px;
-      font-size: 0.875em;
-    }
-    pre {
-      background: #000;
-      color: #fff;
-      padding: 1.5rem;
-      border-radius: 8px;
-      overflow-x: auto;
-      margin: 1.5rem 0;
-    }
-    pre code {
-      background: none;
-      color: #fff;
-      font-size: 0.875rem;
-      line-height: 1.6;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1.5rem 0;
-      font-size: 0.875rem;
-    }
-    th, td {
-      padding: 0.75rem;
-      text-align: left;
-      border-bottom: 1px solid var(--color-border);
-    }
+    code { font-family: 'SF Mono', Monaco, monospace; background: var(--color-code-bg); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.875em; }
+    pre { background: #000; color: #fff; padding: 1.5rem; border-radius: 8px; overflow-x: auto; margin: 1.5rem 0; }
+    pre code { background: none; color: #fff; font-size: 0.875rem; line-height: 1.6; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.875rem; }
+    th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--color-border); }
     th { font-weight: 600; background: #f9f9f9; }
-    blockquote {
-      border-left: 3px solid #000;
-      padding-left: 1rem;
-      margin: 1.5rem 0;
-      font-style: italic;
-    }
+    blockquote { border-left: 3px solid #000; padding-left: 1rem; margin: 1.5rem 0; font-style: italic; }
     ul { margin: 1rem 0; padding-left: 1.5rem; }
     li { margin: 0.5rem 0; }
     hr { border: none; border-top: 1px solid var(--color-border); margin: 2rem 0; }
     a { color: #000; text-decoration: underline; text-underline-offset: 3px; }
     a:hover { color: var(--color-accent); }
+    ${sharedDrawerCss()}
+    .drawer-toggle { background: #fff; }
+    ${sharedSidebarOverrides()}
+    .sidebar-back { color: #666; }
+    .sidebar-back:hover { color: var(--color-accent); border-color: var(--color-accent); }
+    ${sharedMobileCss()}
   </style>
 </head>
 <body>
   <div class="container">
     <aside class="sidebar">
+      ${sidebarBackLink()}
       <h2>Contents</h2>
       <nav>${tocHtml}</nav>
     </aside>
     <main class="main">${content}</main>
   </div>
+  ${sharedDrawerHtml()}
 </body>
 </html>`;
 }
@@ -421,6 +473,7 @@ function spacexTemplate(content, toc, title) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${title} - SpaceX Style</title>
+  ${favicon}
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap');
     :root {
@@ -430,150 +483,53 @@ function spacexTemplate(content, toc, title) {
       --color-border: rgba(240,240,250,0.2);
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Rajdhani', sans-serif;
-      background: var(--color-bg);
-      color: var(--color-text);
-      line-height: 1.4;
-      font-size: 16px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
+    body { font-family: 'Rajdhani', sans-serif; background: var(--color-bg); color: var(--color-text); line-height: 1.4; font-size: 16px; text-transform: uppercase; letter-spacing: 0.05em; }
     .container { display: flex; max-width: 1400px; margin: 0 auto; }
-    .sidebar {
-      width: 300px;
-      padding: 2rem;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow-y: auto;
-      background: linear-gradient(180deg, rgba(20,20,30,0.9) 0%, rgba(0,0,0,1) 100%);
-      border-right: 1px solid var(--color-border);
-    }
-    .sidebar h2 {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--color-text);
-      letter-spacing: 0.1em;
-      margin-bottom: 1.5rem;
-      opacity: 0.7;
-    }
-    .sidebar a {
-      display: block;
-      padding: 0.75rem 0;
-      color: rgba(240,240,250,0.6);
-      text-decoration: none;
-      font-size: 0.8rem;
-      letter-spacing: 0.08em;
-      transition: color 0.3s;
-      border-bottom: 1px solid rgba(240,240,250,0.1);
-    }
+    .sidebar { width: 300px; padding: 1.5rem; overflow-y: auto; background: linear-gradient(180deg, rgba(20,20,30,0.9) 0%, rgba(0,0,0,1) 100%); border-right: 1px solid var(--color-border); }
+    .sidebar h2 { font-size: 0.875rem; font-weight: 600; color: var(--color-text); letter-spacing: 0.1em; margin-bottom: 1.5rem; opacity: 0.7; }
+    .sidebar a { display: block; padding: 0.75rem 0; color: rgba(240,240,250,0.6); text-decoration: none; font-size: 0.8rem; letter-spacing: 0.08em; transition: color 0.3s; border-bottom: 1px solid rgba(240,240,250,0.1); }
     .sidebar a:hover { color: var(--color-text); }
-    .main {
-      flex: 1;
-      padding: 4rem;
-      max-width: 1000px;
-      background: radial-gradient(ellipse at top, rgba(30,30,50,0.5) 0%, transparent 50%);
-    }
-    h1 {
-      font-size: 3rem;
-      font-weight: 700;
-      margin-bottom: 2rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-    h2 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-top: 3rem;
-      margin-bottom: 1rem;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: rgba(240,240,250,0.9);
-    }
-    h3 {
-      font-size: 1.125rem;
-      font-weight: 500;
-      margin-top: 2rem;
-      margin-bottom: 0.75rem;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: rgba(240,240,250,0.8);
-    }
-    p {
-      margin-bottom: 1.25rem;
-      text-transform: none;
-      letter-spacing: normal;
-      line-height: 1.6;
-      color: rgba(240,240,250,0.8);
-    }
-    code {
-      font-family: 'SF Mono', monospace;
-      background: rgba(240,240,250,0.1);
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.85em;
-      text-transform: none;
-      letter-spacing: normal;
-      color: var(--color-text);
-    }
-    pre {
-      background: rgba(240,240,250,0.05);
-      border: 1px solid var(--color-border);
-      padding: 1.5rem;
-      border-radius: 8px;
-      overflow-x: auto;
-      margin: 1.5rem 0;
-    }
-    pre code {
-      background: none;
-      font-size: 0.85rem;
-      line-height: 1.7;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1.5rem 0;
-      font-size: 0.875rem;
-      text-transform: none;
-      letter-spacing: normal;
-    }
-    th, td {
-      padding: 0.875rem;
-      text-align: left;
-      border-bottom: 1px solid var(--color-border);
-    }
-    th {
-      font-weight: 600;
-      color: var(--color-text);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
+    .main { flex: 1; padding: 3.75rem 4rem 3rem; max-width: 1000px; background: radial-gradient(ellipse at top, rgba(30,30,50,0.5) 0%, transparent 50%); }
+    h1 { font-size: 3rem; font-weight: 700; margin-bottom: 2rem; letter-spacing: 0.08em; text-transform: uppercase; }
+    h2 { font-size: 1.5rem; font-weight: 600; margin-top: 3rem; margin-bottom: 1rem; letter-spacing: 0.05em; text-transform: uppercase; color: rgba(240,240,250,0.9); }
+    h3 { font-size: 1.125rem; font-weight: 500; margin-top: 2rem; margin-bottom: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; color: rgba(240,240,250,0.8); }
+    p { margin-bottom: 1.25rem; text-transform: none; letter-spacing: normal; line-height: 1.6; color: rgba(240,240,250,0.8); }
+    code { font-family: 'SF Mono', monospace; background: rgba(240,240,250,0.1); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.85em; text-transform: none; letter-spacing: normal; color: var(--color-text); }
+    pre { background: rgba(240,240,250,0.05); border: 1px solid var(--color-border); padding: 1.5rem; border-radius: 8px; overflow-x: auto; margin: 1.5rem 0; }
+    pre code { background: none; font-size: 0.85rem; line-height: 1.7; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.875rem; text-transform: none; letter-spacing: normal; }
+    th, td { padding: 0.875rem; text-align: left; border-bottom: 1px solid var(--color-border); }
+    th { font-weight: 600; color: var(--color-text); text-transform: uppercase; letter-spacing: 0.05em; }
     td { color: rgba(240,240,250,0.7); }
-    blockquote {
-      border-left: 2px solid var(--color-text);
-      padding-left: 1.5rem;
-      margin: 1.5rem 0;
-      font-style: italic;
-      text-transform: none;
-      letter-spacing: normal;
-      color: rgba(240,240,250,0.6);
-    }
+    blockquote { border-left: 2px solid var(--color-text); padding-left: 1.5rem; margin: 1.5rem 0; font-style: italic; text-transform: none; letter-spacing: normal; color: rgba(240,240,250,0.6); }
     ul { margin: 1rem 0; padding-left: 1.5rem; text-transform: none; letter-spacing: normal; }
     li { margin: 0.5rem 0; color: rgba(240,240,250,0.8); }
     hr { border: none; border-top: 1px solid var(--color-border); margin: 2.5rem 0; }
     a { color: var(--color-text); text-decoration: none; border-bottom: 1px solid rgba(240,240,250,0.3); }
     a:hover { border-bottom-color: var(--color-text); }
+    ${sharedDrawerCss()}
+    .drawer-toggle { background: rgba(20,20,30,0.9); border-color: var(--color-border); }
+    .drawer-toggle:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+    .drawer-toggle svg { stroke: var(--color-text); }
+    .sticky-header { background: #000; }
+    .sticky-header h1 { color: var(--color-text); }
+    ${sharedSidebarOverrides()}
+    .sidebar-back { color: rgba(240,240,250,0.6); border-color: var(--color-border); }
+    .sidebar-back:hover { color: var(--color-text); border-color: var(--color-text); }
+    .sidebar-back svg { stroke: rgba(240,240,250,0.6); }
+    ${sharedMobileCss()}
   </style>
 </head>
 <body>
   <div class="container">
     <aside class="sidebar">
+      ${sidebarBackLink()}
       <h2>Navigation</h2>
       <nav>${tocHtml}</nav>
     </aside>
     <main class="main">${content}</main>
   </div>
+  ${sharedDrawerHtml()}
 </body>
 </html>`;
 }
@@ -591,6 +547,7 @@ function vercelTemplate(content, toc, title) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${title} - Vercel Style</title>
+  ${favicon}
   <style>
     :root {
       --color-bg: #ffffff;
@@ -600,124 +557,45 @@ function vercelTemplate(content, toc, title) {
       --color-code-bg: #fafafa;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-      background: var(--color-bg);
-      color: var(--color-text);
-      line-height: 1.6;
-      font-size: 16px;
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; background: var(--color-bg); color: var(--color-text); line-height: 1.6; font-size: 16px; }
     .container { display: flex; max-width: 1400px; margin: 0 auto; }
-    .sidebar {
-      width: 280px;
-      padding: 2rem 1.5rem;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow-y: auto;
-      border-right: 1px solid var(--color-border);
-      background: #fff;
-    }
-    .sidebar h2 {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--color-gray);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 1rem;
-    }
-    .sidebar a {
-      display: block;
-      padding: 0.5rem 0;
-      color: var(--color-gray);
-      text-decoration: none;
-      font-size: 0.875rem;
-      transition: color 0.15s;
-    }
+    .sidebar { width: 280px; padding: 1.5rem; overflow-y: auto; border-right: 1px solid var(--color-border); background: #fff; }
+    .sidebar h2 { font-size: 0.75rem; font-weight: 600; color: var(--color-gray); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; }
+    .sidebar a { display: block; padding: 0.5rem 0; color: var(--color-gray); text-decoration: none; font-size: 0.875rem; transition: color 0.15s; }
     .sidebar a:hover { color: var(--color-text); }
-    .main {
-      flex: 1;
-      padding: 3rem 4rem;
-      max-width: 900px;
-    }
-    h1 {
-      font-size: 3rem;
-      font-weight: 600;
-      margin-bottom: 1.5rem;
-      letter-spacing: -0.03em;
-    }
-    h2 {
-      font-size: 1.75rem;
-      font-weight: 600;
-      margin-top: 2.5rem;
-      margin-bottom: 1rem;
-      letter-spacing: -0.02em;
-    }
-    h3 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-top: 1.5rem;
-      margin-bottom: 0.75rem;
-    }
+    .main { flex: 1; padding: 3.75rem 4rem 3rem; max-width: 900px; }
+    h1 { font-size: 3rem; font-weight: 600; margin-bottom: 1.5rem; letter-spacing: -0.03em; }
+    h2 { font-size: 1.75rem; font-weight: 600; margin-top: 2.5rem; margin-bottom: 1rem; letter-spacing: -0.02em; }
+    h3 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; }
     p { margin-bottom: 1rem; color: var(--color-gray); }
-    code {
-      font-family: 'SF Mono', Monaco, monospace;
-      background: var(--color-code-bg);
-      padding: 0.2rem 0.4rem;
-      border-radius: 4px;
-      font-size: 0.875em;
-      color: var(--color-text);
-    }
-    pre {
-      background: var(--color-code-bg);
-      padding: 1.25rem;
-      border-radius: 8px;
-      overflow-x: auto;
-      margin: 1.5rem 0;
-      box-shadow: 0 0 0 1px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
-    }
-    pre code {
-      background: none;
-      padding: 0;
-      font-size: 0.875rem;
-      line-height: 1.7;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1.5rem 0;
-      font-size: 0.9rem;
-      box-shadow: 0 0 0 1px rgba(0,0,0,0.08);
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    th, td {
-      padding: 0.75rem 1rem;
-      text-align: left;
-      border-bottom: 1px solid rgba(0,0,0,0.08);
-    }
+    code { font-family: 'SF Mono', Monaco, monospace; background: var(--color-code-bg); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.875em; color: var(--color-text); }
+    pre { background: var(--color-code-bg); padding: 1.25rem; border-radius: 8px; overflow-x: auto; margin: 1.5rem 0; box-shadow: 0 0 0 1px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04); }
+    pre code { background: none; padding: 0; font-size: 0.875rem; line-height: 1.7; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem; box-shadow: 0 0 0 1px rgba(0,0,0,0.08); border-radius: 8px; overflow: hidden; }
+    th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid rgba(0,0,0,0.08); }
     th { font-weight: 600; background: #fafafa; }
-    blockquote {
-      border-left: 3px solid var(--color-text);
-      padding-left: 1rem;
-      margin: 1.5rem 0;
-      color: var(--color-gray);
-    }
+    blockquote { border-left: 3px solid var(--color-text); padding-left: 1rem; margin: 1.5rem 0; color: var(--color-gray); }
     ul { margin: 1rem 0; padding-left: 1.5rem; }
     li { margin: 0.5rem 0; }
     hr { border: none; border-top: 1px solid var(--color-border); margin: 2rem 0; }
     a { color: var(--color-text); text-decoration: underline; text-underline-offset: 2px; }
     a:hover { text-decoration-thickness: 2px; }
+    ${sharedDrawerCss()}
+    .drawer-toggle { background: #fff; }
+    ${sharedSidebarOverrides()}
+    ${sharedMobileCss()}
   </style>
 </head>
 <body>
   <div class="container">
     <aside class="sidebar">
+      ${sidebarBackLink()}
       <h2>Documentation</h2>
       <nav>${tocHtml}</nav>
     </aside>
     <main class="main">${content}</main>
   </div>
+  ${sharedDrawerHtml()}
 </body>
 </html>`;
 }
@@ -735,6 +613,7 @@ function cursorTemplate(content, toc, title) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${title} - Cursor Style</title>
+  ${favicon}
   <style>
     :root {
       --color-bg: #0d1117;
@@ -745,128 +624,51 @@ function cursorTemplate(content, toc, title) {
       --color-code-bg: #161b22;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
-      background: var(--color-bg);
-      color: var(--color-text);
-      line-height: 1.6;
-      font-size: 16px;
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif; background: var(--color-bg); color: var(--color-text); line-height: 1.6; font-size: 16px; }
     .container { display: flex; max-width: 1400px; margin: 0 auto; }
-    .sidebar {
-      width: 300px;
-      padding: 2rem;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow-y: auto;
-      background: #0d1117;
-      border-right: 1px solid var(--color-border);
-    }
-    .sidebar h2 {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--color-gray);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 1rem;
-    }
-    .sidebar a {
-      display: block;
-      padding: 0.5rem 0;
-      color: var(--color-gray);
-      text-decoration: none;
-      font-size: 0.875rem;
-      transition: color 0.2s;
-    }
+    .sidebar { width: 300px; padding: 1.5rem; overflow-y: auto; background: #0d1117; border-right: 1px solid var(--color-border); }
+    .sidebar h2 { font-size: 0.75rem; font-weight: 600; color: var(--color-gray); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; }
+    .sidebar a { display: block; padding: 0.5rem 0; color: var(--color-gray); text-decoration: none; font-size: 0.875rem; transition: color 0.2s; }
     .sidebar a:hover { color: var(--color-accent); }
-    .main {
-      flex: 1;
-      padding: 3rem 4rem;
-      max-width: 900px;
-    }
-    h1 {
-      font-size: 2.5rem;
-      font-weight: 600;
-      margin-bottom: 1.5rem;
-      background: linear-gradient(90deg, #58a6ff, #a371f7);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    h2 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-top: 2.5rem;
-      margin-bottom: 1rem;
-      color: var(--color-text);
-      border-bottom: 1px solid var(--color-border);
-      padding-bottom: 0.5rem;
-    }
-    h3 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-top: 1.5rem;
-      margin-bottom: 0.75rem;
-      color: var(--color-text);
-    }
+    .main { flex: 1; padding: 3.75rem 4rem 3rem; max-width: 900px; }
+    h1 { font-size: 2.5rem; font-weight: 600; margin-bottom: 1.5rem; background: linear-gradient(90deg, #58a6ff, #a371f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    h2 { font-size: 1.5rem; font-weight: 600; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--color-text); border-bottom: 1px solid var(--color-border); padding-bottom: 0.5rem; }
+    h3 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--color-text); }
     p { margin-bottom: 1rem; color: var(--color-gray); }
-    code {
-      font-family: 'SF Mono', Monaco, monospace;
-      background: var(--color-code-bg);
-      padding: 0.2rem 0.4rem;
-      border-radius: 6px;
-      font-size: 0.875em;
-      color: var(--color-accent);
-    }
-    pre {
-      background: var(--color-code-bg);
-      padding: 1.25rem;
-      border-radius: 12px;
-      overflow-x: auto;
-      margin: 1.5rem 0;
-      border: 1px solid var(--color-border);
-    }
-    pre code {
-      background: none;
-      padding: 0;
-      color: var(--color-text);
-      font-size: 0.875rem;
-      line-height: 1.7;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1.5rem 0;
-      font-size: 0.875rem;
-    }
-    th, td {
-      padding: 0.75rem;
-      text-align: left;
-      border-bottom: 1px solid var(--color-border);
-    }
+    code { font-family: 'SF Mono', Monaco, monospace; background: var(--color-code-bg); padding: 0.2rem 0.4rem; border-radius: 6px; font-size: 0.875em; color: var(--color-accent); }
+    pre { background: var(--color-code-bg); padding: 1.25rem; border-radius: 12px; overflow-x: auto; margin: 1.5rem 0; border: 1px solid var(--color-border); }
+    pre code { background: none; padding: 0; color: var(--color-text); font-size: 0.875rem; line-height: 1.7; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.875rem; }
+    th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--color-border); }
     th { font-weight: 600; color: var(--color-text); }
-    blockquote {
-      border-left: 4px solid var(--color-accent);
-      padding-left: 1rem;
-      margin: 1.5rem 0;
-      color: var(--color-gray);
-    }
+    blockquote { border-left: 4px solid var(--color-accent); padding-left: 1rem; margin: 1.5rem 0; color: var(--color-gray); }
     ul { margin: 1rem 0; padding-left: 1.5rem; }
     li { margin: 0.5rem 0; color: var(--color-gray); }
     hr { border: none; border-top: 1px solid var(--color-border); margin: 2rem 0; }
     a { color: var(--color-accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
+    ${sharedDrawerCss()}
+    .drawer-toggle { background: #161b22; border-color: var(--color-border); }
+    .drawer-toggle:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    .drawer-toggle svg { stroke: var(--color-text); }
+    .sticky-header { background: var(--color-bg); }
+    .sticky-header h1 { color: var(--color-text); background: none; -webkit-text-fill-color: unset; }
+    ${sharedSidebarOverrides()}
+    .sidebar-back { color: var(--color-gray); border-color: var(--color-border); }
+    .sidebar-back:hover { color: var(--color-accent); border-color: var(--color-accent); }
+    ${sharedMobileCss()}
   </style>
 </head>
 <body>
   <div class="container">
     <aside class="sidebar">
+      ${sidebarBackLink()}
       <h2>Table of Contents</h2>
       <nav>${tocHtml}</nav>
     </aside>
     <main class="main">${content}</main>
   </div>
+  ${sharedDrawerHtml()}
 </body>
 </html>`;
 }
@@ -884,6 +686,7 @@ function notionTemplate(content, toc, title) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${title} - Notion Style</title>
+  ${favicon}
   <style>
     :root {
       --color-bg: #ffffff;
@@ -894,127 +697,45 @@ function notionTemplate(content, toc, title) {
       --color-code-bg: #f6f5f4;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif;
-      background: var(--color-bg);
-      color: var(--color-text);
-      line-height: 1.5;
-      font-size: 16px;
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif; background: var(--color-bg); color: var(--color-text); line-height: 1.5; font-size: 16px; }
     .container { display: flex; max-width: 1400px; margin: 0 auto; }
-    .sidebar {
-      width: 280px;
-      padding: 2rem 1.5rem;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow-y: auto;
-      background: #fff;
-      border-right: 1px solid var(--color-border);
-    }
-    .sidebar h2 {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--color-gray);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 1rem;
-    }
-    .sidebar a {
-      display: block;
-      padding: 0.5rem 0;
-      color: var(--color-gray);
-      text-decoration: none;
-      font-size: 0.875rem;
-      transition: color 0.15s;
-    }
+    .sidebar { width: 280px; padding: 1.5rem; overflow-y: auto; background: #fff; border-right: 1px solid var(--color-border); }
+    .sidebar h2 { font-size: 0.75rem; font-weight: 600; color: var(--color-gray); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; }
+    .sidebar a { display: block; padding: 0.5rem 0; color: var(--color-gray); text-decoration: none; font-size: 0.875rem; transition: color 0.15s; }
     .sidebar a:hover { color: var(--color-text); }
-    .main {
-      flex: 1;
-      padding: 3rem 4rem;
-      max-width: 900px;
-    }
-    h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 1.5rem;
-      color: var(--color-text);
-    }
-    h2 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-top: 2.5rem;
-      margin-bottom: 1rem;
-      color: var(--color-text);
-    }
-    h3 {
-      font-size: 1.125rem;
-      font-weight: 600;
-      margin-top: 1.5rem;
-      margin-bottom: 0.75rem;
-      color: var(--color-text);
-    }
+    .main { flex: 1; padding: 3.75rem 4rem 3rem; max-width: 900px; }
+    h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--color-text); }
+    h2 { font-size: 1.5rem; font-weight: 600; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--color-text); }
+    h3 { font-size: 1.125rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--color-text); }
     p { margin-bottom: 1rem; color: var(--color-gray); }
-    code {
-      font-family: 'SF Mono', Monaco, monospace;
-      background: var(--color-code-bg);
-      padding: 0.2rem 0.4rem;
-      border-radius: 4px;
-      font-size: 0.875em;
-      color: #eb5757;
-    }
-    pre {
-      background: var(--color-code-bg);
-      padding: 1.25rem;
-      border-radius: 8px;
-      overflow-x: auto;
-      margin: 1.5rem 0;
-      border: 1px solid var(--color-border);
-    }
-    pre code {
-      background: none;
-      padding: 0;
-      color: var(--color-text);
-      font-size: 0.875rem;
-      line-height: 1.6;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1.5rem 0;
-      font-size: 0.9rem;
-      border: 1px solid var(--color-border);
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    th, td {
-      padding: 0.75rem 1rem;
-      text-align: left;
-      border-bottom: 1px solid var(--color-border);
-    }
+    code { font-family: 'SF Mono', Monaco, monospace; background: var(--color-code-bg); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.875em; color: #eb5757; }
+    pre { background: var(--color-code-bg); padding: 1.25rem; border-radius: 8px; overflow-x: auto; margin: 1.5rem 0; border: 1px solid var(--color-border); }
+    pre code { background: none; padding: 0; color: var(--color-text); font-size: 0.875rem; line-height: 1.6; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem; border: 1px solid var(--color-border); border-radius: 8px; overflow: hidden; }
+    th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--color-border); }
     th { font-weight: 600; background: var(--color-code-bg); }
-    blockquote {
-      border-left: 4px solid var(--color-accent);
-      padding-left: 1rem;
-      margin: 1.5rem 0;
-      color: var(--color-gray);
-      font-style: italic;
-    }
+    blockquote { border-left: 4px solid var(--color-accent); padding-left: 1rem; margin: 1.5rem 0; color: var(--color-gray); font-style: italic; }
     ul { margin: 1rem 0; padding-left: 1.5rem; }
     li { margin: 0.5rem 0; color: var(--color-gray); }
     hr { border: none; border-top: 1px solid var(--color-border); margin: 2rem 0; }
     a { color: var(--color-accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
+    ${sharedDrawerCss()}
+    .drawer-toggle { background: #fff; }
+    ${sharedSidebarOverrides()}
+    ${sharedMobileCss()}
   </style>
 </head>
 <body>
   <div class="container">
     <aside class="sidebar">
+      ${sidebarBackLink()}
       <h2>Contents</h2>
       <nav>${tocHtml}</nav>
     </aside>
     <main class="main">${content}</main>
   </div>
+  ${sharedDrawerHtml()}
 </body>
 </html>`;
 }
@@ -1032,6 +753,7 @@ function stripeTemplate(content, toc, title) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${title} - Stripe Style</title>
+  ${favicon}
   <style>
     :root {
       --color-bg: #ffffff;
@@ -1042,126 +764,45 @@ function stripeTemplate(content, toc, title) {
       --color-code-bg: #f6f9fc;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--color-bg);
-      color: var(--color-text);
-      line-height: 1.5;
-      font-size: 16px;
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--color-bg); color: var(--color-text); line-height: 1.5; font-size: 16px; }
     .container { display: flex; max-width: 1400px; margin: 0 auto; }
-    .sidebar {
-      width: 280px;
-      padding: 2rem 1.5rem;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow-y: auto;
-      background: #fff;
-      border-right: 1px solid var(--color-border);
-    }
-    .sidebar h2 {
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: var(--color-gray);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 1rem;
-    }
-    .sidebar a {
-      display: block;
-      padding: 0.5rem 0;
-      color: var(--color-gray);
-      text-decoration: none;
-      font-size: 0.875rem;
-      font-weight: 400;
-      transition: color 0.2s;
-    }
+    .sidebar { width: 280px; padding: 1.5rem; overflow-y: auto; background: #fff; border-right: 1px solid var(--color-border); }
+    .sidebar h2 { font-size: 0.75rem; font-weight: 500; color: var(--color-gray); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; }
+    .sidebar a { display: block; padding: 0.5rem 0; color: var(--color-gray); text-decoration: none; font-size: 0.875rem; font-weight: 400; transition: color 0.2s; }
     .sidebar a:hover { color: var(--color-accent); }
-    .main {
-      flex: 1;
-      padding: 3rem 4rem;
-      max-width: 900px;
-    }
-    h1 {
-      font-size: 2.5rem;
-      font-weight: 300;
-      margin-bottom: 1.5rem;
-      color: var(--color-text);
-      letter-spacing: -0.02em;
-    }
-    h2 {
-      font-size: 1.5rem;
-      font-weight: 400;
-      margin-top: 2.5rem;
-      margin-bottom: 1rem;
-      color: var(--color-text);
-      letter-spacing: -0.01em;
-    }
-    h3 {
-      font-size: 1.125rem;
-      font-weight: 500;
-      margin-top: 1.5rem;
-      margin-bottom: 0.75rem;
-      color: var(--color-text);
-    }
+    .main { flex: 1; padding: 3.75rem 4rem 3rem; max-width: 900px; }
+    h1 { font-size: 2.5rem; font-weight: 300; margin-bottom: 1.5rem; color: var(--color-text); letter-spacing: -0.02em; }
+    h2 { font-size: 1.5rem; font-weight: 400; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--color-text); letter-spacing: -0.01em; }
+    h3 { font-size: 1.125rem; font-weight: 500; margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--color-text); }
     p { margin-bottom: 1rem; color: var(--color-gray); }
-    code {
-      font-family: 'SF Mono', Monaco, monospace;
-      background: var(--color-code-bg);
-      padding: 0.2rem 0.4rem;
-      border-radius: 4px;
-      font-size: 0.875em;
-      color: var(--color-text);
-    }
-    pre {
-      background: var(--color-code-bg);
-      padding: 1.25rem;
-      border-radius: 6px;
-      overflow-x: auto;
-      margin: 1.5rem 0;
-      box-shadow: rgba(50,50,93,0.1) 0px 15px 35px, rgba(0,0,0,0.07) 0px 5px 15px;
-    }
-    pre code {
-      background: none;
-      padding: 0;
-      font-size: 0.875rem;
-      line-height: 1.6;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1.5rem 0;
-      font-size: 0.9rem;
-    }
-    th, td {
-      padding: 0.75rem 1rem;
-      text-align: left;
-      border-bottom: 1px solid var(--color-border);
-    }
+    code { font-family: 'SF Mono', Monaco, monospace; background: var(--color-code-bg); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.875em; color: var(--color-text); }
+    pre { background: var(--color-code-bg); padding: 1.25rem; border-radius: 6px; overflow-x: auto; margin: 1.5rem 0; box-shadow: rgba(50,50,93,0.1) 0px 15px 35px, rgba(0,0,0,0.07) 0px 5px 15px; }
+    pre code { background: none; padding: 0; font-size: 0.875rem; line-height: 1.6; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem; }
+    th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--color-border); }
     th { font-weight: 500; color: var(--color-text); }
-    blockquote {
-      border-left: 4px solid var(--color-accent);
-      padding-left: 1rem;
-      margin: 1.5rem 0;
-      color: var(--color-gray);
-      font-style: italic;
-    }
+    blockquote { border-left: 4px solid var(--color-accent); padding-left: 1rem; margin: 1.5rem 0; color: var(--color-gray); font-style: italic; }
     ul { margin: 1rem 0; padding-left: 1.5rem; }
     li { margin: 0.5rem 0; color: var(--color-gray); }
     hr { border: none; border-top: 1px solid var(--color-border); margin: 2rem 0; }
     a { color: var(--color-accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
+    ${sharedDrawerCss()}
+    .drawer-toggle { background: #fff; }
+    ${sharedSidebarOverrides()}
+    ${sharedMobileCss()}
   </style>
 </head>
 <body>
   <div class="container">
     <aside class="sidebar">
+      ${sidebarBackLink()}
       <h2>Documentation</h2>
       <nav>${tocHtml}</nav>
     </aside>
     <main class="main">${content}</main>
   </div>
+  ${sharedDrawerHtml()}
 </body>
 </html>`;
 }
@@ -1179,6 +820,7 @@ function linearTemplate(content, toc, title) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${title} - Linear Style</title>
+  ${favicon}
   <style>
     :root {
       --color-bg: #ffffff;
@@ -1189,126 +831,45 @@ function linearTemplate(content, toc, title) {
       --color-code-bg: #f8f9fa;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--color-bg);
-      color: var(--color-text);
-      line-height: 1.6;
-      font-size: 16px;
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--color-bg); color: var(--color-text); line-height: 1.6; font-size: 16px; }
     .container { display: flex; max-width: 1400px; margin: 0 auto; }
-    .sidebar {
-      width: 260px;
-      padding: 2rem 1.5rem;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow-y: auto;
-      background: #fff;
-      border-right: 1px solid var(--color-border);
-    }
-    .sidebar h2 {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--color-gray);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 1rem;
-    }
-    .sidebar a {
-      display: block;
-      padding: 0.5rem 0.75rem;
-      color: var(--color-gray);
-      text-decoration: none;
-      font-size: 0.875rem;
-      border-radius: 6px;
-      transition: all 0.15s;
-    }
-    .sidebar a:hover {
-      background: rgba(94,106,210,0.1);
-      color: var(--color-accent);
-    }
-    .main {
-      flex: 1;
-      padding: 3rem 4rem;
-      max-width: 900px;
-    }
-    h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 1.5rem;
-      letter-spacing: -0.02em;
-    }
-    h2 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-top: 2.5rem;
-      margin-bottom: 1rem;
-      letter-spacing: -0.01em;
-    }
-    h3 {
-      font-size: 1.125rem;
-      font-weight: 600;
-      margin-top: 1.5rem;
-      margin-bottom: 0.75rem;
-    }
+    .sidebar { width: 260px; padding: 1.5rem; overflow-y: auto; background: #fff; border-right: 1px solid var(--color-border); }
+    .sidebar h2 { font-size: 0.75rem; font-weight: 600; color: var(--color-gray); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; }
+    .sidebar a { display: block; padding: 0.5rem 0.75rem; color: var(--color-gray); text-decoration: none; font-size: 0.875rem; border-radius: 6px; transition: all 0.15s; }
+    .sidebar a:hover { background: rgba(94,106,210,0.1); color: var(--color-accent); }
+    .main { flex: 1; padding: 3.75rem 4rem 3rem; max-width: 900px; }
+    h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+    h2 { font-size: 1.5rem; font-weight: 600; margin-top: 2.5rem; margin-bottom: 1rem; letter-spacing: -0.01em; }
+    h3 { font-size: 1.125rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; }
     p { margin-bottom: 1rem; color: var(--color-gray); }
-    code {
-      font-family: 'SF Mono', Monaco, monospace;
-      background: var(--color-code-bg);
-      padding: 0.2rem 0.4rem;
-      border-radius: 4px;
-      font-size: 0.875em;
-      color: var(--color-accent);
-    }
-    pre {
-      background: var(--color-code-bg);
-      padding: 1.25rem;
-      border-radius: 8px;
-      overflow-x: auto;
-      margin: 1.5rem 0;
-      border: 1px solid var(--color-border);
-    }
-    pre code {
-      background: none;
-      padding: 0;
-      color: var(--color-text);
-      font-size: 0.875rem;
-      line-height: 1.6;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1.5rem 0;
-      font-size: 0.9rem;
-    }
-    th, td {
-      padding: 0.75rem 1rem;
-      text-align: left;
-      border-bottom: 1px solid var(--color-border);
-    }
+    code { font-family: 'SF Mono', Monaco, monospace; background: var(--color-code-bg); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.875em; color: var(--color-accent); }
+    pre { background: var(--color-code-bg); padding: 1.25rem; border-radius: 8px; overflow-x: auto; margin: 1.5rem 0; border: 1px solid var(--color-border); }
+    pre code { background: none; padding: 0; color: var(--color-text); font-size: 0.875rem; line-height: 1.6; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem; }
+    th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--color-border); }
     th { font-weight: 600; background: var(--color-code-bg); }
-    blockquote {
-      border-left: 3px solid var(--color-accent);
-      padding-left: 1rem;
-      margin: 1.5rem 0;
-      color: var(--color-gray);
-    }
+    blockquote { border-left: 3px solid var(--color-accent); padding-left: 1rem; margin: 1.5rem 0; color: var(--color-gray); }
     ul { margin: 1rem 0; padding-left: 1.5rem; }
     li { margin: 0.5rem 0; color: var(--color-gray); }
     hr { border: none; border-top: 1px solid var(--color-border); margin: 2rem 0; }
     a { color: var(--color-accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
+    ${sharedDrawerCss()}
+    .drawer-toggle { background: #fff; }
+    ${sharedSidebarOverrides()}
+    ${sharedMobileCss()}
   </style>
 </head>
 <body>
   <div class="container">
     <aside class="sidebar">
+      ${sidebarBackLink()}
       <h2>Navigation</h2>
       <nav>${tocHtml}</nav>
     </aside>
     <main class="main">${content}</main>
   </div>
+  ${sharedDrawerHtml()}
 </body>
 </html>`;
 }
@@ -1326,7 +887,13 @@ const docStyles = {
   'github-cli-reference.md': { template: vercelTemplate, style: 'Vercel' },
   'opencode-cli-reference.md': { template: cursorTemplate, style: 'Cursor' },
   'pandoc-cli-reference.md': { template: notionTemplate, style: 'Notion' },
-  'playwright-cli-reference.md': { template: stripeTemplate, style: 'Stripe' }
+  'playwright-cli-reference.md': { template: stripeTemplate, style: 'Stripe' },
+  'lark-cli-reference.md': { template: claudeTemplate, style: 'Claude' },
+  'pencil-cli-reference.md': { template: vercelTemplate, style: 'Vercel' },
+  'openclaw-cli-reference.md': { template: linearTemplate, style: 'Linear' },
+  'openclaw-vs-hermes-comparison.md': { template: notionTemplate, style: 'Notion' },
+  'hermes-cli-reference.md': { template: cursorTemplate, style: 'Cursor' },
+  'granularity.md': { template: stripeTemplate, style: 'Stripe' },
 };
 
 // 确保html目录存在
