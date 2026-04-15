@@ -339,6 +339,14 @@
       border-radius: 2px;
       padding: 0 2px;
     }
+    .sticky-header-inner { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .sticky-header h1 { flex: 1; }
+    .sticky-header-search-btn { background: transparent; border: none; font-size: 1rem; cursor: pointer; padding: 4px; line-height: 1; }
+    .sticky-header-search { display: flex; align-items: center; gap: 6px; flex: 1; }
+    .sticky-search-input { flex: 1; padding: 6px 10px; font-size: 0.875rem; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-bg, #fff); color: var(--color-text); }
+    .sticky-search-prev, .sticky-search-next, .sticky-search-close { display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; padding: 0; font-size: 0.75rem; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-bg, #fff); color: var(--color-text); cursor: pointer; }
+    @media (min-width: 769px) { .sticky-header-search-btn { display: none; } }
+    @media (max-width: 768px) { .sidebar .sidebar-search, .sidebar .search-controls { display: none !important; } }
   </style>
 </head>
 <body>
@@ -571,7 +579,7 @@
       var title = h1el.textContent;
       var header = document.createElement('div');
       header.className = 'sticky-header';
-      header.innerHTML = '<h1>' + title + '</h1>';
+      header.innerHTML = '<div class="sticky-header-inner"><h1>' + title + '</h1><button class="sticky-header-search-btn" title="搜索">&#128269;</button><div class="sticky-header-search" style="display:none;"><input type="search" class="sticky-search-input" id="stickySearchInput" placeholder="搜索页面内容..." autocomplete="off"><button class="sticky-search-prev" id="stickySearchPrev">&#60;</button><span class="sticky-search-count" id="stickySearchCount">0/0</span><button class="sticky-search-next" id="stickySearchNext">&#62;</button><button class="sticky-search-close" id="stickySearchClose">&#10005;</button></div></div>';
       h1el.parentNode.insertBefore(header, h1el.nextSibling);
       window.addEventListener('scroll', function() {
         var rect = h1el.getBoundingClientRect();
@@ -580,15 +588,46 @@
     })();
     // 页面内搜索
     (function() {
-      var input = document.getElementById('pageSearch');
-      var controls = document.getElementById('searchControls');
-      var countEl = document.getElementById('searchCount');
-      var prevBtn = document.getElementById('searchPrev');
-      var nextBtn = document.getElementById('searchNext');
-      if (!input) return;
       var main = document.querySelector('.main');
       var currentIndex = 0;
       var highlights = [];
+      var desktopInput = document.getElementById('pageSearch');
+      var desktopControls = document.getElementById('searchControls');
+      var desktopCount = document.getElementById('searchCount');
+      var desktopPrev = document.getElementById('searchPrev');
+      var desktopNext = document.getElementById('searchNext');
+      var stickyInput = document.getElementById('stickySearchInput');
+      var stickyControls = document.querySelector('.sticky-header-search');
+      var stickyCount = document.getElementById('stickySearchCount');
+      var stickyPrev = document.getElementById('stickySearchPrev');
+      var stickyNext = document.getElementById('stickySearchNext');
+      var stickyClose = document.getElementById('stickySearchClose');
+      var stickyBtn = document.querySelector('.sticky-header-search-btn');
+      var stickyTitle = document.querySelector('.sticky-header h1');
+      function isMobile() { return window.innerWidth <= 768; }
+      function getInput() { return isMobile() ? stickyInput : desktopInput; }
+      function getControls() { return isMobile() ? stickyControls : desktopControls; }
+      function getCount() { return isMobile() ? stickyCount : desktopCount; }
+      function getPrev() { return isMobile() ? stickyPrev : desktopPrev; }
+      function getNext() { return isMobile() ? stickyNext : desktopNext; }
+      if (stickyBtn && stickyControls && stickyTitle && stickyInput) {
+        stickyBtn.addEventListener('click', function() {
+          stickyTitle.style.display = 'none';
+          stickyBtn.style.display = 'none';
+          stickyControls.style.display = 'flex';
+          stickyInput.focus();
+        });
+        if (stickyClose) {
+          stickyClose.addEventListener('click', function() {
+            clearHighlights();
+            stickyControls.style.display = 'none';
+            stickyTitle.style.display = 'block';
+            stickyBtn.style.display = 'inline-block';
+            stickyInput.value = '';
+            if (desktopInput) desktopInput.value = '';
+          });
+        }
+      }
       function clearHighlights() {
         document.querySelectorAll('.search-highlight, .search-highlight-current').forEach(function(el) {
           var parent = el.parentNode;
@@ -597,9 +636,14 @@
         });
         highlights = [];
         currentIndex = 0;
+        var controls = getControls();
         if (controls) controls.style.display = 'none';
       }
       function updateUI() {
+        var controls = getControls();
+        var countEl = getCount();
+        var prevBtn = getPrev();
+        var nextBtn = getNext();
         if (!highlights.length) {
           if (controls) controls.style.display = 'none';
           return;
@@ -611,16 +655,23 @@
         highlights.forEach(function(el, i) {
           el.className = i === currentIndex ? 'search-highlight-current' : 'search-highlight';
         });
-        highlights[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (isMobile()) {
+          var el = highlights[currentIndex];
+          var headerHeight = document.querySelector('.sticky-header') ? document.querySelector('.sticky-header').offsetHeight : 56;
+          var top = el.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
+          window.scrollTo({ top: top, behavior: 'smooth' });
+        } else {
+          highlights[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
       }
       function goTo(delta) {
         if (!highlights.length) return;
         currentIndex = Math.max(0, Math.min(highlights.length - 1, currentIndex + delta));
         updateUI();
       }
-      function performSearch() {
+      function performSearch(srcInput) {
         clearHighlights();
-        var query = input.value.trim();
+        var query = srcInput.value.trim();
         if (!query) return;
         var regex = new RegExp('(' + query.replace(/[.*+?^$\\{}()|[\]\\\\]/g, '\\\\$&') + ')', 'gi');
         var walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT, null, false);
@@ -631,6 +682,10 @@
             nodes.push(node);
           }
         }
+        var controls = getControls();
+        var countEl = getCount();
+        var prevBtn = getPrev();
+        var nextBtn = getNext();
         if (!nodes.length) {
           if (controls) controls.style.display = 'flex';
           if (countEl) countEl.textContent = '0/0';
@@ -649,15 +704,22 @@
         currentIndex = 0;
         updateUI();
       }
-      input.addEventListener('input', performSearch);
-      if (prevBtn) prevBtn.addEventListener('click', function() { goTo(-1); });
-      if (nextBtn) nextBtn.addEventListener('click', function() { goTo(1); });
-      input.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          if (e.shiftKey) goTo(-1); else goTo(1);
-        }
-      });
+      function bindInput(input) {
+        if (!input) return;
+        input.addEventListener('input', function() {
+          performSearch(input);
+          var other = input.id === 'pageSearch' ? stickyInput : desktopInput;
+          if (other && other.value !== input.value) other.value = input.value;
+        });
+      }
+      bindInput(desktopInput);
+      bindInput(stickyInput);
+      function bindNav(btn, delta) { if (btn) btn.addEventListener('click', function() { goTo(delta); }); }
+      bindNav(desktopPrev, -1); bindNav(desktopNext, 1);
+      bindNav(stickyPrev, -1); bindNav(stickyNext, 1);
+      function onKey(e) { if (e.key === 'Enter') { e.preventDefault(); if (e.shiftKey) goTo(-1); else goTo(1); } }
+      if (desktopInput) desktopInput.addEventListener('keydown', onKey);
+      if (stickyInput) stickyInput.addEventListener('keydown', onKey);
     })();
   </script>
 </body>
