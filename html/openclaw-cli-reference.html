@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenClaw CLI 参考手册 - Linear Style</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect rx=%2212%22 width=%22100%22 height=%22100%22 fill=%22%231a1a2e%22/><text x=%2250%22 y=%2268%22 font-size=%2255%22 font-family=%22monospace%22 font-weight=%22bold%22 text-anchor=%22middle%22 fill=%22%2300d4aa%22>&gt;_</text></svg>">
+  <style>
+    :root {
+      --color-bg: #ffffff;
+      --color-text: #1a1a1a;
+      --color-gray: #6b7280;
+      --color-accent: #5e6ad2;
+      --color-border: rgba(0,0,0,0.06);
+      --color-code-bg: #f8f9fa;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--color-bg); color: var(--color-text); line-height: 1.6; font-size: 16px; }
+    .container { display: flex; max-width: 1400px; margin: 0 auto; }
+    .sidebar { width: 260px; padding: 1.5rem; overflow-y: auto; background: #fff; border-right: 1px solid var(--color-border); }
+    .sidebar h2 { font-size: 0.75rem; font-weight: 600; color: var(--color-gray); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; }
+    .sidebar a { display: block; padding: 0.5rem 0.75rem; color: var(--color-gray); text-decoration: none; font-size: 0.875rem; border-radius: 6px; transition: all 0.15s; }
+    .sidebar a:hover { background: rgba(94,106,210,0.1); color: var(--color-accent); }
+    .main { flex: 1; padding: 3rem 4rem; max-width: 900px; }
+    h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+    h2 { font-size: 1.5rem; font-weight: 600; margin-top: 2.5rem; margin-bottom: 1rem; letter-spacing: -0.01em; }
+    h3 { font-size: 1.125rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+    p { margin-bottom: 1rem; color: var(--color-gray); }
+    code { font-family: 'SF Mono', Monaco, monospace; background: var(--color-code-bg); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.875em; color: var(--color-accent); }
+    pre { background: var(--color-code-bg); padding: 1.25rem; border-radius: 8px; overflow-x: auto; margin: 1.5rem 0; border: 1px solid var(--color-border); }
+    pre code { background: none; padding: 0; color: var(--color-text); font-size: 0.875rem; line-height: 1.6; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem; }
+    th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--color-border); }
+    th { font-weight: 600; background: var(--color-code-bg); }
+    blockquote { border-left: 3px solid var(--color-accent); padding-left: 1rem; margin: 1.5rem 0; color: var(--color-gray); }
+    ul { margin: 1rem 0; padding-left: 1.5rem; }
+    li { margin: 0.5rem 0; color: var(--color-gray); }
+    hr { border: none; border-top: 1px solid var(--color-border); margin: 2rem 0; }
+    a { color: var(--color-accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    
+    /* 桌面端：菜单按钮和遮罩层隐藏 */
+    .drawer-toggle { display: none; }
+    .overlay { display: none; }
+    /* 粘性标题 */
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--color-bg, #fff);
+      padding: 12px 1.5rem;
+      margin: 0 -4rem 1.5rem;
+      border-bottom: 1px solid var(--color-border);
+      display: none;
+    }
+    .sticky-header.visible { display: block; }
+    .sticky-header h1 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin: 0;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .drawer-toggle { background: #fff; }
+    
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+    .sidebar-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      margin-bottom: 1rem;
+      color: #666;
+      text-decoration: none;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      border-radius: 8px;
+      border: 1px solid var(--color-border);
+      transition: all 0.2s;
+    }
+    .sidebar-back:hover {
+      color: var(--color-accent, #333);
+      border-color: var(--color-accent, #333);
+    }
+    .sidebar nav { display: flex; flex-direction: column; gap: 2px; }
+    
+    @media (max-width: 768px) {
+      .container { flex-direction: column; }
+      /* 移动端：侧边栏变为抽屉 */
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 280px;
+        height: 100vh;
+        z-index: 1000;
+        padding: 1.5rem;
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: none;
+      }
+      .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 4px 0 24px rgba(0,0,0,0.1);
+      }
+      /* 移动端：显示菜单按钮 */
+      .drawer-toggle {
+        display: flex;
+        position: fixed;
+        bottom: 24px;
+        left: 16px;
+        z-index: 1100;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        border: 1px solid var(--color-border);
+        background: var(--color-bg, #fff);
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        transition: all 0.2s;
+      }
+      .drawer-toggle:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+      .drawer-toggle svg { transition: transform 0.3s ease; }
+      .drawer-toggle.active svg { transform: rotate(180deg); }
+      /* 移动端：显示遮罩层 */
+      .overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.2);
+        z-index: 999;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+      }
+      .overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      /* 移动端粘性标题：左侧留出菜单按钮空间 */
+      .sticky-header { margin: 0 -1.5rem 1rem; padding: 12px 1rem 12px 64px; }
+      .main { padding: 2rem 1.5rem; }
+      h1 { font-size: 1.75rem; }
+      h2 { font-size: 1.375rem; }
+      pre { padding: 1rem; font-size: 0.8125rem; }
+      table { font-size: 0.8125rem; display: block; overflow-x: auto; }
+      th, td { padding: 0.5rem; min-width: 60px; }
+    }
+    @media (max-width: 480px) {
+      .main { padding: 1.25rem 1rem; }
+      h1 { font-size: 1.5rem; }
+      h2 { font-size: 1.25rem; }
+      pre { padding: 0.75rem; font-size: 0.75rem; border-radius: 6px; }
+      code { font-size: 0.8125rem; }
+      table { font-size: 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <a href="./index.html" class="sidebar-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        返回文档列表
+      </a>
+      <h2>Navigation</h2>
+      <nav><a href="#目录" >目录</a>
+<a href="#概述" >概述</a>
+<a href="#快速开始" >快速开始</a>
+<a href="#全局选项" >全局选项</a>
+<a href="#核心服务" >核心服务</a>
+<a href="#openclaw-gateway-网关服务" style="padding-left: 1rem;">openclaw gateway — 网关服务</a>
+<a href="#openclaw-node-节点服务" style="padding-left: 1rem;">openclaw node — 节点服务</a>
+<a href="#openclaw-agent-代理交互" style="padding-left: 1rem;">openclaw agent — 代理交互</a>
+<a href="#会话与消息" >会话与消息</a>
+<a href="#openclaw-sessions-会话管理" style="padding-left: 1rem;">openclaw sessions — 会话管理</a>
+<a href="#openclaw-message-消息管理" style="padding-left: 1rem;">openclaw message — 消息管理</a>
+<a href="#渠道管理" >渠道管理</a>
+<a href="#openclaw-channels-渠道管理" style="padding-left: 1rem;">openclaw channels — 渠道管理</a>
+<a href="#openclaw-directory-通讯录" style="padding-left: 1rem;">openclaw directory — 通讯录</a>
+<a href="#openclaw-pairing-配对管理" style="padding-left: 1rem;">openclaw pairing — 配对管理</a>
+<a href="#openclaw-devices-设备管理" style="padding-left: 1rem;">openclaw devices — 设备管理</a>
+<a href="#代理与模型" >代理与模型</a>
+<a href="#openclaw-agents-代理管理" style="padding-left: 1rem;">openclaw agents — 代理管理</a>
+<a href="#openclaw-models-模型管理" style="padding-left: 1rem;">openclaw models — 模型管理</a>
+<a href="#浏览器控制" >浏览器控制</a>
+<a href="#openclaw-browser-浏览器控制" style="padding-left: 1rem;">openclaw browser — 浏览器控制</a>
+<a href="#技能与插件" >技能与插件</a>
+<a href="#openclaw-skills-技能管理" style="padding-left: 1rem;">openclaw skills — 技能管理</a>
+<a href="#openclaw-plugins-插件管理" style="padding-left: 1rem;">openclaw plugins — 插件管理</a>
+<a href="#openclaw-hooks-钩子管理" style="padding-left: 1rem;">openclaw hooks — 钩子管理</a>
+<a href="#记忆系统" >记忆系统</a>
+<a href="#openclaw-memory-记忆管理" style="padding-left: 1rem;">openclaw memory — 记忆管理</a>
+<a href="#定时任务" >定时任务</a>
+<a href="#openclaw-cron-定时任务" style="padding-left: 1rem;">openclaw cron — 定时任务</a>
+<a href="#安全与审批" >安全与审批</a>
+<a href="#openclaw-security-安全审计" style="padding-left: 1rem;">openclaw security — 安全审计</a>
+<a href="#openclaw-secrets-密钥管理" style="padding-left: 1rem;">openclaw secrets — 密钥管理</a>
+<a href="#openclaw-approvals-审批管理" style="padding-left: 1rem;">openclaw approvals — 审批管理</a>
+<a href="#openclaw-sandbox-沙箱管理" style="padding-left: 1rem;">openclaw sandbox — 沙箱管理</a>
+<a href="#节点与设备" >节点与设备</a>
+<a href="#openclaw-nodes-远程节点" style="padding-left: 1rem;">openclaw nodes — 远程节点</a>
+<a href="#配置与运维" >配置与运维</a>
+<a href="#openclaw-config-配置管理" style="padding-left: 1rem;">openclaw config — 配置管理</a>
+<a href="#openclaw-configure-交互式配置向导" style="padding-left: 1rem;">openclaw configure — 交互式配置向导</a>
+<a href="#openclaw-setup-初始化" style="padding-left: 1rem;">openclaw setup — 初始化</a>
+<a href="#openclaw-onboard-新手引导" style="padding-left: 1rem;">openclaw onboard — 新手引导</a>
+<a href="#openclaw-doctor-健康检查" style="padding-left: 1rem;">openclaw doctor — 健康检查</a>
+<a href="#openclaw-update-更新管理" style="padding-left: 1rem;">openclaw update — 更新管理</a>
+<a href="#openclaw-backup-备份管理" style="padding-left: 1rem;">openclaw backup — 备份管理</a>
+<a href="#协议与集成" >协议与集成</a>
+<a href="#openclaw-acp-agent-control-protocol" style="padding-left: 1rem;">openclaw acp — Agent Control Protocol</a>
+<a href="#openclaw-webhooks-webhook-集成" style="padding-left: 1rem;">openclaw webhooks — Webhook 集成</a>
+<a href="#openclaw-dns-dns-辅助" style="padding-left: 1rem;">openclaw dns — DNS 辅助</a>
+<a href="#openclaw-system-系统事件" style="padding-left: 1rem;">openclaw system — 系统事件</a>
+<a href="#其他命令" >其他命令</a>
+<a href="#openclaw-tui-终端界面" style="padding-left: 1rem;">openclaw tui — 终端界面</a>
+<a href="#openclaw-dashboard-控制面板" style="padding-left: 1rem;">openclaw dashboard — 控制面板</a>
+<a href="#openclaw-docs-文档搜索" style="padding-left: 1rem;">openclaw docs — 文档搜索</a>
+<a href="#openclaw-logs-日志查看" style="padding-left: 1rem;">openclaw logs — 日志查看</a>
+<a href="#openclaw-health-健康状态" style="padding-left: 1rem;">openclaw health — 健康状态</a>
+<a href="#openclaw-status-全局状态" style="padding-left: 1rem;">openclaw status — 全局状态</a>
+<a href="#openclaw-qr-二维码生成" style="padding-left: 1rem;">openclaw qr — 二维码生成</a>
+<a href="#openclaw-completion-shell-补全" style="padding-left: 1rem;">openclaw completion — Shell 补全</a>
+<a href="#openclaw-reset-重置" style="padding-left: 1rem;">openclaw reset — 重置</a>
+<a href="#openclaw-uninstall-卸载" style="padding-left: 1rem;">openclaw uninstall — 卸载</a>
+<a href="#文件路径说明" >文件路径说明</a></nav>
+    </aside>
+    <main class="main"><h1>OpenClaw CLI 参考手册</h1></p><blockquote>版本：2026.3.13 | 安装路径：<code>/Users/dawinyuan/.npm-global/bin/openclaw</code></blockquote></p><h2 id="目录">目录</h2></p>
+<ul><li><a href="#概述">概述</a></li></p>
+<li><a href="#快速开始">快速开始</a></li></p>
+<li><a href="#全局选项">全局选项</a></li></p>
+<li><a href="#核心服务">核心服务</a></li></p>
+<li><a href="#openclaw-gateway--网关服务">gateway</a></li></p>
+<li><a href="#openclaw-node--节点服务">node</a></li></p>
+<li><a href="#openclaw-agent--代理交互">agent</a></li></p>
+<li><a href="#会话与消息">会话与消息</a></li></p>
+<li><a href="#openclaw-sessions--会话管理">sessions</a></li></p>
+<li><a href="#openclaw-message--消息管理">message</a></li></p>
+<li><a href="#渠道管理">渠道管理</a></li></p>
+<li><a href="#openclaw-channels--渠道管理">channels</a></li></p>
+<li><a href="#openclaw-directory--通讯录">directory</a></li></p>
+<li><a href="#openclaw-pairing--配对管理">pairing</a></li></p>
+<li><a href="#openclaw-devices--设备管理">devices</a></li></p>
+<li><a href="#代理与模型">代理与模型</a></li></p>
+<li><a href="#openclaw-agents--代理管理">agents</a></li></p>
+<li><a href="#openclaw-models--模型管理">models</a></li></p>
+<li><a href="#浏览器控制">浏览器控制</a></li></p>
+<li><a href="#openclaw-browser--浏览器控制">browser</a></li></p>
+<li><a href="#技能与插件">技能与插件</a></li></p>
+<li><a href="#openclaw-skills--技能管理">skills</a></li></p>
+<li><a href="#openclaw-plugins--插件管理">plugins</a></li></p>
+<li><a href="#openclaw-hooks--钩子管理">hooks</a></li></p>
+<li><a href="#记忆系统">记忆系统</a></li></p>
+<li><a href="#openclaw-memory--记忆管理">memory</a></li></p>
+<li><a href="#定时任务">定时任务</a></li></p>
+<li><a href="#openclaw-cron--定时任务">cron</a></li></p>
+<li><a href="#安全与审批">安全与审批</a></li></p>
+<li><a href="#openclaw-security--安全审计">security</a></li></p>
+<li><a href="#openclaw-secrets--密钥管理">secrets</a></li></p>
+<li><a href="#openclaw-approvals--审批管理">approvals</a></li></p>
+<li><a href="#openclaw-sandbox--沙箱管理">sandbox</a></li></p>
+<li><a href="#节点与设备">节点与设备</a></li></p>
+<li><a href="#openclaw-nodes--远程节点">nodes</a></li></p>
+<li><a href="#配置与运维">配置与运维</a></li></p>
+<li><a href="#openclaw-config--配置管理">config</a></li></p>
+<li><a href="#openclaw-configure--交互式配置向导">configure</a></li></p>
+<li><a href="#openclaw-setup--初始化">setup</a></li></p>
+<li><a href="#openclaw-onboard--新手引导">onboard</a></li></p>
+<li><a href="#openclaw-doctor--健康检查">doctor</a></li></p>
+<li><a href="#openclaw-update--更新管理">update</a></li></p>
+<li><a href="#openclaw-backup--备份管理">backup</a></li></p>
+<li><a href="#协议与集成">协议与集成</a></li></p>
+<li><a href="#openclaw-acp--agent-control-protocol">acp</a></li></p>
+<li><a href="#openclaw-webhooks--webhook-集成">webhooks</a></li></p>
+<li><a href="#openclaw-dns--dns-辅助">dns</a></li></p>
+<li><a href="#openclaw-system--系统事件">system</a></li></p>
+<li><a href="#其他命令">其他命令</a></li></p>
+<li><a href="#openclaw-tui--终端界面">tui</a></li></p>
+<li><a href="#openclaw-dashboard--控制面板">dashboard</a></li></p>
+<li><a href="#openclaw-docs--文档搜索">docs</a></li></p>
+<li><a href="#openclaw-logs--日志查看">logs</a></li></p>
+<li><a href="#openclaw-health--健康状态">health</a></li></p>
+<li><a href="#openclaw-status--全局状态">status</a></li></p>
+<li><a href="#openclaw-qr--二维码生成">qr</a></li></p>
+<li><a href="#openclaw-completion--shell-补全">completion</a></li></p>
+<li><a href="#openclaw-reset--重置">reset</a></li></p>
+<li><a href="#openclaw-uninstall--卸载">uninstall</a></li></p>
+<li><a href="#文件路径说明">文件路径说明</a></li></p>
+</ul></p>
+<hr><h2 id="概述">概述</h2></p><p>OpenClaw 是一个本地 AI 代理网关（AI Agent Gateway），提供 WebSocket 网关服务、多渠道消息集成（WhatsApp/Telegram/Discord/Slack/飞书等）、浏览器自动化、模型管理、技能扩展、定时任务等功能。它支持本地运行和 Tailscale 广域网暴露，是一个全能型的个人 AI 基础设施。</p><h2 id="快速开始">快速开始</h2></p><pre><code><h1>交互式初始配置</h1></p>
+<p>openclaw setup</p><h1>启动网关服务（前台运行）</h1></p>
+<p>openclaw gateway</p><h1>启动网关服务（后台守护进程）</h1></p>
+<p>openclaw gateway install && openclaw gateway start</p><h1>发送一条消息给代理</h1></p>
+<p>openclaw agent --message "你好"</p><h1>查看全局状态</h1></p>
+<p>openclaw status</p><h1>健康检查</h1></p>
+<p>openclaw doctor</p>
+</code></pre></p><h2 id="全局选项">全局选项</h2></p><table><thead><tr><th>选项</th><th>说明</th><th>默认值</th></tr></thead><tbody><tr><td><code>-h, --help</code></td><td>显示帮助信息</td><td>-</td></tr><tr><td><code>-V, --version</code></td><td>显示版本号</td><td>-</td></tr><tr><td><code>--dev</code></td><td>开发模式：隔离状态到 <code>~/.openclaw-dev</code>，网关端口 19001</td><td><code>false</code></td></tr><tr><td><code>--profile <name></code></td><td>使用命名配置（隔离状态/配置到 <code>~/.openclaw-<name></code>）</td><td>-</td></tr><tr><td><code>--log-level <level></code></td><td>全局日志级别（<code>silent</code>/<code>fatal</code>/<code>error</code>/<code>warn</code>/<code>info</code>/<code>debug</code>/<code>trace</code>）</td><td>-</td></tr><tr><td><code>--no-color</code></td><td>禁用 ANSI 颜色</td><td><code>false</code></td></tr></tbody></table></p>
+<hr><h2 id="核心服务">核心服务</h2></p><h3 id="openclaw-gateway-网关服务">openclaw gateway — 网关服务</h3></p><p>运行、检查和查询 WebSocket 网关。</p><strong>选项：</strong></p><table><thead><tr><th>选项</th><th>说明</th><th>默认值</th></tr></thead><tbody><tr><td><code>--port <port></code></td><td>WebSocket 网关端口</td><td>配置值</td></tr><tr><td><code>--auth <mode></code></td><td>认证模式（<code>none</code>/<code>token</code>/<code>password</code>/<code>trusted-proxy</code>）</td><td>配置值</td></tr><tr><td><code>--token <token></code></td><td>共享认证 token</td><td><code>OPENCLAW<em>GATEWAY</em>TOKEN</code> 环境变量</td></tr><tr><td><code>--password <password></code></td><td>密码认证模式的密码</td><td>-</td></tr><tr><td><code>--bind <mode></code></td><td>绑定模式（<code>loopback</code>/<code>lan</code>/<code>tailnet</code>/<code>auto</code>/<code>custom</code>）</td><td><code>loopback</code></td></tr><tr><td><code>--force</code></td><td>启动前杀死占用端口的进程</td><td><code>false</code></td></tr><tr><td><code>--verbose</code></td><td>详细日志输出</td><td><code>false</code></td></tr><tr><td><code>--compact</code></td><td>精简 WebSocket 日志（<code>--ws-log compact</code> 别名）</td><td><code>false</code></td></tr><tr><td><code>--ws-log <style></code></td><td>WebSocket 日志风格（<code>auto</code>/<code>full</code>/<code>compact</code>）</td><td><code>auto</code></td></tr><tr><td><code>--tailscale <mode></code></td><td>Tailscale 暴露模式（<code>off</code>/<code>serve</code>/<code>funnel</code>）</td><td><code>off</code></td></tr><tr><td><code>--raw-stream</code></td><td>记录原始模型流事件到 JSONL</td><td><code>false</code></td></tr></tbody></table></p>
+<strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>run</code></td><td>前台运行网关</td></tr><tr><td><code>start</code></td><td>启动网关服务（launchd/systemd）</td></tr><tr><td><code>stop</code></td><td>停止网关服务</td></tr><tr><td><code>restart</code></td><td>重启网关服务</td></tr><tr><td><code>install</code></td><td>安装网关服务</td></tr><tr><td><code>uninstall</code></td><td>卸载网关服务</td></tr><tr><td><code>status</code></td><td>显示网关服务状态 + 探测</td></tr><tr><td><code>health</code></td><td>获取网关健康状态</td></tr><tr><td><code>probe</code></td><td>显示网关可达性 + 发现 + 健康 + 状态摘要</td></tr><tr><td><code>discover</code></td><td>通过 Bonjour 发现网关</td></tr><tr><td><code>call</code></td><td>调用网关 RPC 方法</td></tr><tr><td><code>usage-cost</code></td><td>获取使用费用摘要</td></tr></tbody></table></p>
+<strong>示例：</strong></p><pre><code><h1>前台运行网关</h1></p>
+<p>openclaw gateway</p><h1>指定端口并强制启动</h1></p>
+<p>openclaw gateway --port 18789 --force</p><h1>开发模式（隔离状态，端口 19001）</h1></p>
+<p>openclaw --dev gateway</p><h1>通过 Tailscale 暴露</h1></p>
+<p>openclaw gateway --tailscale serve</p><h1>安装为系统服务</h1></p>
+<p>openclaw gateway install</p>
+<p>openclaw gateway start</p><h1>查看状态</h1></p>
+<p>openclaw gateway status</p>
+<p>openclaw gateway probe</p>
+</code></pre></p><hr><h3 id="openclaw-node-节点服务">openclaw node — 节点服务</h3></p><p>运行和管理无头节点主机服务（Headless Node Host）。</p><strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>run</code></td><td>前台运行节点主机</td></tr><tr><td><code>install</code></td><td>安装节点主机服务</td></tr><tr><td><code>start</code></td><td>启动节点主机服务</td></tr><tr><td><code>stop</code></td><td>停止节点主机服务</td></tr><tr><td><code>restart</code></td><td>重启节点主机服务</td></tr><tr><td><code>uninstall</code></td><td>卸载节点主机服务</td></tr><tr><td><code>status</code></td><td>显示节点主机状态</td></tr></tbody></table></p>
+<strong>示例：</strong></p><pre><code>openclaw node run --host 127.0.0.1 --port 18789</p>
+<p>openclaw node status</p>
+<p>openclaw node install</p>
+</code></pre></p><hr><h3 id="openclaw-agent-代理交互">openclaw agent — 代理交互</h3></p><p>通过网关运行一次代理交互。</p><strong>选项：</strong></p><table><thead><tr><th>选项</th><th>说明</th><th>默认值</th></tr></thead><tbody><tr><td><code>-m, --message <text></code></td><td>发送给代理的消息</td><td>-</td></tr><tr><td><code>-t, --to <number></code></td><td>收件人号码（E.164 格式），用于派生会话密钥</td><td>-</td></tr><tr><td><code>--agent <id></code></td><td>指定代理 ID（覆盖路由绑定）</td><td>-</td></tr><tr><td><code>--session-id <id></code></td><td>使用指定会话 ID</td><td>-</td></tr><tr><td><code>--channel <channel></code></td><td>投递渠道（<code>last</code>/<code>telegram</code>/<code>whatsapp</code>/<code>discord</code>/<code>slack</code>/<code>feishu</code> 等）</td><td>主会话渠道</td></tr><tr><td><code>--deliver</code></td><td>将代理回复发送回选定渠道</td><td><code>false</code></td></tr><tr><td><code>--local</code></td><td>本地运行嵌入式代理（需 API 密钥）</td><td><code>false</code></td></tr><tr><td><code>--thinking <level></code></td><td>思考级别：<code>off</code>/<code>minimal</code>/<code>low</code>/<code>medium</code>/<code>high</code>/<code>xhigh</code></td><td>-</td></tr><tr><td><code>--timeout <seconds></code></td><td>代理命令超时时间</td><td>600</td></tr><tr><td><code>--json</code></td><td>JSON 格式输出</td><td><code>false</code></td></tr><tr><td><code>--verbose <on\</td><td>off></code></td><td>持久化代理详细日志</td><td>-</td></tr><tr><td><code>--reply-channel <channel></code></td><td>投递渠道覆盖</td><td>-</td></tr><tr><td><code>--reply-to <target></code></td><td>投递目标覆盖</td><td>-</td></tr><tr><td><code>--reply-account <id></code></td><td>投递账户 ID 覆盖</td><td>-</td></tr></tbody></table></p>
+<strong>示例：</strong></p><pre><code><h1>启动新会话</h1></p>
+<p>openclaw agent --to +15555550123 --message "状态更新"</p><h1>使用指定代理</h1></p>
+<p>openclaw agent --agent ops --message "汇总日志"</p><h1>投递回复到渠道</h1></p>
+<p>openclaw agent --to +15555550123 --message "回复内容" --deliver</p><h1>发送到不同渠道</h1></p>
+<p>openclaw agent --agent ops --message "生成报告" --deliver --reply-channel slack --reply-to "#reports"</p><h1>本地运行（无需网关）</h1></p>
+<p>openclaw agent --local --message "你好"</p>
+</code></pre></p><hr><h2 id="会话与消息">会话与消息</h2></p><h3 id="openclaw-sessions-会话管理">openclaw sessions — 会话管理</h3></p><p>列出存储的对话会话。</p><strong>选项：</strong></p><table><thead><tr><th>选项</th><th>说明</th><th>默认值</th></tr></thead><tbody><tr><td><code>--agent <id></code></td><td>指定代理 ID</td><td>默认代理</td></tr><tr><td><code>--all-agents</code></td><td>聚合所有代理的会话</td><td><code>false</code></td></tr><tr><td><code>--active <minutes></code></td><td>仅显示最近 N 分钟内更新的会话</td><td>-</td></tr><tr><td><code>--json</code></td><td>JSON 格式输出</td><td><code>false</code></td></tr><tr><td><code>--store <path></code></td><td>指定会话存储路径</td><td>配置值</td></tr><tr><td><code>--verbose</code></td><td>详细日志</td><td><code>false</code></td></tr></tbody></table></p>
+<strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>cleanup</code></td><td>运行会话存储维护</td></tr></tbody></table></p>
+<strong>示例：</strong></p><pre><code>openclaw sessions</p>
+<p>openclaw sessions --agent work</p>
+<p>openclaw sessions --active 120</p>
+<p>openclaw sessions --json</p>
+</code></pre></p><hr><h3 id="openclaw-message-消息管理">openclaw message — 消息管理</h3></p><p>发送、读取和管理消息及渠道操作。</p><strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>send</code></td><td>发送消息</td></tr><tr><td><code>read</code></td><td>读取最近消息</td></tr><tr><td><code>edit</code></td><td>编辑消息</td></tr><tr><td><code>delete</code></td><td>删除消息</td></tr><tr><td><code>broadcast</code></td><td>广播消息到多个目标</td></tr><tr><td><code>react</code></td><td>添加/移除反应</td></tr><tr><td><code>reactions</code></td><td>列出消息反应</td></tr><tr><td><code>pin</code> / <code>unpin</code></td><td>置顶/取消置顶消息</td></tr><tr><td><code>pins</code></td><td>列出置顶消息</td></tr><tr><td><code>poll</code></td><td>发送投票（Discord）</td></tr><tr><td><code>search</code></td><td>搜索消息（Discord）</td></tr><tr><td><code>thread</code></td><td>线程操作</td></tr><tr><td><code>emoji</code></td><td>Emoji 操作</td></tr><tr><td><code>sticker</code></td><td>贴纸操作</td></tr><tr><td><code>member</code></td><td>成员操作</td></tr><tr><td><code>role</code></td><td>角色操作</td></tr><tr><td><code>permissions</code></td><td>获取渠道权限</td></tr><tr><td><code>ban</code> / <code>kick</code> / <code>timeout</code></td><td>封禁/踢出/禁言成员</td></tr><tr><td><code>voice</code></td><td>语音操作</td></tr><tr><td><code>channel</code></td><td>渠道操作</td></tr><tr><td><code>event</code></td><td>事件操作</td></tr></tbody></table></p>
+<strong>示例：</strong></p><pre><code><h1>发送文本消息</h1></p>
+<p>openclaw message send --target +15555550123 --message "Hi"</p><h1>发送带媒体的消息</h1></p>
+<p>openclaw message send --target +15555550123 --message "Hi" --media photo.jpg</p><h1>创建 Discord 投票</h1></p>
+<p>openclaw message poll --channel discord --target channel:123 \</p>
+<p>  --poll-question "吃什么？" --poll-option "披萨" --poll-option "寿司"</p><h1>添加反应</h1></p>
+<p>openclaw message react --channel discord --target 123 --message-id 456 --emoji "✅"</p>
+</code></pre></p><hr><h2 id="渠道管理">渠道管理</h2></p><h3 id="openclaw-channels-渠道管理">openclaw channels — 渠道管理</h3></p><p>管理已连接的聊天渠道和账户。</p><strong>支持渠道：</strong> <code>telegram</code>/<code>whatsapp</code>/<code>discord</code>/<code>irc</code>/<code>googlechat</code>/<code>slack</code>/<code>signal</code>/<code>imessage</code>/<code>line</code>/<code>feishu</code>/<code>nostr</code>/<code>msteams</code>/<code>mattermost</code>/<code>matrix</code>/<code>openclaw-weixin</code>/<code>zalo</code> 等</p><strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>list</code></td><td>列出已配置的渠道和认证配置</td></tr><tr><td><code>status</code></td><td>显示网关渠道状态（<code>--deep</code> 深度检查）</td></tr><tr><td><code>add</code></td><td>添加或更新渠道账户</td></tr><tr><td><code>remove</code></td><td>禁用或删除渠道账户</td></tr><tr><td><code>login</code></td><td>链接渠道账户（如 WhatsApp Web）</td></tr><tr><td><code>logout</code></td><td>登出渠道会话</td></tr><tr><td><code>logs</code></td><td>显示最近的渠道日志</td></tr><tr><td><code>capabilities</code></td><td>显示提供商能力</td></tr><tr><td><code>resolve</code></td><td>解析渠道/用户名称为 ID</td></tr></tbody></table></p>
+<strong>示例：</strong></p><pre><code>openclaw channels list</p>
+<p>openclaw channels status --probe</p>
+<p>openclaw channels add --channel telegram --token <token></p>
+<p>openclaw channels login --channel whatsapp</p>
+</code></pre></p><hr><h3 id="openclaw-directory-通讯录">openclaw directory — 通讯录</h3></p><p>查询联系人、群组 ID（自己、联系人、群组）。</p><strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>self</code></td><td>显示当前账户身份</td></tr><tr><td><code>peers</code></td><td>联系人/用户目录</td></tr><tr><td><code>groups</code></td><td>群组目录</td></tr></tbody></table></p>
+<strong>示例：</strong></p><pre><code>openclaw directory self --channel slack</p>
+<p>openclaw directory peers list --channel slack --query "alice"</p>
+<p>openclaw directory groups list --channel discord</p>
+</code></pre></p><hr><h3 id="openclaw-pairing-配对管理">openclaw pairing — 配对管理</h3></p><p>安全 DM 配对（审批入站请求）。</p><strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>list</code></td><td>列出待处理配对请求</td></tr><tr><td><code>approve</code></td><td>批准配对码并允许发送者</td></tr></tbody></table></p>
+<hr><h3 id="openclaw-devices-设备管理">openclaw devices — 设备管理</h3></p><p>设备配对和认证 Token 管理。</p><strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>list</code></td><td>列出待处理和已配对设备</td></tr><tr><td><code>approve</code></td><td>批准待处理设备配对请求</td></tr><tr><td><code>reject</code></td><td>拒绝待处理设备配对请求</td></tr><tr><td><code>remove</code></td><td>移除已配对设备条目</td></tr><tr><td><code>clear</code></td><td>清除已配对设备</td></tr><tr><td><code>rotate</code></td><td>轮换设备 Token</td></tr><tr><td><code>revoke</code></td><td>撤销设备 Token</td></tr></tbody></table></p>
+<hr><h2 id="代理与模型">代理与模型</h2></p><h3 id="openclaw-agents-代理管理">openclaw agents — 代理管理</h3></p><p>管理隔离代理（工作区、认证、路由）。</p><strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>list</code></td><td>列出已配置代理</td></tr><tr><td><code>add</code></td><td>添加新的隔离代理</td></tr><tr><td><code>delete</code></td><td>删除代理并清理工作区/状态</td></tr><tr><td><code>set-identity</code></td><td>更新代理身份（名称/主题/Emoji/头像）</td></tr><tr><td><code>bind</code></td><td>添加路由绑定</td></tr><tr><td><code>unbind</code></td><td>移除路由绑定</td></tr><tr><td><code>bindings</code></td><td>列出路由绑定</td></tr></tbody></table></p>
+<strong>示例：</strong></p><pre><code>openclaw agents list</p>
+<p>openclaw agents add</p>
+<p>openclaw agents bind --agent ops --channel telegram --target @mychat</p>
+</code></pre></p><hr><h3 id="openclaw-models-模型管理">openclaw models — 模型管理</h3></p><p>模型发现、扫描和配置。</p><strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>list</code></td><td>列出模型（默认已配置的）</td></tr><tr><td><code>set</code></td><td>设置默认模型</td></tr><tr><td><code>set-image</code></td><td>设置图像模型</td></tr><tr><td><code>status</code></td><td>显示已配置模型状态（<code>--json</code>/<code>--plain</code>）</td></tr><tr><td><code>scan</code></td><td>扫描 OpenRouter 免费模型</td></tr><tr><td><code>aliases</code></td><td>管理模型别名</td></tr><tr><td><code>auth</code></td><td>管理模型认证配置</td></tr><tr><td><code>fallbacks</code></td><td>管理模型回退列表</td></tr><tr><td><code>image-fallbacks</code></td><td>管理图像模型回退列表</td></tr></tbody></table></p>
+<strong>示例：</strong></p><pre><code>openclaw models list</p>
+<p>openclaw models set claude-sonnet-4-20250514</p>
+<p>openclaw models status --json</p>
+</code></pre></p><hr><h2 id="浏览器控制">浏览器控制</h2></p><h3 id="openclaw-browser-浏览器控制">openclaw browser — 浏览器控制</h3></p><p>管理 OpenClaw 的专用浏览器（Chrome/Chromium），支持完整的浏览器自动化操作。</p><strong>全局选项：</strong></p><table><thead><tr><th>选项</th><th>说明</th><th>默认值</th></tr></thead><tbody><tr><td><code>--browser-profile <name></code></td><td>浏览器配置名称</td><td>配置值</td></tr><tr><td><code>--json</code></td><td>JSON 格式输出</td><td><code>false</code></td></tr><tr><td><code>--timeout <ms></code></td><td>超时时间（毫秒）</td><td>30000</td></tr><tr><td><code>--url <url></code></td><td>网关 WebSocket URL</td><td>配置值</td></tr><tr><td><code>--token <token></code></td><td>网关 Token</td><td>-</td></tr></tbody></table></p>
+<strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>start</code></td><td>启动浏览器（已运行则无操作）</td></tr><tr><td><code>stop</code></td><td>停止浏览器</td></tr><tr><td><code>status</code></td><td>显示浏览器状态</td></tr><tr><td><code>navigate</code></td><td>导航到 URL</td></tr><tr><td><code>open</code></td><td>在新标签页打开 URL</td></tr><tr><td><code>close</code></td><td>关闭标签页</td></tr><tr><td><code>tabs</code></td><td>列出打开的标签页</td></tr><tr><td><code>tab</code></td><td>标签页快捷操作（基于索引）</td></tr><tr><td><code>focus</code></td><td>聚焦标签页</td></tr><tr><td><code>snapshot</code></td><td>捕获页面快照（默认 AI 格式；<code>aria</code> 为无障碍树）</td></tr><tr><td><code>screenshot</code></td><td>截取屏幕截图</td></tr><tr><td><code>click</code></td><td>通过快照 ref 点击元素</td></tr><tr><td><code>type</code></td><td>通过 ref 输入文本</td></tr><tr><td><code>fill</code></td><td>使用 JSON 字段描述填充表单</td></tr><tr><td><code>hover</code></td><td>悬停元素</td></tr><tr><td><code>drag</code></td><td>拖拽元素</td></tr><tr><td><code>press</code></td><td>按键</td></tr><tr><td><code>select</code></td><td>选择下拉选项</td></tr><tr><td><code>scrollintoview</code></td><td>滚动元素到可视区域</td></tr><tr><td><code>highlight</code></td><td>高亮元素</td></tr><tr><td><code>upload</code></td><td>为文件选择器准备文件上传</td></tr><tr><td><code>download</code></td><td>点击 ref 并保存下载</td></tr><tr><td><code>evaluate</code></td><td>在页面执行 JavaScript</td></tr><tr><td><code>wait</code></td><td>等待（时间/选择器/URL/加载状态/JS 条件）</td></tr><tr><td><code>pdf</code></td><td>保存页面为 PDF</td></tr><tr><td><code>console</code></td><td>获取最近控制台消息</td></tr><tr><td><code>errors</code></td><td>获取最近页面错误</td></tr><tr><td><code>requests</code></td><td>获取最近网络请求</td></tr><tr><td><code>responsebody</code></td><td>等待网络响应并返回响应体</td></tr><tr><td><code>cookies</code></td><td>读写 Cookie</td></tr><tr><td><code>storage</code></td><td>读写 localStorage/sessionStorage</td></tr><tr><td><code>trace</code></td><td>录制 Playwright Trace</td></tr><tr><td><code>dialog</code></td><td>处理模态对话框（alert/confirm/prompt）</td></tr><tr><td><code>resize</code></td><td>调整视口大小</td></tr><tr><td><code>extension</code></td><td>Chrome 扩展辅助</td></tr><tr><td><code>profiles</code></td><td>列出浏览器配置</td></tr><tr><td><code>create-profile</code></td><td>创建浏览器配置</td></tr><tr><td><code>delete-profile</code></td><td>删除浏览器配置</td></tr><tr><td><code>reset-profile</code></td><td>重置浏览器配置（移至废纸篓）</td></tr><tr><td><code>set</code></td><td>浏览器环境设置</td></tr></tbody></table></p>
+<strong>示例：</strong></p><pre><code><h1>启动浏览器并打开页面</h1></p>
+<p>openclaw browser start</p>
+<p>openclaw browser navigate "https://example.com"</p><h1>截图</h1></p>
+<p>openclaw browser screenshot</p><h1>获取页面快照</h1></p>
+<p>openclaw browser snapshot</p><h1>点击元素（ref 来自 snapshot）</h1></p>
+<p>openclaw browser click --ref "button-1"</p><h1>执行 JavaScript</h1></p>
+<p>openclaw browser evaluate "document.title"</p>
+</code></pre></p><hr><h2 id="技能与插件">技能与插件</h2></p><h3 id="openclaw-skills-技能管理">openclaw skills — 技能管理</h3></p><p>列出和检查可用技能。</p><strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>list</code></td><td>列出所有可用技能</td></tr><tr><td><code>info</code></td><td>显示技能详细信息</td></tr><tr><td><code>check</code></td><td>检查哪些技能就绪、哪些缺少依赖</td></tr></tbody></table></p>
+<hr><h3 id="openclaw-plugins-插件管理">openclaw plugins — 插件管理</h3></p><p>管理 OpenClaw 插件和扩展。</p><strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>list</code></td><td>列出已发现的插件</td></tr><tr><td><code>info</code></td><td>显示插件详情</td></tr><tr><td><code>install</code></td><td>安装插件（路径/压缩包/npm 包名）</td></tr><tr><td><code>uninstall</code></td><td>卸载插件</td></tr><tr><td><code>enable</code></td><td>在配置中启用插件</td></tr><tr><td><code>disable</code></td><td>在配置中禁用插件</td></tr><tr><td><code>update</code></td><td>更新已安装插件（npm 安装）</td></tr><tr><td><code>doctor</code></td><td>报告插件加载问题</td></tr></tbody></table></p>
+<hr><h3 id="openclaw-hooks-钩子管理">openclaw hooks — 钩子管理</h3></p><p>管理内部代理钩子（Hooks）。</p><strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>list</code></td><td>列出所有钩子</td></tr><tr><td><code>info</code></td><td>显示钩子详细信息</td></tr><tr><td><code>check</code></td><td>检查钩子资格状态</td></tr><tr><td><code>install</code></td><td>安装钩子包（路径/压缩包/npm 包名）</td></tr><tr><td><code>enable</code></td><td>启用钩子</td></tr><tr><td><code>disable</code></td><td>禁用钩子</td></tr><tr><td><code>update</code></td><td>更新已安装钩子（npm 安装）</td></tr></tbody></table></p>
+<hr><h2 id="记忆系统">记忆系统</h2></p><h3 id="openclaw-memory-记忆管理">openclaw memory — 记忆管理</h3></p><p>搜索、检查和重新索引记忆文件。</p><strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>status</code></td><td>显示记忆搜索索引状态（<code>--deep</code> 探测嵌入提供商）</td></tr><tr><td><code>index</code></td><td>重新索引记忆文件（<code>--force</code> 强制全量重建）</td></tr><tr><td><code>search</code></td><td>搜索记忆文件（<code>--query</code>/<code>--max-results</code>）</td></tr></tbody></table></p>
+<strong>示例：</strong></p><pre><code>openclaw memory status</p>
+<p>openclaw memory status --deep</p>
+<p>openclaw memory index --force</p>
+<p>openclaw memory search "会议记录"</p>
+<p>openclaw memory search --query "部署" --max-results 20</p>
+</code></pre></p><hr><h2 id="定时任务">定时任务</h2></p><h3 id="openclaw-cron-定时任务">openclaw cron — 定时任务</h3></p><p>通过网关调度器管理定时任务。</p><strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>list</code></td><td>列出定时任务</td></tr><tr><td><code>add</code></td><td>添加定时任务</td></tr><tr><td><code>edit</code></td><td>编辑定时任务（补丁字段）</td></tr><tr><td><code>rm</code></td><td>删除定时任务</td></tr><tr><td><code>enable</code></td><td>启用定时任务</td></tr><tr><td><code>disable</code></td><td>禁用定时任务</td></tr><tr><td><code>run</code></td><td>立即运行定时任务（调试）</td></tr><tr><td><code>runs</code></td><td>显示定时任务运行历史（JSONL）</td></tr><tr><td><code>status</code></td><td>显示调度器状态</td></tr></tbody></table></p>
+<hr><h2 id="安全与审批">安全与审批</h2></p><h3 id="openclaw-security-安全审计">openclaw security — 安全审计</h3></p><p>审计本地配置和状态中的常见安全问题。</p><strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>audit</code></td><td>审计配置 + 本地状态（<code>--deep</code>/<code>--fix</code>/<code>--json</code>）</td></tr></tbody></table></p>
+<strong>示例：</strong></p><pre><code>openclaw security audit</p>
+<p>openclaw security audit --deep</p>
+<p>openclaw security audit --fix</p>
+</code></pre></p><hr><h3 id="openclaw-secrets-密钥管理">openclaw secrets — 密钥管理</h3></p><p>密钥运行时控制。</p><strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>audit</code></td><td>审计明文密钥、未解析引用和优先级漂移</td></tr><tr><td><code>configure</code></td><td>交互式密钥配置（提供商设置 + SecretRef 映射）</td></tr><tr><td><code>apply</code></td><td>应用预先生成的密钥计划</td></tr><tr><td><code>reload</code></td><td>重新解析密钥引用并原子替换运行时快照</td></tr></tbody></table></p>
+<hr><h3 id="openclaw-approvals-审批管理">openclaw approvals — 审批管理</h3></p><p>管理执行审批（网关或节点主机）。</p><strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>get</code></td><td>获取审批快照</td></tr><tr><td><code>set</code></td><td>用 JSON 文件替换审批配置</td></tr><tr><td><code>allowlist</code></td><td>编辑每代理白名单</td></tr></tbody></table></p>
+<hr><h3 id="openclaw-sandbox-沙箱管理">openclaw sandbox — 沙箱管理</h3></p><p>管理沙箱容器（基于 Docker 的代理隔离）。</p><strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>list</code></td><td>列出沙箱容器及其状态（<code>--browser</code> 仅浏览器容器）</td></tr><tr><td><code>recreate</code></td><td>移除容器以强制用更新配置重建（<code>--all</code>/<code>--session</code>/<code>--agent</code>）</td></tr><tr><td><code>explain</code></td><td>解释有效的沙箱/工具策略</td></tr></tbody></table></p>
+<strong>示例：</strong></p><pre><code>openclaw sandbox list</p>
+<p>openclaw sandbox recreate --all</p>
+<p>openclaw sandbox explain</p>
+</code></pre></p><hr><h2 id="节点与设备">节点与设备</h2></p><h3 id="openclaw-nodes-远程节点">openclaw nodes — 远程节点</h3></p><p>管理网关拥有的节点（配对、状态、调用和媒体）。</p><strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>status</code></td><td>列出已知节点及连接状态和能力</td></tr><tr><td><code>list</code></td><td>列出待处理和已配对节点</td></tr><tr><td><code>approve</code></td><td>批准配对请求</td></tr><tr><td><code>reject</code></td><td>拒绝配对请求</td></tr><tr><td><code>pending</code></td><td>列出待处理配对请求</td></tr><tr><td><code>describe</code></td><td>描述节点（能力 + 支持的命令）</td></tr><tr><td><code>invoke</code></td><td>在已配对节点上调用命令</td></tr><tr><td><code>run</code></td><td>在节点上运行 Shell 命令（仅 Mac）</td></tr><tr><td><code>camera</code></td><td>从节点捕获摄像头媒体</td></tr><tr><td><code>screen</code></td><td>从节点捕获屏幕录制</td></tr><tr><td><code>canvas</code></td><td>捕获或渲染节点的 Canvas 内容</td></tr><tr><td><code>location</code></td><td>获取节点位置</td></tr><tr><td><code>notify</code></td><td>在节点上发送本地通知（仅 Mac）</td></tr><tr><td><code>push</code></td><td>发送 APNs 测试推送（iOS 节点）</td></tr><tr><td><code>rename</code></td><td>重命名已配对节点</td></tr></tbody></table></p>
+<strong>示例：</strong></p><pre><code>openclaw nodes status</p>
+<p>openclaw nodes run --node <id> --raw "uname -a"</p>
+<p>openclaw nodes camera snap --node <id></p>
+</code></pre></p><hr><h2 id="配置与运维">配置与运维</h2></p><h3 id="openclaw-config-配置管理">openclaw config — 配置管理</h3></p><p>非交互式配置辅助（get/set/unset/file/validate）。无子命令运行时启动配置向导。</p><strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>get</code></td><td>通过点路径获取配置值</td></tr><tr><td><code>set</code></td><td>通过点路径设置配置值</td></tr><tr><td><code>unset</code></td><td>通过点路径移除配置值</td></tr><tr><td><code>file</code></td><td>打印活跃配置文件路径</td></tr><tr><td><code>validate</code></td><td>根据模式验证当前配置（不启动网关）</td></tr></tbody></table></p>
+<strong>选项：</strong></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>--section <section></code></td><td>配置向导分区（可重复，配合无子命令使用）</td></tr></tbody></table></p>
+<strong>示例：</strong></p><pre><code>openclaw config get gateway.port</p>
+<p>openclaw config set models.default "claude-sonnet-4-20250514"</p>
+<p>openclaw config file</p>
+<p>openclaw config validate</p>
+</code></pre></p><hr><h3 id="openclaw-configure-交互式配置向导">openclaw configure — 交互式配置向导</h3></p><p>交互式配置向导，配置凭证、渠道、网关和代理默认值。</p><pre><code>openclaw configure</p>
+</code></pre></p><hr><h3 id="openclaw-setup-初始化">openclaw setup — 初始化</h3></p><p>初始化本地配置和代理工作区。</p><pre><code>openclaw setup</p>
+</code></pre></p><hr><h3 id="openclaw-onboard-新手引导">openclaw onboard — 新手引导</h3></p><p>交互式新手引导向导（网关、工作区、技能）。</p><pre><code>openclaw onboard</p>
+</code></pre></p><hr><h3 id="openclaw-doctor-健康检查">openclaw doctor — 健康检查</h3></p><p>网关和渠道的健康检查 + 快速修复。</p><pre><code>openclaw doctor</p>
+<p>openclaw doctor --fix    # 应用修复</p>
+</code></pre></p><hr><h3 id="openclaw-update-更新管理">openclaw update — 更新管理</h3></p><p>更新 OpenClaw 和检查更新渠道状态。</p><strong>选项：</strong></p><table><thead><tr><th>选项</th><th>说明</th><th>默认值</th></tr></thead><tbody><tr><td><code>--channel <stable\</td><td>beta\</td><td>dev></code></td><td>持久化更新渠道（git + npm）</td><td>-</td></tr><tr><td><code>--tag <dist-tag\</td><td>version></code></td><td>覆盖 npm dist-tag 或版本</td><td>-</td></tr><tr><td><code>--dry-run</code></td><td>预览更新操作（不执行）</td><td><code>false</code></td></tr><tr><td><code>--yes</code></td><td>跳过确认提示（非交互）</td><td><code>false</code></td></tr><tr><td><code>--no-restart</code></td><td>跳过更新后重启网关</td><td><code>false</code></td></tr><tr><td><code>--json</code></td><td>JSON 格式输出</td><td><code>false</code></td></tr><tr><td><code>--timeout <seconds></code></td><td>每步超时时间</td><td>1200</td></tr></tbody></table></p>
+<strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>status</code></td><td>显示更新渠道和版本状态</td></tr><tr><td><code>wizard</code></td><td>交互式更新向导</td></tr></tbody></table></p>
+<strong>示例：</strong></p><pre><code>openclaw update status</p>
+<p>openclaw update --channel beta --yes</p>
+<p>openclaw update --dry-run</p>
+</code></pre></p><hr><h3 id="openclaw-backup-备份管理">openclaw backup — 备份管理</h3></p><p>创建和验证 OpenClaw 状态的本地备份归档。</p><strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>create</code></td><td>创建配置、凭证、会话和工作区的备份归档</td></tr><tr><td><code>verify</code></td><td>验证备份归档及其嵌入清单</td></tr></tbody></table></p>
+<strong>示例：</strong></p><pre><code>openclaw backup create</p>
+<p>openclaw backup verify <archive-path></p>
+</code></pre></p><hr><h2 id="协议与集成">协议与集成</h2></p><h3 id="openclaw-acp-agent-control-protocol">openclaw acp — Agent Control Protocol</h3></p><p>运行基于网关的 ACP 桥接。</p><strong>选项：</strong></p><table><thead><tr><th>选项</th><th>说明</th><th>默认值</th></tr></thead><tbody><tr><td><code>--session <key></code></td><td>默认会话密钥（如 <code>agent:main:main</code>）</td><td>-</td></tr><tr><td><code>--session-label <label></code></td><td>默认会话标签</td><td>-</td></tr><tr><td><code>--url <url></code></td><td>网关 WebSocket URL</td><td>配置值</td></tr><tr><td><code>--token <token></code></td><td>网关 Token</td><td>-</td></tr><tr><td><code>--provenance <mode></code></td><td>来源模式：<code>off</code>/<code>meta</code>/<code>meta+receipt</code></td><td>-</td></tr><tr><td><code>--reset-session</code></td><td>使用前重置会话密钥</td><td><code>false</code></td></tr><tr><td><code>--require-existing</code></td><td>会话不存在则失败</td><td><code>false</code></td></tr><tr><td><code>--no-prefix-cwd</code></td><td>不在提示前添加工作目录</td><td><code>false</code></td></tr></tbody></table></p>
+<strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>client</code></td><td>运行交互式 ACP 客户端</td></tr></tbody></table></p>
+<hr><h3 id="openclaw-webhooks-webhook-集成">openclaw webhooks — Webhook 集成</h3></p><p>Webhook 辅助和集成。</p><strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gmail</code></td><td>Gmail Pub/Sub 钩子</td></tr></tbody></table></p>
+<hr><h3 id="openclaw-dns-dns-辅助">openclaw dns — DNS 辅助</h3></p><p>DNS 辅助工具，用于广域网发现（Tailscale + CoreDNS）。</p><strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>setup</code></td><td>设置 CoreDNS 为单播 DNS-SD 提供服务（广域 Bonjour）</td></tr></tbody></table></p>
+<hr><h3 id="openclaw-system-系统事件">openclaw system — 系统事件</h3></p><p>系统工具（事件、心跳、在线状态）。</p><strong>子命令：</strong></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>event</code></td><td>入队系统事件并可选触发心跳</td></tr><tr><td><code>heartbeat</code></td><td>心跳控制</td></tr><tr><td><code>presence</code></td><td>列出系统在线状态条目</td></tr></tbody></table></p>
+<hr><h2 id="其他命令">其他命令</h2></p><h3 id="openclaw-tui-终端界面">openclaw tui — 终端界面</h3></p><p>打开连接到网关的终端用户界面。</p><pre><code>openclaw tui</p>
+</code></pre></p><hr><h3 id="openclaw-dashboard-控制面板">openclaw dashboard — 控制面板</h3></p><p>使用当前 Token 打开控制 UI。</p><pre><code>openclaw dashboard</p>
+</code></pre></p><hr><h3 id="openclaw-docs-文档搜索">openclaw docs — 文档搜索</h3></p><p>搜索 OpenClaw 在线文档。</p><pre><code>openclaw docs <query></p>
+</code></pre></p><hr><h3 id="openclaw-logs-日志查看">openclaw logs — 日志查看</h3></p><p>通过 RPC 实时追踪网关文件日志。</p><pre><code>openclaw logs</p>
+</code></pre></p><hr><h3 id="openclaw-health-健康状态">openclaw health — 健康状态</h3></p><p>从运行中的网关获取健康信息。</p><pre><code>openclaw health</p>
+</code></pre></p><hr><h3 id="openclaw-status-全局状态">openclaw status — 全局状态</h3></p><p>显示渠道健康和最近的会话接收者。</p><pre><code>openclaw status</p>
+</code></pre></p><hr><h3 id="openclaw-qr-二维码生成">openclaw qr — 二维码生成</h3></p><p>生成 iOS 配对二维码/设置码。</p><pre><code>openclaw qr</p>
+</code></pre></p><hr><h3 id="openclaw-completion-shell-补全">openclaw completion — Shell 补全</h3></p><p>生成 Shell 补全脚本。</p><pre><code>openclaw completion</p>
+</code></pre></p><hr><h3 id="openclaw-reset-重置">openclaw reset — 重置</h3></p><p>重置本地配置/状态（CLI 保持安装）。</p><pre><code>openclaw reset</p>
+</code></pre></p><hr><h3 id="openclaw-uninstall-卸载">openclaw uninstall — 卸载</h3></p><p>卸载网关服务 + 本地数据（CLI 保持安装）。</p><pre><code>openclaw uninstall</p>
+</code></pre></p><hr><h2 id="文件路径说明">文件路径说明</h2></p><table><thead><tr><th>路径</th><th>说明</th></tr></thead><tbody><tr><td><code>~/.openclaw/</code></td><td>默认状态目录</td></tr><tr><td><code>~/.openclaw-dev/</code></td><td>开发模式状态目录（<code>--dev</code>）</td></tr><tr><td><code>~/.openclaw-<name>/</code></td><td>命名配置状态目录（<code>--profile <name></code>）</td></tr><tr><td><code>~/.openclaw/extensions/</code></td><td>插件扩展目录</td></tr></tbody></table></p>
+<hr><blockquote>参考文档：https://docs.openclaw.ai/cli</blockquote></p>
+</main>
+  </div>
+  
+  <button class="drawer-toggle" id="drawerToggle" onclick="toggleDrawer()" title="打开目录">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <div class="overlay" id="overlay" onclick="toggleDrawer()"></div>
+  <script>
+    function toggleDrawer() {
+      var s = document.querySelector('.sidebar');
+      var o = document.getElementById('overlay');
+      var t = document.getElementById('drawerToggle');
+      s.classList.toggle('open');
+      o.classList.toggle('active');
+      t.classList.toggle('active');
+    }
+    // 点击侧边栏链接后自动关闭抽屉
+    document.querySelectorAll('.sidebar nav a').forEach(function(a) {
+      a.addEventListener('click', function() {
+        if (document.querySelector('.sidebar').classList.contains('open')) toggleDrawer();
+      });
+    });
+    // 粘性标题
+    (function() {
+      var h1el = document.querySelector('.main > h1');
+      if (!h1el) return;
+      var title = h1el.textContent;
+      var header = document.createElement('div');
+      header.className = 'sticky-header';
+      header.innerHTML = '<h1>' + title + '</h1>';
+      h1el.parentNode.insertBefore(header, h1el.nextSibling);
+      window.addEventListener('scroll', function() {
+        var rect = h1el.getBoundingClientRect();
+        header.classList.toggle('visible', rect.bottom < 0);
+      }, { passive: true });
+    })();
+  </script>
+</body>
+</html>

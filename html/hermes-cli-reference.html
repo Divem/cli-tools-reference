@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hermes CLI 参考手册 - Cursor Style</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect rx=%2212%22 width=%22100%22 height=%22100%22 fill=%22%231a1a2e%22/><text x=%2250%22 y=%2268%22 font-size=%2255%22 font-family=%22monospace%22 font-weight=%22bold%22 text-anchor=%22middle%22 fill=%22%2300d4aa%22>&gt;_</text></svg>">
+  <style>
+    :root {
+      --color-bg: #0d1117;
+      --color-text: #e6edf3;
+      --color-gray: #8b949e;
+      --color-accent: #58a6ff;
+      --color-border: rgba(139,148,158,0.2);
+      --color-code-bg: #161b22;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif; background: var(--color-bg); color: var(--color-text); line-height: 1.6; font-size: 16px; }
+    .container { display: flex; max-width: 1400px; margin: 0 auto; }
+    .sidebar { width: 300px; padding: 1.5rem; overflow-y: auto; background: #0d1117; border-right: 1px solid var(--color-border); }
+    .sidebar h2 { font-size: 0.75rem; font-weight: 600; color: var(--color-gray); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; }
+    .sidebar a { display: block; padding: 0.5rem 0; color: var(--color-gray); text-decoration: none; font-size: 0.875rem; transition: color 0.2s; }
+    .sidebar a:hover { color: var(--color-accent); }
+    .main { flex: 1; padding: 3rem 4rem; max-width: 900px; }
+    h1 { font-size: 2.5rem; font-weight: 600; margin-bottom: 1.5rem; background: linear-gradient(90deg, #58a6ff, #a371f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    h2 { font-size: 1.5rem; font-weight: 600; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--color-text); border-bottom: 1px solid var(--color-border); padding-bottom: 0.5rem; }
+    h3 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--color-text); }
+    p { margin-bottom: 1rem; color: var(--color-gray); }
+    code { font-family: 'SF Mono', Monaco, monospace; background: var(--color-code-bg); padding: 0.2rem 0.4rem; border-radius: 6px; font-size: 0.875em; color: var(--color-accent); }
+    pre { background: var(--color-code-bg); padding: 1.25rem; border-radius: 12px; overflow-x: auto; margin: 1.5rem 0; border: 1px solid var(--color-border); }
+    pre code { background: none; padding: 0; color: var(--color-text); font-size: 0.875rem; line-height: 1.7; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.875rem; }
+    th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--color-border); }
+    th { font-weight: 600; color: var(--color-text); }
+    blockquote { border-left: 4px solid var(--color-accent); padding-left: 1rem; margin: 1.5rem 0; color: var(--color-gray); }
+    ul { margin: 1rem 0; padding-left: 1.5rem; }
+    li { margin: 0.5rem 0; color: var(--color-gray); }
+    hr { border: none; border-top: 1px solid var(--color-border); margin: 2rem 0; }
+    a { color: var(--color-accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    
+    /* 桌面端：菜单按钮和遮罩层隐藏 */
+    .drawer-toggle { display: none; }
+    .overlay { display: none; }
+    /* 粘性标题 */
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--color-bg, #fff);
+      padding: 12px 1.5rem;
+      margin: 0 -4rem 1.5rem;
+      border-bottom: 1px solid var(--color-border);
+      display: none;
+    }
+    .sticky-header.visible { display: block; }
+    .sticky-header h1 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin: 0;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .drawer-toggle { background: #161b22; border-color: var(--color-border); }
+    .drawer-toggle:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+    .drawer-toggle svg { stroke: var(--color-text); }
+    .sticky-header { background: var(--color-bg); }
+    .sticky-header h1 { color: var(--color-text); background: none; -webkit-text-fill-color: unset; }
+    
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+    .sidebar-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      margin-bottom: 1rem;
+      color: #666;
+      text-decoration: none;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      border-radius: 8px;
+      border: 1px solid var(--color-border);
+      transition: all 0.2s;
+    }
+    .sidebar-back:hover {
+      color: var(--color-accent, #333);
+      border-color: var(--color-accent, #333);
+    }
+    .sidebar nav { display: flex; flex-direction: column; gap: 2px; }
+    .sidebar-back { color: var(--color-gray); border-color: var(--color-border); }
+    .sidebar-back:hover { color: var(--color-accent); border-color: var(--color-accent); }
+    
+    @media (max-width: 768px) {
+      .container { flex-direction: column; }
+      /* 移动端：侧边栏变为抽屉 */
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 280px;
+        height: 100vh;
+        z-index: 1000;
+        padding: 1.5rem;
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: none;
+      }
+      .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 4px 0 24px rgba(0,0,0,0.1);
+      }
+      /* 移动端：显示菜单按钮 */
+      .drawer-toggle {
+        display: flex;
+        position: fixed;
+        bottom: 24px;
+        left: 16px;
+        z-index: 1100;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        border: 1px solid var(--color-border);
+        background: var(--color-bg, #fff);
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        transition: all 0.2s;
+      }
+      .drawer-toggle:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+      .drawer-toggle svg { transition: transform 0.3s ease; }
+      .drawer-toggle.active svg { transform: rotate(180deg); }
+      /* 移动端：显示遮罩层 */
+      .overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.2);
+        z-index: 999;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+      }
+      .overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      /* 移动端粘性标题：左侧留出菜单按钮空间 */
+      .sticky-header { margin: 0 -1.5rem 1rem; padding: 12px 1rem 12px 64px; }
+      .main { padding: 2rem 1.5rem; }
+      h1 { font-size: 1.75rem; }
+      h2 { font-size: 1.375rem; }
+      pre { padding: 1rem; font-size: 0.8125rem; }
+      table { font-size: 0.8125rem; display: block; overflow-x: auto; }
+      th, td { padding: 0.5rem; min-width: 60px; }
+    }
+    @media (max-width: 480px) {
+      .main { padding: 1.25rem 1rem; }
+      h1 { font-size: 1.5rem; }
+      h2 { font-size: 1.25rem; }
+      pre { padding: 0.75rem; font-size: 0.75rem; border-radius: 6px; }
+      code { font-size: 0.8125rem; }
+      table { font-size: 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <a href="./index.html" class="sidebar-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        返回文档列表
+      </a>
+      <h2>Table of Contents</h2>
+      <nav><a href="#目录" >目录</a>
+<a href="#快速开始" >快速开始</a>
+<a href="#全局选项" >全局选项</a>
+<a href="#核心命令" >核心命令</a>
+<a href="#hermes-chat-交互式对话" style="padding-left: 1rem;">hermes chat — 交互式对话</a>
+<a href="#hermes-model-模型选择" style="padding-left: 1rem;">hermes model — 模型选择</a>
+<a href="#hermes-setup-配置向导" style="padding-left: 1rem;">hermes setup — 配置向导</a>
+<a href="#hermes-status-状态查看" style="padding-left: 1rem;">hermes status — 状态查看</a>
+<a href="#hermes-config-配置管理" style="padding-left: 1rem;">hermes config — 配置管理</a>
+<a href="#认证命令" >认证命令</a>
+<a href="#hermes-login-登录" style="padding-left: 1rem;">hermes login — 登录</a>
+<a href="#hermes-logout-登出" style="padding-left: 1rem;">hermes logout — 登出</a>
+<a href="#hermes-auth-凭证池管理" style="padding-left: 1rem;">hermes auth — 凭证池管理</a>
+<a href="#消息平台命令" >消息平台命令</a>
+<a href="#hermes-gateway-消息网关" style="padding-left: 1rem;">hermes gateway — 消息网关</a>
+<a href="#hermes-whatsapp-whatsapp-集成" style="padding-left: 1rem;">hermes whatsapp — WhatsApp 集成</a>
+<a href="#hermes-webhook-webhook-管理" style="padding-left: 1rem;">hermes webhook — Webhook 管理</a>
+<a href="#hermes-pairing-配对授权" style="padding-left: 1rem;">hermes pairing — 配对授权</a>
+<a href="#技能与插件" >技能与插件</a>
+<a href="#hermes-skills-技能管理" style="padding-left: 1rem;">hermes skills — 技能管理</a>
+<a href="#hermes-plugins-插件管理" style="padding-left: 1rem;">hermes plugins — 插件管理</a>
+<a href="#hermes-tools-工具配置" style="padding-left: 1rem;">hermes tools — 工具配置</a>
+<a href="#hermes-mcp-mcp-协议" style="padding-left: 1rem;">hermes mcp — MCP 协议</a>
+<a href="#会话与数据" >会话与数据</a>
+<a href="#hermes-sessions-会话管理" style="padding-left: 1rem;">hermes sessions — 会话管理</a>
+<a href="#hermes-memory-记忆管理" style="padding-left: 1rem;">hermes memory — 记忆管理</a>
+<a href="#hermes-insights-使用洞察" style="padding-left: 1rem;">hermes insights — 使用洞察</a>
+<a href="#hermes-logs-日志查看" style="padding-left: 1rem;">hermes logs — 日志查看</a>
+<a href="#任务调度" >任务调度</a>
+<a href="#hermes-cron-定时任务" style="padding-left: 1rem;">hermes cron — 定时任务</a>
+<a href="#系统命令" >系统命令</a>
+<a href="#hermes-doctor-诊断" style="padding-left: 1rem;">hermes doctor — 诊断</a>
+<a href="#hermes-dump-状态导出" style="padding-left: 1rem;">hermes dump — 状态导出</a>
+<a href="#hermes-debug-调试" style="padding-left: 1rem;">hermes debug — 调试</a>
+<a href="#hermes-backup-import-备份与恢复" style="padding-left: 1rem;">hermes backup / import — 备份与恢复</a>
+<a href="#hermes-version-版本信息" style="padding-left: 1rem;">hermes version — 版本信息</a>
+<a href="#hermes-update-更新" style="padding-left: 1rem;">hermes update — 更新</a>
+<a href="#hermes-uninstall-卸载" style="padding-left: 1rem;">hermes uninstall — 卸载</a>
+<a href="#高级功能" >高级功能</a>
+<a href="#hermes-profile-多实例管理" style="padding-left: 1rem;">hermes profile — 多实例管理</a>
+<a href="#hermes-acp-编辑器集成" style="padding-left: 1rem;">hermes acp — 编辑器集成</a>
+<a href="#hermes-dashboard-web-面板" style="padding-left: 1rem;">hermes dashboard — Web 面板</a>
+<a href="#hermes-completion-shell-补全" style="padding-left: 1rem;">hermes completion — Shell 补全</a>
+<a href="#hermes-claw-openclaw-迁移" style="padding-left: 1rem;">hermes claw — OpenClaw 迁移</a>
+<a href="#支持的平台与提供商" >支持的平台与提供商</a>
+<a href="#推理提供商" style="padding-left: 1rem;">推理提供商</a>
+<a href="#消息平台" style="padding-left: 1rem;">消息平台</a>
+<a href="#常用工作流" >常用工作流</a>
+<a href="#首次安装" style="padding-left: 1rem;">首次安装</a>
+<a href="#技能安装" style="padding-left: 1rem;">技能安装</a>
+<a href="#多平台部署" style="padding-left: 1rem;">多平台部署</a>
+<a href="#调试排障" style="padding-left: 1rem;">调试排障</a></nav>
+    </aside>
+    <main class="main"><h1>Hermes CLI 参考手册</h1></p><blockquote>版本：v0.9.0 (2026.4.13) | 安装路径：<code>~/.hermes/hermes-agent/</code></blockquote></p><p>Hermes Agent 是一个具备工具调用能力的 AI 助手，支持多推理提供商、多消息平台集成（Telegram/Discord/WhatsApp）、技能系统、插件体系、定时任务和 MCP 协议。</p><hr><h2 id="目录">目录</h2></p>
+<ul><li><a href="#快速开始">快速开始</a></li></p>
+<li><a href="#全局选项">全局选项</a></li></p>
+<li><a href="#核心命令">核心命令</a></li></p>
+<li><a href="#hermes-chat--交互式对话">hermes chat — 交互式对话</a></li></p>
+<li><a href="#hermes-model--模型选择">hermes model — 模型选择</a></li></p>
+<li><a href="#hermes-setup--配置向导">hermes setup — 配置向导</a></li></p>
+<li><a href="#hermes-status--状态查看">hermes status — 状态查看</a></li></p>
+<li><a href="#hermes-config--配置管理">hermes config — 配置管理</a></li></p>
+<li><a href="#认证命令">认证命令</a></li></p>
+<li><a href="#hermes-login--登录">hermes login — 登录</a></li></p>
+<li><a href="#hermes-logout--登出">hermes logout — 登出</a></li></p>
+<li><a href="#hermes-auth--凭证池管理">hermes auth — 凭证池管理</a></li></p>
+<li><a href="#消息平台命令">消息平台命令</a></li></p>
+<li><a href="#hermes-gateway--消息网关">hermes gateway — 消息网关</a></li></p>
+<li><a href="#hermes-whatsapp--whatsapp-集成">hermes whatsapp — WhatsApp 集成</a></li></p>
+<li><a href="#hermes-webhook--webhook-管理">hermes webhook — Webhook 管理</a></li></p>
+<li><a href="#hermes-pairing--配对授权">hermes pairing — 配对授权</a></li></p>
+<li><a href="#技能与插件">技能与插件</a></li></p>
+<li><a href="#hermes-skills--技能管理">hermes skills — 技能管理</a></li></p>
+<li><a href="#hermes-plugins--插件管理">hermes plugins — 插件管理</a></li></p>
+<li><a href="#hermes-tools--工具配置">hermes tools — 工具配置</a></li></p>
+<li><a href="#hermes-mcp--mcp-协议">hermes mcp — MCP 协议</a></li></p>
+<li><a href="#会话与数据">会话与数据</a></li></p>
+<li><a href="#hermes-sessions--会话管理">hermes sessions — 会话管理</a></li></p>
+<li><a href="#hermes-memory--记忆管理">hermes memory — 记忆管理</a></li></p>
+<li><a href="#hermes-insights--使用洞察">hermes insights — 使用洞察</a></li></p>
+<li><a href="#hermes-logs--日志查看">hermes logs — 日志查看</a></li></p>
+<li><a href="#任务调度">任务调度</a></li></p>
+<li><a href="#hermes-cron--定时任务">hermes cron — 定时任务</a></li></p>
+<li><a href="#系统命令">系统命令</a></li></p>
+<li><a href="#hermes-doctor--诊断">hermes doctor — 诊断</a></li></p>
+<li><a href="#hermes-dump--状态导出">hermes dump — 状态导出</a></li></p>
+<li><a href="#hermes-debug--调试">hermes debug — 调试</a></li></p>
+<li><a href="#hermes-backup--import--备份与恢复">hermes backup / import — 备份与恢复</a></li></p>
+<li><a href="#hermes-version--版本信息">hermes version — 版本信息</a></li></p>
+<li><a href="#hermes-update--更新">hermes update — 更新</a></li></p>
+<li><a href="#hermes-uninstall--卸载">hermes uninstall — 卸载</a></li></p>
+<li><a href="#高级功能">高级功能</a></li></p>
+<li><a href="#hermes-profile--多实例管理">hermes profile — 多实例管理</a></li></p>
+<li><a href="#hermes-acp--编辑器集成">hermes acp — 编辑器集成</a></li></p>
+<li><a href="#hermes-dashboard--web-面板">hermes dashboard — Web 面板</a></li></p>
+<li><a href="#hermes-completion--shell-补全">hermes completion — Shell 补全</a></li></p>
+<li><a href="#hermes-claw--openclaw-迁移">hermes claw — OpenClaw 迁移</a></li></p>
+<li><a href="#支持的平台与提供商">支持的平台与提供商</a></li></p>
+</ul></p>
+<hr><h2 id="快速开始">快速开始</h2></p><pre><code><h1>首次配置</h1></p>
+<p>hermes setup</p><h1>启动交互式对话</h1></p>
+<p>hermes</p><h1>单次查询模式</h1></p>
+<p>hermes chat -q "解释 Python 的 GIL"</p><h1>恢复最近会话</h1></p>
+<p>hermes -c</p><h1>查看系统状态</h1></p>
+<p>hermes status</p>
+</code></pre></p><hr><h2 id="全局选项">全局选项</h2></p><table><thead><tr><th>选项</th><th>缩写</th><th>说明</th></tr></thead><tbody><tr><td><code>--version</code></td><td><code>-V</code></td><td>显示版本号</td></tr><tr><td><code>--resume SESSION</code></td><td><code>-r</code></td><td>按会话 ID 恢复之前的会话</td></tr><tr><td><code>--continue [NAME]</code></td><td><code>-c</code></td><td>按名称恢复会话，省略名称则恢复最近会话</td></tr><tr><td><code>--worktree</code></td><td><code>-w</code></td><td>在隔离的 git worktree 中运行（并行 agent）</td></tr><tr><td><code>--skills SKILLS</code></td><td><code>-s</code></td><td>预加载技能，逗号分隔</td></tr><tr><td><code>--yolo</code></td><td>跳过所有危险命令确认提示</td></tr><tr><td><code>--pass-session-id</code></td><td>在系统提示中包含会话 ID</td></tr></tbody></table></p>
+<hr><h2 id="核心命令">核心命令</h2></p><h3 id="hermes-chat-交互式对话">hermes chat — 交互式对话</h3></p><p>启动与 AI 助手的交互式对话会话。</p><pre><code>hermes                          # 交互式对话</p>
+<p>hermes chat -q "Hello"          # 单次查询模式（非交互）</p>
+<p>hermes chat --image photo.png -q "描述这张图片"  # 附带图片</p>
+<p>hermes chat -m anthropic/claude-sonnet-4  # 指定模型</p>
+<p>hermes chat --provider anthropic  # 指定推理提供商</p>
+<p>hermes chat -s github-auth,hermes-agent-dev  # 预加载技能</p>
+<p>hermes -c "my project"          # 按名称恢复会话</p>
+<p>hermes --resume abc123          # 按ID恢复会话</p>
+<p>hermes -w                       # 隔离 worktree 模式</p>
+<p>hermes --checkpoints            # 启用文件系统检查点（可用 /rollback 恢复）</p>
+</code></pre></p><strong>选项：</strong></p><table><thead><tr><th>选项</th><th>缩写</th><th>说明</th></tr></thead><tbody><tr><td><code>--query QUERY</code></td><td><code>-q</code></td><td>单次查询（非交互模式）</td></tr><tr><td><code>--image IMAGE</code></td><td>附加本地图片路径（配合 -q 使用）</td></tr><tr><td><code>--model MODEL</code></td><td><code>-m</code></td><td>使用的模型（如 <code>anthropic/claude-sonnet-4</code>）</td></tr><tr><td><code>--toolsets TOOLSETS</code></td><td><code>-t</code></td><td>启用的工具集，逗号分隔</td></tr><tr><td><code>--skills SKILLS</code></td><td><code>-s</code></td><td>预加载技能</td></tr><tr><td><code>--provider PROVIDER</code></td><td>推理提供商（见下表）</td></tr><tr><td><code>--verbose</code></td><td><code>-v</code></td><td>详细输出</td></tr><tr><td><code>--quiet</code></td><td><code>-Q</code></td><td>静默模式，仅输出最终回复</td></tr><tr><td><code>--resume SESSION_ID</code></td><td><code>-r</code></td><td>恢复会话</td></tr><tr><td><code>--continue [NAME]</code></td><td><code>-c</code></td><td>按名称恢复会话</td></tr><tr><td><code>--worktree</code></td><td><code>-w</code></td><td>隔离 git worktree</td></tr><tr><td><code>--checkpoints</code></td><td>启用文件检查点</td></tr><tr><td><code>--max-turns N</code></td><td>最大工具调用迭代次数（默认 90）</td></tr><tr><td><code>--yolo</code></td><td>跳过危险确认</td></tr><tr><td><code>--pass-session-id</code></td><td>传递会话 ID</td></tr><tr><td><code>--source SOURCE</code></td><td>会话来源标签（默认 <code>cli</code>）</td></tr></tbody></table></p>
+<hr><h3 id="hermes-model-模型选择">hermes model — 模型选择</h3></p><p>交互式选择推理提供商和默认模型。</p><pre><code>hermes model                    # 交互式选择模型</p>
+<p>hermes model --no-browser       # 不自动打开浏览器</p>
+<p>hermes model --inference-url https://api.example.com  # 自定义推理 API</p>
+</code></pre></p><strong>选项：</strong></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>--portal-url URL</code></td><td>Nous 登录门户 URL</td></tr><tr><td><code>--inference-url URL</code></td><td>推理 API URL</td></tr><tr><td><code>--client-id ID</code></td><td>OAuth 客户端 ID（默认 <code>hermes-cli</code>）</td></tr><tr><td><code>--scope SCOPE</code></td><td>OAuth 范围</td></tr><tr><td><code>--no-browser</code></td><td>不自动打开浏览器</td></tr><tr><td><code>--timeout SECS</code></td><td>HTTP 请求超时（默认 15 秒）</td></tr><tr><td><code>--ca-bundle PATH</code></td><td>CA 证书路径</td></tr><tr><td><code>--insecure</code></td><td>禁用 TLS 验证（仅测试）</td></tr></tbody></table></p>
+<hr><h3 id="hermes-setup-配置向导">hermes setup — 配置向导</h3></p><p>交互式配置 Hermes Agent。</p><pre><code>hermes setup                    # 完整配置向导</p>
+<p>hermes setup model              # 仅配置模型</p>
+<p>hermes setup tts                # 仅配置 TTS</p>
+<p>hermes setup terminal           # 仅配置终端</p>
+<p>hermes setup gateway            # 仅配置网关</p>
+<p>hermes setup tools              # 仅配置工具</p>
+<p>hermes setup agent              # 仅配置 agent</p>
+<p>hermes setup --reset            # 重置为默认配置</p>
+<p>hermes setup --non-interactive  # 非交互模式（使用默认值/环境变量）</p>
+</code></pre></p><strong>可配置模块：</strong> <code>model</code> <code>tts</code> <code>terminal</code> <code>gateway</code> <code>tools</code> <code>agent</code></p><hr><h3 id="hermes-status-状态查看">hermes status — 状态查看</h3></p><p>查看 Hermes Agent 各组件状态。</p><pre><code>hermes status                   # 基本状态</p>
+<p>hermes status --all             # 详细状态（敏感信息已脱敏，可分享）</p>
+<p>hermes status --deep            # 深度检查（较慢）</p>
+</code></pre></p><hr><h3 id="hermes-config-配置管理">hermes config — 配置管理</h3></p><p>查看和编辑 Hermes Agent 配置。</p><pre><code>hermes config show              # 显示当前配置</p>
+<p>hermes config edit              # 在 $EDITOR 中编辑配置文件</p>
+<p>hermes config set model gpt-4  # 设置配置项</p>
+<p>hermes config path              # 显示配置文件路径</p>
+<p>hermes config env-path          # 显示 .env 文件路径</p>
+<p>hermes config check             # 检查缺失/过期的配置</p>
+<p>hermes config migrate           # 更新配置以适配新版本</p>
+</code></pre></p><strong>子命令：</strong> <code>show</code> <code>edit</code> <code>set</code> <code>path</code> <code>env-path</code> <code>check</code> <code>migrate</code></p><hr><h2 id="认证命令">认证命令</h2></p><h3 id="hermes-login-登录">hermes login — 登录</h3></p><p>通过 OAuth 设备授权流程进行认证。</p><pre><code>hermes login                    # 登录默认提供商（Nous）</p>
+<p>hermes login --provider openai-codex  # 指定提供商</p>
+<p>hermes login --no-browser       # 不自动打开浏览器</p>
+</code></pre></p><strong>选项：</strong></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>--provider {nous,openai-codex}</code></td><td>认证提供商</td></tr><tr><td><code>--portal-url URL</code></td><td>门户 URL</td></tr><tr><td><code>--inference-url URL</code></td><td>推理 API URL</td></tr><tr><td><code>--client-id ID</code></td><td>OAuth 客户端 ID</td></tr><tr><td><code>--scope SCOPE</code></td><td>OAuth 范围</td></tr><tr><td><code>--no-browser</code></td><td>不打开浏览器</td></tr><tr><td><code>--timeout SECS</code></td><td>HTTP 超时</td></tr><tr><td><code>--ca-bundle PATH</code></td><td>CA 证书路径</td></tr><tr><td><code>--insecure</code></td><td>禁用 TLS 验证</td></tr></tbody></table></p>
+<hr><h3 id="hermes-logout-登出">hermes logout — 登出</h3></p><p>清除存储的认证信息。</p><pre><code>hermes logout                   # 登出当前提供商</p>
+<p>hermes logout --provider nous   # 指定提供商登出</p>
+</code></pre></p><hr><h3 id="hermes-auth-凭证池管理">hermes auth — 凭证池管理</h3></p><p>管理多个推理提供商的凭证池，实现密钥轮转和负载均衡。</p><pre><code>hermes auth add <provider>      # 添加凭证</p>
+<p>hermes auth list                # 列出所有凭证</p>
+<p>hermes auth remove <provider> <token>  # 移除凭证（按索引/ID/标签）</p>
+<p>hermes auth reset <provider>    # 清除提供商的耗尽状态</p>
+</code></pre></p><strong>子命令：</strong> <code>add</code> <code>list</code> <code>remove</code> <code>reset</code></p><hr><h2 id="消息平台命令">消息平台命令</h2></p><h3 id="hermes-gateway-消息网关">hermes gateway — 消息网关</h3></p><p>管理消息平台网关（Telegram、Discord、WhatsApp）。</p><pre><code>hermes gateway run              # 前台运行（WSL/Docker/Termux 推荐）</p>
+<p>hermes gateway start            # 启动后台服务（systemd/launchd）</p>
+<p>hermes gateway stop             # 停止后台服务</p>
+<p>hermes gateway restart          # 重启后台服务</p>
+<p>hermes gateway status           # 查看网关状态</p>
+<p>hermes gateway install          # 安装为后台服务</p>
+<p>hermes gateway uninstall        # 卸载后台服务</p>
+<p>hermes gateway setup            # 配置消息平台</p>
+</code></pre></p><strong><code>gateway run</code> 选项：</strong></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>--verbose</code> <code>-v</code></td><td>增加 stderr 日志级别（<code>-v</code>=INFO, <code>-vv</code>=DEBUG）</td></tr><tr><td><code>--quiet</code> <code>-q</code></td><td>抑制所有 stderr 日志</td></tr><tr><td><code>--replace</code></td><td>替换已有网关实例</td></tr></tbody></table></p>
+<hr><h3 id="hermes-whatsapp-whatsapp-集成">hermes whatsapp — WhatsApp 集成</h3></p><p>通过 QR 码配置 WhatsApp 集成。</p><pre><code>hermes whatsapp                 # 显示 QR 码进行配对</p>
+</code></pre></p><hr><h3 id="hermes-webhook-webhook-管理">hermes webhook — Webhook 管理</h3></p><p>创建、管理动态 Webhook 订阅，用于事件驱动的 agent 激活。</p><pre><code>hermes webhook subscribe <name>  # 创建订阅</p>
+<p>hermes webhook list              # 列出所有订阅</p>
+<p>hermes webhook remove <name>     # 移除订阅</p>
+<p>hermes webhook test <name>       # 发送测试 POST 请求</p>
+</code></pre></p><strong><code>webhook subscribe</code> 选项：</strong></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>--prompt PROMPT</code></td><td>提示词模板，支持 <code>{dot.notation}</code> 引用 payload</td></tr><tr><td><code>--events EVENTS</code></td><td>接受的事件类型，逗号分隔</td></tr><tr><td><code>--description DESC</code></td><td>订阅说明</td></tr><tr><td><code>--skills SKILLS</code></td><td>加载的技能，逗号分隔</td></tr><tr><td><code>--deliver TARGET</code></td><td>投递目标：log/telegram/discord/slack 等</td></tr><tr><td><code>--deliver-chat-id ID</code></td><td>跨平台投递的聊天 ID</td></tr><tr><td><code>--secret SECRET</code></td><td>HMAC 密钥（自动生成）</td></tr></tbody></table></p>
+<hr><h3 id="hermes-pairing-配对授权">hermes pairing — 配对授权</h3></p><p>通过配对码审批用户 DM 访问权限。</p><pre><code>hermes pairing list             # 查看待审批和已授权用户</p>
+<p>hermes pairing approve          # 审批配对码</p>
+<p>hermes pairing revoke           # 撤销用户访问权限</p>
+<p>hermes pairing clear-pending    # 清除所有待审批码</p>
+</code></pre></p><hr><h2 id="技能与插件">技能与插件</h2></p><h3 id="hermes-skills-技能管理">hermes skills — 技能管理</h3></p><p>从 skills.sh、GitHub、ClawHub 等注册中心搜索、安装和管理技能。</p><pre><code>hermes skills browse            # 浏览所有可用技能（分页）</p>
+<p>hermes skills search <query>    # 搜索技能</p>
+<p>hermes skills install <skill>   # 安装技能</p>
+<p>hermes skills inspect <skill>   # 预览技能（不安装）</p>
+<p>hermes skills list              # 列出已安装技能</p>
+<p>hermes skills check             # 检查已安装技能的更新</p>
+<p>hermes skills update            # 更新已安装的 hub 技能</p>
+<p>hermes skills audit             # 重新扫描已安装的 hub 技能</p>
+<p>hermes skills uninstall <skill> # 卸载技能</p>
+<p>hermes skills publish           # 发布技能到注册中心</p>
+<p>hermes skills snapshot          # 导出/导入技能配置</p>
+<p>hermes skills tap               # 管理技能源</p>
+<p>hermes skills config            # 交互式启用/禁用单个技能</p>
+</code></pre></p><strong><code>skills search</code> 选项：</strong></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>--source SOURCE</code></td><td>搜索源：<code>all</code>/<code>official</code>/<code>skills-sh</code>/<code>well-known</code>/<code>github</code>/<code>clawhub</code>/<code>lobehub</code></td></tr><tr><td><code>--limit N</code></td><td>最大结果数</td></tr></tbody></table></p>
+<hr><h3 id="hermes-plugins-插件管理">hermes plugins — 插件管理</h3></p><p>从 Git 仓库安装、更新和管理插件。</p><pre><code>hermes plugins install <repo>   # 安装插件（Git URL 或 owner/repo）</p>
+<p>hermes plugins update <plugin>  # 拉取最新代码</p>
+<p>hermes plugins remove <plugin>  # 移除插件</p>
+<p>hermes plugins list             # 列出已安装插件</p>
+<p>hermes plugins enable <plugin>  # 启用插件</p>
+<p>hermes plugins disable <plugin> # 禁用插件（不移除）</p>
+</code></pre></p><strong><code>plugins install</code> 选项：</strong></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>--force</code> <code>-f</code></td><td>移除已有插件并重新安装</td></tr></tbody></table></p>
+<hr><h3 id="hermes-tools-工具配置">hermes tools — 工具配置</h3></p><p>配置各平台启用的工具集。</p><pre><code>hermes tools                    # 交互式工具配置 UI</p>
+<p>hermes tools list               # 显示所有工具及状态</p>
+<p>hermes tools enable <tool>      # 启用工具集或 MCP 工具</p>
+<p>hermes tools disable <tool>     # 禁用工具集或 MCP 工具</p>
+<p>hermes tools --summary          # 打印各平台已启用工具摘要</p>
+</code></pre></p><strong>工具命名约定：</strong></p>
+<ul><li>内置工具集：<code>web</code>、<code>memory</code> 等纯名称</li></p>
+<li>MCP 工具：<code>server:tool</code> 格式（如 <code>github:create_issue</code>）</li></p>
+</ul></p>
+<hr><h3 id="hermes-mcp-mcp-协议">hermes mcp — MCP 协议</h3></p><p>管理 MCP 服务器连接，或将 Hermes 作为 MCP 服务器运行。</p><pre><code>hermes mcp serve                # 作为 MCP 服务器运行（暴露会话给其他 agent）</p>
+<p>hermes mcp add <name>           # 添加 MCP 服务器</p>
+<p>hermes mcp remove <name>        # 移除 MCP 服务器</p>
+<p>hermes mcp list                 # 列出已配置的 MCP 服务器</p>
+<p>hermes mcp test <name>          # 测试 MCP 服务器连接</p>
+<p>hermes mcp configure            # 切换工具选择</p>
+</code></pre></p><strong><code>mcp add</code> 选项：</strong></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>--url URL</code></td><td>HTTP/SSE 端点 URL</td></tr><tr><td><code>--command CMD</code></td><td>Stdio 命令（如 <code>npx</code>）</td></tr><tr><td><code>--args ARGS</code></td><td>Stdio 命令参数</td></tr><tr><td><code>--auth {oauth,header}</code></td><td>认证方式</td></tr><tr><td><code>--preset NAME</code></td><td>已知 MCP 预设名</td></tr><tr><td><code>--env KEY=VALUE</code></td><td>Stdio 服务器环境变量</td></tr></tbody></table></p>
+<strong>示例：</strong></p><pre><code><h1>添加 HTTP MCP 服务器</h1></p>
+<p>hermes mcp add github --url https://mcp.github.com/sse</p><h1>添加 Stdio MCP 服务器</h1></p>
+<p>hermes mcp add filesystem --command npx --args -y @modelcontextprotocol/server-filesystem /tmp</p><h1>作为 MCP 服务器运行</h1></p>
+<p>hermes mcp serve</p>
+</code></pre></p><hr><h2 id="会话与数据">会话与数据</h2></p><h3 id="hermes-sessions-会话管理">hermes sessions — 会话管理</h3></p><p>管理 SQLite 会话存储。</p><pre><code>hermes sessions list            # 列出最近会话</p>
+<p>hermes sessions browse          # 交互式会话选择器</p>
+<p>hermes sessions rename <ID> <TITLE>  # 重命名会话</p>
+<p>hermes sessions export          # 导出为 JSONL 文件</p>
+<p>hermes sessions delete <ID>     # 删除会话</p>
+<p>hermes sessions prune           # 删除旧会话</p>
+<p>hermes sessions stats           # 显示会话统计</p>
+</code></pre></p><strong><code>sessions list</code> 选项：</strong></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>--source SOURCE</code></td><td>按平台过滤（cli/telegram/discord 等）</td></tr><tr><td><code>--limit N</code></td><td>最大显示数量</td></tr></tbody></table></p>
+<hr><h3 id="hermes-memory-记忆管理">hermes memory — 记忆管理</h3></p><p>设置和管理外部记忆提供商插件。内置记忆（MEMORY.md/USER.md）始终可用。</p><pre><code>hermes memory setup             # 交互式选择和配置提供商</p>
+<p>hermes memory status            # 显示当前记忆提供商配置</p>
+<p>hermes memory off               # 禁用外部提供商（仅保留内置记忆）</p>
+</code></pre></p><strong>可用提供商：</strong> <code>honcho</code> <code>openviking</code> <code>mem0</code> <code>hindsight</code> <code>holographic</code> <code>retaindb</code> <code>byterover</code></p><hr><h3 id="hermes-insights-使用洞察">hermes insights — 使用洞察</h3></p><p>分析会话历史，展示 token 用量、费用、工具使用模式和活动趋势。</p><pre><code>hermes insights                 # 分析最近 30 天</p>
+<p>hermes insights --days 7        # 分析最近 7 天</p>
+<p>hermes insights --source cli    # 按平台过滤</p>
+</code></pre></p><strong>选项：</strong></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>--days N</code></td><td>分析天数（默认 30）</td></tr><tr><td><code>--source SOURCE</code></td><td>按平台过滤</td></tr></tbody></table></p>
+<hr><h3 id="hermes-logs-日志查看">hermes logs — 日志查看</h3></p><p>查看、追踪和过滤日志文件。</p><pre><code>hermes logs                     # 显示 agent.log 最后 50 行</p>
+<p>hermes logs -f                  # 实时追踪日志</p>
+<p>hermes logs errors              # 查看 errors.log</p>
+<p>hermes logs gateway             # 查看 gateway.log</p>
+<p>hermes logs list                # 列出所有日志文件及大小</p>
+<p>hermes logs -n 100              # 显示最后 100 行</p>
+<p>hermes logs --level WARNING     # 仅显示 WARNING 及以上</p>
+<p>hermes logs --session abc123    # 按会话 ID 过滤</p>
+<p>hermes logs --component tools   # 按组件过滤</p>
+<p>hermes logs --since 1h          # 最近 1 小时的日志</p>
+<p>hermes logs --since 30m -f      # 从 30 分钟前开始实时追踪</p>
+</code></pre></p><strong>选项：</strong></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>-n LINES</code></td><td>显示行数（默认 50）</td></tr><tr><td><code>-f</code> <code>--follow</code></td><td>实时追踪</td></tr><tr><td><code>--level LEVEL</code></td><td>最低日志级别（DEBUG/INFO/WARNING/ERROR）</td></tr><tr><td><code>--session ID</code></td><td>按会话 ID 过滤</td></tr><tr><td><code>--since TIME</code></td><td>时间范围（如 <code>1h</code>、<code>30m</code>、<code>2d</code>）</td></tr><tr><td><code>--component NAME</code></td><td>按组件过滤：gateway/agent/tools/cli/cron</td></tr></tbody></table></p>
+<strong>日志文件：</strong> <code>agent</code>（默认）、<code>errors</code>、<code>gateway</code></p><hr><h2 id="任务调度">任务调度</h2></p><h3 id="hermes-cron-定时任务">hermes cron — 定时任务</h3></p><p>管理计划任务。</p><pre><code>hermes cron list                # 列出所有定时任务</p>
+<p>hermes cron create <schedule> [prompt]  # 创建定时任务</p>
+<p>hermes cron edit                # 编辑已有任务</p>
+<p>hermes cron pause               # 暂停任务</p>
+<p>hermes cron resume              # 恢复任务</p>
+<p>hermes cron run                 # 在下一次调度时运行任务</p>
+<p>hermes cron remove              # 移除任务</p>
+<p>hermes cron status              # 检查调度器状态</p>
+<p>hermes cron tick                # 执行到期的任务并退出</p>
+</code></pre></p><strong><code>cron create</code> 选项：</strong></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>--name NAME</code></td><td>任务名称</td></tr><tr><td><code>--deliver TARGET</code></td><td>投递目标：origin/local/telegram/discord/signal/platform:chat_id</td></tr><tr><td><code>--repeat N</code></td><td>重复次数</td></tr><tr><td><code>--skill SKILLS</code></td><td>附加技能（可重复使用）</td></tr><tr><td><code>--script PATH</code></td><td>Python 脚本路径，stdout 注入到 prompt</td></tr></tbody></table></p>
+<strong>调度格式：</strong></p>
+<ul><li>简写：<code>30m</code>（每 30 分钟）、<code>every 2h</code>（每 2 小时）</li></p>
+<li>Cron：<code>0 9 <em> </em> *</code>（每天早上 9 点）</li></p>
+</ul></p>
+<strong>示例：</strong></p><pre><code><h1>每 30 分钟执行摘要</h1></p>
+<p>hermes cron create 30m "总结最近的 git commits" --name "commit-summary"</p><h1>每天早上 9 点运行</h1></p>
+<p>hermes cron create "0 9 <em> </em> *" "检查服务器状态" --deliver telegram</p><h1>附加技能</h1></p>
+<p>hermes cron create 1h "检查 PR 状态" --skill github-auth</p>
+</code></pre></p><hr><h2 id="系统命令">系统命令</h2></p><h3 id="hermes-doctor-诊断">hermes doctor — 诊断</h3></p><p>检查 Hermes Agent 配置和依赖项。</p><pre><code>hermes doctor                   # 诊断问题</p>
+<p>hermes doctor --fix             # 自动修复发现的问题</p>
+</code></pre></p><hr><h3 id="hermes-dump-状态导出">hermes dump — 状态导出</h3></p><p>输出紧凑的纯文本设置摘要，可粘贴到 Discord/GitHub 用于技术支持。</p><pre><code>hermes dump                     # 导出设置摘要</p>
+<p>hermes dump --show-keys         # 显示 API 密钥前后 4 位（脱敏）</p>
+</code></pre></p><hr><h3 id="hermes-debug-调试">hermes debug — 调试</h3></p><p>上传调试报告（系统信息 + 最近日志）到粘贴服务并获取分享链接。</p><pre><code>hermes debug share              # 上传调试报告并打印 URL</p>
+<p>hermes debug share --lines 500  # 包含更多日志行</p>
+<p>hermes debug share --expire 30  # 保留 30 天</p>
+<p>hermes debug share --local      # 本地输出（不上传）</p>
+</code></pre></p><hr><h3 id="hermes-backup-import-备份与恢复">hermes backup / import — 备份与恢复</h3></p><p>备份和恢复 Hermes 完整配置。</p><pre><code><h1>备份</h1></p>
+<p>hermes backup                   # 完整备份到 ~/hermes-backup-<timestamp>.zip</p>
+<p>hermes backup -o /path/to/backup.zip  # 指定输出路径</p>
+<p>hermes backup --quick           # 快照模式：仅关键状态文件</p>
+<p>hermes backup --quick --label "daily"  # 快照 + 标签</p><h1>恢复</h1></p>
+<p>hermes import backup.zip        # 从备份恢复</p>
+<p>hermes import --force backup.zip  # 强制覆盖</p>
+</code></pre></p><strong><code>backup</code> 选项：</strong></p><table><thead><tr><th>选项</th><th>缩写</th><th>说明</th></tr></thead><tbody><tr><td><code>--output PATH</code></td><td><code>-o</code></td><td>输出路径</td></tr><tr><td><code>--quick</code></td><td><code>-q</code></td><td>仅关键状态文件（config、state.db、.env、auth、cron）</td></tr><tr><td><code>--label LABEL</code></td><td><code>-l</code></td><td>快照标签（配合 --quick）</td></tr></tbody></table></p>
+<hr><h3 id="hermes-version-版本信息">hermes version — 版本信息</h3></p><pre><code>hermes version                  # 显示详细版本信息</p>
+<p>hermes --version                # 显示简短版本号</p>
+</code></pre></p><hr><h3 id="hermes-update-更新">hermes update — 更新</h3></p><p>从 Git 拉取最新代码并重新安装依赖。</p><pre><code>hermes update                   # 更新到最新版本</p>
+<p>hermes update --gateway         # 网关模式：使用文件 IPC 替代 stdin</p>
+</code></pre></p><hr><h3 id="hermes-uninstall-卸载">hermes uninstall — 卸载</h3></p><p>从系统移除 Hermes Agent。</p><pre><code>hermes uninstall                # 卸载（保留配置和数据）</p>
+<p>hermes uninstall --full         # 完全卸载（包括配置和数据）</p>
+<p>hermes uninstall --yes          # 跳过确认提示</p>
+</code></pre></p><hr><h2 id="高级功能">高级功能</h2></p><h3 id="hermes-profile-多实例管理">hermes profile — 多实例管理</h3></p><p>管理多个隔离的 Hermes 实例配置。</p><pre><code>hermes profile list             # 列出所有配置</p>
+<p>hermes profile create <name>    # 创建新配置</p>
+<p>hermes profile use <name>       # 切换默认配置</p>
+<p>hermes profile show <name>      # 显示配置详情</p>
+<p>hermes profile delete <name>    # 删除配置</p>
+<p>hermes profile rename <old> <new>  # 重命名</p>
+<p>hermes profile alias            # 管理包装脚本</p>
+<p>hermes profile export <name>    # 导出配置到归档</p>
+<p>hermes profile import           # 从归档导入配置</p>
+</code></pre></p><strong><code>profile create</code> 选项：</strong></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>--clone</code></td><td>从当前配置复制 config.yaml/.env/SOUL.md</td></tr><tr><td><code>--clone-all</code></td><td>完整复制当前配置（所有状态）</td></tr><tr><td><code>--clone-from SOURCE</code></td><td>从指定配置克隆</td></tr><tr><td><code>--no-alias</code></td><td>跳过包装脚本创建</td></tr></tbody></table></p>
+<hr><h3 id="hermes-acp-编辑器集成">hermes acp — 编辑器集成</h3></p><p>以 ACP（Agent Client Protocol）模式启动 Hermes，用于编辑器集成。</p><pre><code>hermes acp                      # 启动 ACP 服务器</p>
+</code></pre></p><p>支持编辑器：VS Code、Zed、JetBrains</p><hr><h3 id="hermes-dashboard-web-面板">hermes dashboard — Web 面板</h3></p><p>启动 Web UI 面板管理配置、API 密钥和会话。</p><pre><code>hermes dashboard                # 启动面板（默认 http://127.0.0.1:9119）</p>
+<p>hermes dashboard --port 8080    # 指定端口</p>
+<p>hermes dashboard --host 0.0.0.0  # 指定主机</p>
+<p>hermes dashboard --no-open      # 不自动打开浏览器</p>
+<p>hermes dashboard --insecure     # 允许非本地绑定（⚠️ 危险：暴露 API 密钥到网络）</p>
+</code></pre></p><strong>选项：</strong></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>--port PORT</code></td><td>端口（默认 9119）</td></tr><tr><td><code>--host HOST</code></td><td>主机（默认 127.0.0.1）</td></tr><tr><td><code>--no-open</code></td><td>不自动打开浏览器</td></tr><tr><td><code>--insecure</code></td><td>允许非本地绑定（危险）</td></tr></tbody></table></p>
+<hr><h3 id="hermes-completion-shell-补全">hermes completion — Shell 补全</h3></p><p>生成 Shell 自动补全脚本。</p><pre><code>hermes completion bash          # Bash 补全</p>
+<p>hermes completion zsh           # Zsh 补全</p>
+<p>hermes completion fish          # Fish 补全</p>
+</code></pre></p><strong>Zsh 安装示例：</strong></p><pre><code>hermes completion zsh > ~/.zsh/completion/_hermes</p>
+</code></pre></p><hr><h3 id="hermes-claw-openclaw-迁移">hermes claw — OpenClaw 迁移</h3></p><p>从 OpenClaw 迁移到 Hermes Agent。</p><pre><code>hermes claw migrate             # 执行迁移</p>
+<p>hermes claw cleanup             # 归档 OpenClaw 残余目录</p>
+</code></pre></p><hr><h2 id="支持的平台与提供商">支持的平台与提供商</h2></p><h3 id="推理提供商">推理提供商</h3></p><table><thead><tr><th>提供商</th><th><code>--provider</code> 值</th></tr></thead><tbody><tr><td>自动选择</td><td><code>auto</code>（默认）</td></tr><tr><td>Nous</td><td><code>nous</code></td></tr><tr><td>OpenRouter</td><td><code>openrouter</code></td></tr><tr><td>Anthropic</td><td><code>anthropic</code></td></tr><tr><td>Gemini</td><td><code>gemini</code></td></tr><tr><td>OpenAI Codex</td><td><code>openai-codex</code></td></tr><tr><td>GitHub Copilot</td><td><code>copilot</code></td></tr><tr><td>GitHub Copilot ACP</td><td><code>copilot-acp</code></td></tr><tr><td>HuggingFace</td><td><code>huggingface</code></td></tr><tr><td>字节跳动（豆包）</td><td><code>zai</code></td></tr><tr><td>Kimi Coding</td><td><code>kimi-coding</code></td></tr><tr><td>Kimi Coding CN</td><td><code>kimi-coding-cn</code></td></tr><tr><td>MiniMax</td><td><code>minimax</code></td></tr><tr><td>MiniMax CN</td><td><code>minimax-cn</code></td></tr><tr><td>Kilocode</td><td><code>kilocode</code></td></tr><tr><td>小米</td><td><code>xiaomi</code></td></tr><tr><td>Arcee</td><td><code>arcee</code></td></tr></tbody></table></p>
+<h3 id="消息平台">消息平台</h3></p>
+<ul><li>Telegram</li></p>
+<li>Discord</li></p>
+<li>WhatsApp</li></p>
+<li>Signal</li></p>
+</ul></p>
+<hr><h2 id="常用工作流">常用工作流</h2></p><h3 id="首次安装">首次安装</h3></p><pre><code>hermes setup            # 配置模型和工具</p>
+<p>hermes login            # 认证</p>
+<p>hermes doctor           # 验证安装</p>
+</code></pre></p><h3 id="技能安装">技能安装</h3></p><pre><code>hermes skills search "github"       # 搜索技能</p>
+<p>hermes skills install github-auth   # 安装技能</p>
+<p>hermes skills config                # 启用/禁用技能</p>
+</code></pre></p><h3 id="多平台部署">多平台部署</h3></p><pre><code>hermes gateway setup                # 配置消息平台</p>
+<p>hermes gateway install              # 安装为后台服务</p>
+<p>hermes gateway start                # 启动服务</p>
+<p>hermes pairing list                 # 管理用户授权</p>
+</code></pre></p><h3 id="调试排障">调试排障</h3></p><pre><code>hermes status --deep                # 深度状态检查</p>
+<p>hermes doctor --fix                 # 诊断并修复</p>
+<p>hermes dump --show-keys             # 导出配置摘要</p>
+<p>hermes debug share                  # 上传调试报告</p>
+<p>hermes logs --level ERROR --since 1h  # 查看近期错误</p>
+</code></pre></p>
+</main>
+  </div>
+  
+  <button class="drawer-toggle" id="drawerToggle" onclick="toggleDrawer()" title="打开目录">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <div class="overlay" id="overlay" onclick="toggleDrawer()"></div>
+  <script>
+    function toggleDrawer() {
+      var s = document.querySelector('.sidebar');
+      var o = document.getElementById('overlay');
+      var t = document.getElementById('drawerToggle');
+      s.classList.toggle('open');
+      o.classList.toggle('active');
+      t.classList.toggle('active');
+    }
+    // 点击侧边栏链接后自动关闭抽屉
+    document.querySelectorAll('.sidebar nav a').forEach(function(a) {
+      a.addEventListener('click', function() {
+        if (document.querySelector('.sidebar').classList.contains('open')) toggleDrawer();
+      });
+    });
+    // 粘性标题
+    (function() {
+      var h1el = document.querySelector('.main > h1');
+      if (!h1el) return;
+      var title = h1el.textContent;
+      var header = document.createElement('div');
+      header.className = 'sticky-header';
+      header.innerHTML = '<h1>' + title + '</h1>';
+      h1el.parentNode.insertBefore(header, h1el.nextSibling);
+      window.addEventListener('scroll', function() {
+        var rect = h1el.getBoundingClientRect();
+        header.classList.toggle('visible', rect.bottom < 0);
+      }, { passive: true });
+    })();
+  </script>
+</body>
+</html>
