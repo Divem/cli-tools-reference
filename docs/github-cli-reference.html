@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub CLI (`gh`) 命令行参考手册 - Vercel Style</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect rx=%2212%22 width=%22100%22 height=%22100%22 fill=%22%231a1a2e%22/><text x=%2250%22 y=%2268%22 font-size=%2255%22 font-family=%22monospace%22 font-weight=%22bold%22 text-anchor=%22middle%22 fill=%22%2300d4aa%22>&gt;_</text></svg>">
+  <style>
+    :root {
+      --color-bg: #ffffff;
+      --color-text: #171717;
+      --color-gray: #666;
+      --color-border: rgba(0,0,0,0.08);
+      --color-code-bg: #fafafa;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.6;
+      font-size: 16px;
+    }
+    .container { display: flex; max-width: 1400px; margin: 0 auto; }
+    .sidebar {
+      width: 280px;
+      padding: 2rem 1.5rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      border-right: 1px solid var(--color-border);
+      background: #fff;
+    }
+    .sidebar h2 {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--color-gray);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+    }
+    .sidebar a {
+      display: block;
+      padding: 0.5rem 0;
+      color: var(--color-gray);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.15s;
+    }
+    .sidebar a:hover { color: var(--color-text); }
+    .main {
+      flex: 1;
+      padding: 3rem 4rem;
+      max-width: 900px;
+    }
+    h1 {
+      font-size: 3rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.03em;
+    }
+    h2 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+    p { margin-bottom: 1rem; color: var(--color-gray); }
+    code {
+      font-family: 'SF Mono', Monaco, monospace;
+      background: var(--color-code-bg);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.875em;
+      color: var(--color-text);
+    }
+    pre {
+      background: var(--color-code-bg);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+    }
+    pre code {
+      background: none;
+      padding: 0;
+      font-size: 0.875rem;
+      line-height: 1.7;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.08);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    th { font-weight: 600; background: #fafafa; }
+    blockquote {
+      border-left: 3px solid var(--color-text);
+      padding-left: 1rem;
+      margin: 1.5rem 0;
+      color: var(--color-gray);
+    }
+    ul { margin: 1rem 0; padding-left: 1.5rem; }
+    li { margin: 0.5rem 0; }
+    hr { border: none; border-top: 1px solid var(--color-border); margin: 2rem 0; }
+    a { color: var(--color-text); text-decoration: underline; text-underline-offset: 2px; }
+    a:hover { text-decoration-thickness: 2px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <h2>Documentation</h2>
+      <nav><a href="#目录" >目录</a>
+<a href="#安装与配置" >安装与配置</a>
+<a href="#安装" style="padding-left: 1rem;">安装</a>
+<a href="#配置" style="padding-left: 1rem;">配置</a>
+<a href="#核心命令" >核心命令</a>
+<a href="#gh-auth-认证管理" style="padding-left: 1rem;">`gh auth` — 认证管理</a>
+<a href="#gh-browse-在浏览器中打开" style="padding-left: 1rem;">`gh browse` — 在浏览器中打开</a>
+<a href="#gh-codespace-codespace-管理" style="padding-left: 1rem;">`gh codespace` — Codespace 管理</a>
+<a href="#gh-gist-gist-管理" style="padding-left: 1rem;">`gh gist` — Gist 管理</a>
+<a href="#gh-issue-issue-管理" style="padding-left: 1rem;">`gh issue` — Issue 管理</a>
+<a href="#gh-org-组织管理" style="padding-left: 1rem;">`gh org` — 组织管理</a>
+<a href="#gh-pr-pull-request-管理" style="padding-left: 1rem;">`gh pr` — Pull Request 管理</a>
+<a href="#gh-project-github-projects-管理" style="padding-left: 1rem;">`gh project` — GitHub Projects 管理</a>
+<a href="#gh-release-release-管理" style="padding-left: 1rem;">`gh release` — Release 管理</a>
+<a href="#gh-repo-仓库管理" style="padding-left: 1rem;">`gh repo` — 仓库管理</a>
+<a href="#github-actions-命令" >GitHub Actions 命令</a>
+<a href="#gh-cache-actions-缓存管理" style="padding-left: 1rem;">`gh cache` — Actions 缓存管理</a>
+<a href="#gh-run-workflow-运行管理" style="padding-left: 1rem;">`gh run` — Workflow 运行管理</a>
+<a href="#gh-workflow-workflow-管理" style="padding-left: 1rem;">`gh workflow` — Workflow 管理</a>
+<a href="#附加命令" >附加命令</a>
+<a href="#gh-agent-task-agent-任务管理-预览" style="padding-left: 1rem;">`gh agent-task` — Agent 任务管理 (预览)</a>
+<a href="#gh-alias-命令别名" style="padding-left: 1rem;">`gh alias` — 命令别名</a>
+<a href="#gh-api-endpoint-flags-github-api-请求" style="padding-left: 1rem;">`gh api <endpoint> [flags]` — GitHub API 请求</a>
+<a href="#gh-attestation-制品证明管理" style="padding-left: 1rem;">`gh attestation` — 制品证明管理</a>
+<a href="#gh-completion--s-shell-shell-补全脚本" style="padding-left: 1rem;">`gh completion -s <shell>` — Shell 补全脚本</a>
+<a href="#gh-config-配置管理" style="padding-left: 1rem;">`gh config` — 配置管理</a>
+<a href="#gh-copilot-github-copilot-cli-预览" style="padding-left: 1rem;">`gh copilot` — GitHub Copilot CLI (预览)</a>
+<a href="#gh-extension-扩展管理" style="padding-left: 1rem;">`gh extension` — 扩展管理</a>
+<a href="#gh-gpg-key-gpg-密钥管理" style="padding-left: 1rem;">`gh gpg-key` — GPG 密钥管理</a>
+<a href="#gh-label-标签管理" style="padding-left: 1rem;">`gh label` — 标签管理</a>
+<a href="#gh-licenses-查看第三方许可证信息" style="padding-left: 1rem;">`gh licenses` — 查看第三方许可证信息</a>
+<a href="#gh-ruleset-仓库规则集" style="padding-left: 1rem;">`gh ruleset` — 仓库规则集</a>
+<a href="#gh-search-搜索" style="padding-left: 1rem;">`gh search` — 搜索</a>
+<a href="#gh-secret-secret-管理" style="padding-left: 1rem;">`gh secret` — Secret 管理</a>
+<a href="#gh-ssh-key-ssh-密钥管理" style="padding-left: 1rem;">`gh ssh-key` — SSH 密钥管理</a>
+<a href="#gh-status-状态概览" style="padding-left: 1rem;">`gh status` — 状态概览</a>
+<a href="#gh-variable-actions-变量管理" style="padding-left: 1rem;">`gh variable` — Actions 变量管理</a>
+<a href="#环境变量" >环境变量</a>
+<a href="#退出码" >退出码</a>
+<a href="#通用-json-输出选项" >通用 JSON 输出选项</a></nav>
+    </aside>
+    <main class="main"><h1>GitHub CLI (<code>gh</code>) 命令行参考手册</h1></p><blockquote>本机版本：<strong>gh 2.88.1</strong> | 安装路径：<code>/opt/homebrew/bin/gh</code></blockquote></p>
+<blockquote>来源: https://cli.github.com/manual</blockquote></p><p>GitHub CLI（<code>gh</code>）是 GitHub 官方命令行工具，无需离开终端即可管理仓库、Issue、PR、Actions、Release 等，支持脚本自动化与 CI/CD 集成。</p><h2 id="目录">目录</h2></p>
+<ul><li><a href="#安装与配置">安装与配置</a></li></p>
+<li><a href="#核心命令">核心命令</a></li></p>
+<li><a href="#github-actions-命令">GitHub Actions 命令</a></li></p>
+<li><a href="#附加命令">附加命令</a></li></p>
+</ul></p>
+<hr><h2 id="安装与配置">安装与配置</h2></p><h3 id="安装">安装</h3></p><p>参考 <a href="https://github.com/cli/cli#installation">安装说明</a>。</p><h3 id="配置">配置</h3></p><pre><code><h1>登录认证</h1></p>
+<p>gh auth login</p><h1>设置偏好编辑器</h1></p>
+<p>gh config set editor <editor></p><h1>设置别名</h1></p>
+<p>gh alias set <alias> <expansion></p><h1>GitHub Enterprise</h1></p>
+<p>gh auth login --hostname <hostname></p>
+<p>export GH_HOST=<hostname></p>
+<p>export GH<em>ENTERPRISE</em>TOKEN=<access-token></p>
+</code></pre></p><hr><h2 id="核心命令">核心命令</h2></p><h3 id="gh-auth-认证管理"><code>gh auth</code> — 认证管理</h3></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gh auth login</code></td><td>登录 GitHub 账号</td></tr><tr><td><code>gh auth logout</code></td><td>登出 GitHub 账号</td></tr><tr><td><code>gh auth refresh</code></td><td>刷新存储的认证凭据</td></tr><tr><td><code>gh auth setup-git</code></td><td>配置 git 使用 GitHub CLI</td></tr><tr><td><code>gh auth status</code></td><td>显示当前认证状态</td></tr><tr><td><code>gh auth switch</code></td><td>切换活跃的 GitHub 账号</td></tr><tr><td><code>gh auth token</code></td><td>打印认证 token</td></tr></tbody></table></p>
+<p>#### <code>gh auth login [flags]</code></p><pre><code>-c, --clipboard             复制 OAuth 设备码到剪贴板</p>
+<p>-p, --git-protocol string   Git 操作协议: {ssh|https}</p>
+<p>-h, --hostname string       GitHub 实例主机名</p>
+<p>    --insecure-storage      明文保存认证凭据</p>
+<p>-s, --scopes strings        请求额外的认证 scopes</p>
+<p>    --skip-ssh-key          跳过 SSH 密钥生成/上传提示</p>
+<p>-w, --web                   在浏览器中打开认证</p>
+<p>    --with-token            从标准输入读取 token</p>
+</code></pre></p><p>#### <code>gh auth status [flags]</code></p><pre><code>-a, --active            仅显示活跃账号</p>
+<p>-h, --hostname string   仅检查指定主机</p>
+<p>-t, --show-token        显示认证 token</p>
+</code></pre></p><p>#### <code>gh auth token [flags]</code></p><pre><code>-h, --hostname string   GitHub 实例主机名</p>
+<p>-u, --user string       指定账号</p>
+</code></pre></p><hr><h3 id="gh-browse-在浏览器中打开"><code>gh browse</code> — 在浏览器中打开</h3></p><pre><code>gh browse [<number> | <path> | <commit-sha>] [flags]</p>
+</code></pre></p><pre><code>-a, --actions                  打开仓库 Actions</p>
+<p>    --blame                    打开文件 blame 视图</p>
+<p>-b, --branch string            选择其他分支</p>
+<p>-c, --commit string[="last"]   选择指定 commit</p>
+<p>-n, --no-browser               仅打印 URL</p>
+<p>-p, --projects                 打开仓库项目</p>
+<p>-r, --releases                 打开仓库 Releases</p>
+<p>-s, --settings                 打开仓库设置</p>
+<p>-w, --wiki                     打开仓库 Wiki</p>
+</code></pre></p><hr><h3 id="gh-codespace-codespace-管理"><code>gh codespace</code> — Codespace 管理</h3></p><p>别名: <code>gh cs</code></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gh codespace code</code></td><td>在 VS Code 中打开 codespace</td></tr><tr><td><code>gh codespace cp</code></td><td>在本地和远程之间复制文件</td></tr><tr><td><code>gh codespace create</code></td><td>创建 codespace</td></tr><tr><td><code>gh codespace delete</code></td><td>删除 codespace</td></tr><tr><td><code>gh codespace edit</code></td><td>编辑 codespace</td></tr><tr><td><code>gh codespace jupyter</code></td><td>在 JupyterLab 中打开</td></tr><tr><td><code>gh codespace list</code></td><td>列出 codespaces</td></tr><tr><td><code>gh codespace logs</code></td><td>查看 codespace 日志</td></tr><tr><td><code>gh codespace ports</code></td><td>列出端口</td></tr><tr><td><code>gh codespace ports forward</code></td><td>转发端口</td></tr><tr><td><code>gh codespace ports visibility</code></td><td>修改端口可见性</td></tr><tr><td><code>gh codespace rebuild</code></td><td>重建 codespace</td></tr><tr><td><code>gh codespace ssh</code></td><td>SSH 进入 codespace</td></tr><tr><td><code>gh codespace stop</code></td><td>停止 codespace</td></tr><tr><td><code>gh codespace view</code></td><td>查看 codespace 详情</td></tr></tbody></table></p>
+<hr><h3 id="gh-gist-gist-管理"><code>gh gist</code> — Gist 管理</h3></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gh gist clone</code></td><td>克隆 gist</td></tr><tr><td><code>gh gist create</code></td><td>创建 gist (别名: <code>gh gist new</code>)</td></tr><tr><td><code>gh gist delete</code></td><td>删除 gist</td></tr><tr><td><code>gh gist edit</code></td><td>编辑 gist</td></tr><tr><td><code>gh gist list</code></td><td>列出 gists</td></tr><tr><td><code>gh gist rename</code></td><td>重命名 gist 文件</td></tr><tr><td><code>gh gist view</code></td><td>查看 gist</td></tr></tbody></table></p>
+<p>#### <code>gh gist create [<filename>... | -] [flags]</code></p><pre><code>-d, --desc string       Gist 描述</p>
+<p>-f, --filename string   从标准输入读取时使用的文件名</p>
+<p>-p, --public            公开 gist (默认 "secret")</p>
+<p>-w, --web               在浏览器中打开创建的 gist</p>
+</code></pre></p><hr><h3 id="gh-issue-issue-管理"><code>gh issue</code> — Issue 管理</h3></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gh issue close</code></td><td>关闭 issue</td></tr><tr><td><code>gh issue comment</code></td><td>添加评论</td></tr><tr><td><code>gh issue create</code></td><td>创建 issue (别名: <code>gh issue new</code>)</td></tr><tr><td><code>gh issue delete</code></td><td>删除 issue</td></tr><tr><td><code>gh issue develop</code></td><td>管理关联分支</td></tr><tr><td><code>gh issue edit</code></td><td>编辑 issue</td></tr><tr><td><code>gh issue list</code></td><td>列出 issues</td></tr><tr><td><code>gh issue lock</code></td><td>锁定 issue</td></tr><tr><td><code>gh issue pin</code></td><td>置顶 issue</td></tr><tr><td><code>gh issue reopen</code></td><td>重新打开 issue</td></tr><tr><td><code>gh issue status</code></td><td>显示相关 issues 状态</td></tr><tr><td><code>gh issue transfer</code></td><td>转移 issue 到其他仓库</td></tr><tr><td><code>gh issue unlock</code></td><td>解锁 issue</td></tr><tr><td><code>gh issue unpin</code></td><td>取消置顶</td></tr><tr><td><code>gh issue view</code></td><td>查看 issue</td></tr></tbody></table></p>
+<p>#### <code>gh issue create [flags]</code></p><pre><code>-a, --assignee login   指派人员 (使用 "@me" 指派自己)</p>
+<p>-b, --body string      提供正文内容</p>
+<p>-F, --body-file file   从文件读取正文</p>
+<p>-e, --editor           在编辑器中编写</p>
+<p>-l, --label name       添加标签</p>
+<p>-m, --milestone name   添加到里程碑</p>
+<p>-p, --project title    添加到项目</p>
+<p>-T, --template name    使用模板</p>
+<p>-t, --title string     提供标题</p>
+<p>-w, --web              在浏览器中创建</p>
+</code></pre></p><p>#### <code>gh issue list [flags]</code></p><pre><code>-a, --assignee string   按指派人筛选</p>
+<p>-A, --author string     按作者筛选</p>
+<p>-l, --label strings     按标签筛选</p>
+<p>-L, --limit int         最大数量 (默认 30)</p>
+<p>-m, --milestone string  按里程碑筛选</p>
+<p>-S, --search query      搜索查询</p>
+<p>-s, --state string      按状态: {open|closed|all} (默认 "open")</p>
+<p>-w, --web               在浏览器中列出</p>
+</code></pre></p><hr><h3 id="gh-org-组织管理"><code>gh org</code> — 组织管理</h3></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gh org list</code></td><td>列出已认证用户的组织</td></tr></tbody></table></p>
+<hr><h3 id="gh-pr-pull-request-管理"><code>gh pr</code> — Pull Request 管理</h3></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gh pr checkout</code></td><td>检出 PR (别名: <code>gh pr co</code>)</td></tr><tr><td><code>gh pr checks</code></td><td>显示 CI 状态</td></tr><tr><td><code>gh pr close</code></td><td>关闭 PR</td></tr><tr><td><code>gh pr comment</code></td><td>添加评论</td></tr><tr><td><code>gh pr create</code></td><td>创建 PR (别名: <code>gh pr new</code>)</td></tr><tr><td><code>gh pr diff</code></td><td>查看 PR 变更</td></tr><tr><td><code>gh pr edit</code></td><td>编辑 PR</td></tr><tr><td><code>gh pr list</code></td><td>列出 PRs</td></tr><tr><td><code>gh pr lock</code></td><td>锁定 PR</td></tr><tr><td><code>gh pr merge</code></td><td>合并 PR</td></tr><tr><td><code>gh pr ready</code></td><td>标记为可审查</td></tr><tr><td><code>gh pr reopen</code></td><td>重新打开 PR</td></tr><tr><td><code>gh pr revert</code></td><td>回退 PR</td></tr><tr><td><code>gh pr review</code></td><td>添加审查</td></tr><tr><td><code>gh pr status</code></td><td>显示相关 PRs 状态</td></tr><tr><td><code>gh pr unlock</code></td><td>解锁 PR</td></tr><tr><td><code>gh pr update-branch</code></td><td>更新 PR 分支</td></tr><tr><td><code>gh pr view</code></td><td>查看 PR</td></tr></tbody></table></p>
+<p>#### <code>gh pr create [flags]</code></p><pre><code>-a, --assignee login       指派人员</p>
+<p>-B, --base branch          目标分支</p>
+<p>-b, --body string          PR 正文</p>
+<p>-F, --body-file file       从文件读取正文</p>
+<p>-d, --draft                标记为草稿</p>
+<p>    --dry-run              打印详情而不创建</p>
+<p>-e, --editor               在编辑器中编写</p>
+<p>-f, --fill                 使用 commit 信息填充</p>
+<p>-H, --head branch          源分支 (默认当前分支)</p>
+<p>-l, --label name           添加标签</p>
+<p>-m, --milestone name       添加到里程碑</p>
+<p>-p, --project title        添加到项目</p>
+<p>-r, --reviewer handle      请求审查</p>
+<p>-t, --title string         PR 标题</p>
+<p>-w, --web                  在浏览器中创建</p>
+</code></pre></p><p>#### <code>gh pr merge [<number>] [flags]</code></p><pre><code>    --admin               使用管理员权限合并</p>
+<p>    --auto                满足要求后自动合并</p>
+<p>-d, --delete-branch       合并后删除分支</p>
+<p>-m, --merge               使用 merge commit</p>
+<p>-r, --rebase              使用 rebase</p>
+<p>-s, --squash              使用 squash 合并</p>
+</code></pre></p><p>#### <code>gh pr list [flags]</code></p><pre><code>-a, --assignee string   按指派人筛选</p>
+<p>-A, --author string     按作者筛选</p>
+<p>-B, --base string       按 base 分支筛选</p>
+<p>-H, --head string       按 head 分支筛选</p>
+<p>-l, --label strings     按标签筛选</p>
+<p>-L, --limit int         最大数量 (默认 30)</p>
+<p>-S, --search query      搜索查询</p>
+<p>-s, --state string      按状态: {open|closed|merged|all} (默认 "open")</p>
+<p>-w, --web               在浏览器中列出</p>
+</code></pre></p><hr><h3 id="gh-project-github-projects-管理"><code>gh project</code> — GitHub Projects 管理</h3></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gh project close</code></td><td>关闭项目</td></tr><tr><td><code>gh project copy</code></td><td>复制项目</td></tr><tr><td><code>gh project create</code></td><td>创建项目</td></tr><tr><td><code>gh project delete</code></td><td>删除项目</td></tr><tr><td><code>gh project edit</code></td><td>编辑项目</td></tr><tr><td><code>gh project field-create</code></td><td>创建字段</td></tr><tr><td><code>gh project field-delete</code></td><td>删除字段</td></tr><tr><td><code>gh project field-list</code></td><td>列出字段</td></tr><tr><td><code>gh project item-add</code></td><td>添加 PR/Issue 到项目</td></tr><tr><td><code>gh project item-archive</code></td><td>归档项目项</td></tr><tr><td><code>gh project item-create</code></td><td>创建草稿 Issue</td></tr><tr><td><code>gh project item-delete</code></td><td>删除项目项</td></tr><tr><td><code>gh project item-edit</code></td><td>编辑项目项</td></tr><tr><td><code>gh project item-list</code></td><td>列出项目项</td></tr><tr><td><code>gh project link</code></td><td>链接项目到仓库/团队</td></tr><tr><td><code>gh project list</code></td><td>列出项目</td></tr><tr><td><code>gh project mark-template</code></td><td>标记为模板</td></tr><tr><td><code>gh project unlink</code></td><td>取消链接</td></tr><tr><td><code>gh project view</code></td><td>查看项目</td></tr></tbody></table></p>
+<hr><h3 id="gh-release-release-管理"><code>gh release</code> — Release 管理</h3></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gh release create</code></td><td>创建 release (别名: <code>gh release new</code>)</td></tr><tr><td><code>gh release delete</code></td><td>删除 release</td></tr><tr><td><code>gh release delete-asset</code></td><td>删除 release 资源</td></tr><tr><td><code>gh release download</code></td><td>下载 release 资源</td></tr><tr><td><code>gh release edit</code></td><td>编辑 release</td></tr><tr><td><code>gh release list</code></td><td>列出 releases</td></tr><tr><td><code>gh release upload</code></td><td>上传资源到 release</td></tr><tr><td><code>gh release verify</code></td><td>验证 release 签名</td></tr><tr><td><code>gh release verify-asset</code></td><td>验证 release 资源</td></tr><tr><td><code>gh release view</code></td><td>查看 release</td></tr></tbody></table></p>
+<p>#### <code>gh release create [<tag>] [flags]</code></p><pre><code>-d, --draft                        保存为草稿</p>
+<p>    --generate-notes               自动生成标题和说明</p>
+<p>-n, --notes string                 Release 说明</p>
+<p>-F, --notes-file file              从文件读取说明</p>
+<p>-p, --prerelease                   标记为预发布</p>
+<p>    --target branch                目标分支或 commit SHA</p>
+<p>-t, --title string                 Release 标题</p>
+<p>    --verify-tag                   验证 tag 是否已存在于远程</p>
+</code></pre></p><hr><h3 id="gh-repo-仓库管理"><code>gh repo</code> — 仓库管理</h3></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gh repo archive</code></td><td>归档仓库</td></tr><tr><td><code>gh repo clone</code></td><td>克隆仓库</td></tr><tr><td><code>gh repo create</code></td><td>创建仓库 (别名: <code>gh repo new</code>)</td></tr><tr><td><code>gh repo delete</code></td><td>删除仓库</td></tr><tr><td><code>gh repo edit</code></td><td>编辑仓库设置</td></tr><tr><td><code>gh repo fork</code></td><td>Fork 仓库</td></tr><tr><td><code>gh repo list</code></td><td>列出仓库</td></tr><tr><td><code>gh repo rename</code></td><td>重命名仓库</td></tr><tr><td><code>gh repo set-default</code></td><td>设置默认仓库</td></tr><tr><td><code>gh repo sync</code></td><td>同步仓库</td></tr><tr><td><code>gh repo unarchive</code></td><td>取消归档</td></tr><tr><td><code>gh repo view</code></td><td>查看仓库</td></tr><tr><td><code>gh repo autolink create</code></td><td>创建自动链接</td></tr><tr><td><code>gh repo autolink delete</code></td><td>删除自动链接</td></tr><tr><td><code>gh repo autolink list</code></td><td>列出自动链接</td></tr><tr><td><code>gh repo autolink view</code></td><td>查看自动链接</td></tr><tr><td><code>gh repo deploy-key add</code></td><td>添加部署密钥</td></tr><tr><td><code>gh repo deploy-key delete</code></td><td>删除部署密钥</td></tr><tr><td><code>gh repo deploy-key list</code></td><td>列出部署密钥</td></tr><tr><td><code>gh repo gitignore list</code></td><td>列出 gitignore 模板</td></tr><tr><td><code>gh repo gitignore view</code></td><td>查看 gitignore 模板</td></tr><tr><td><code>gh repo license list</code></td><td>列出许可证</td></tr><tr><td><code>gh repo license view</code></td><td>查看许可证</td></tr></tbody></table></p>
+<p>#### <code>gh repo create [<name>] [flags]</code></p><pre><code>    --add-readme             添加 README</p>
+<p>-c, --clone                  克隆到当前目录</p>
+<p>-d, --description string     仓库描述</p>
+<p>-g, --gitignore string       指定 gitignore 模板</p>
+<p>-l, --license string         指定开源许可证</p>
+<p>    --private                创建私有仓库</p>
+<p>    --public                 创建公开仓库</p>
+<p>-p, --template repository    基于模板创建</p>
+</code></pre></p><hr><h2 id="github-actions-命令">GitHub Actions 命令</h2></p><h3 id="gh-cache-actions-缓存管理"><code>gh cache</code> — Actions 缓存管理</h3></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gh cache delete</code></td><td>删除缓存</td></tr><tr><td><code>gh cache list</code></td><td>列出缓存</td></tr></tbody></table></p>
+<hr><h3 id="gh-run-workflow-运行管理"><code>gh run</code> — Workflow 运行管理</h3></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gh run cancel</code></td><td>取消运行</td></tr><tr><td><code>gh run delete</code></td><td>删除运行</td></tr><tr><td><code>gh run download</code></td><td>下载产物</td></tr><tr><td><code>gh run list</code></td><td>列出运行</td></tr><tr><td><code>gh run rerun</code></td><td>重新运行</td></tr><tr><td><code>gh run view</code></td><td>查看运行</td></tr><tr><td><code>gh run watch</code></td><td>监控运行进度</td></tr></tbody></table></p>
+<p>#### <code>gh run list [flags]</code></p><pre><code>-b, --branch string     按分支筛选</p>
+<p>-c, --commit SHA        按 commit SHA 筛选</p>
+<p>-e, --event event       按触发事件筛选</p>
+<p>-L, --limit int         最大数量 (默认 20)</p>
+<p>-s, --status string     按状态筛选</p>
+<p>-w, --workflow string   按 workflow 筛选</p>
+</code></pre></p><p>#### <code>gh run view [<run-id>] [flags]</code></p><pre><code>-j, --job string    查看特定 job</p>
+<p>    --log           查看完整日志</p>
+<p>    --log-failed    查看失败步骤日志</p>
+<p>-v, --verbose       显示 job 步骤</p>
+<p>-w, --web           在浏览器中打开</p>
+</code></pre></p><hr><h3 id="gh-workflow-workflow-管理"><code>gh workflow</code> — Workflow 管理</h3></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gh workflow disable</code></td><td>禁用 workflow</td></tr><tr><td><code>gh workflow enable</code></td><td>启用 workflow</td></tr><tr><td><code>gh workflow list</code></td><td>列出 workflows</td></tr><tr><td><code>gh workflow run</code></td><td>触发 workflow</td></tr><tr><td><code>gh workflow view</code></td><td>查看 workflow</td></tr></tbody></table></p>
+<p>#### <code>gh workflow run [<workflow-id> | <workflow-name>] [flags]</code></p><pre><code>-F, --field key=value       添加参数 (支持 @ 语法)</p>
+<p>-f, --raw-field key=value   添加字符串参数</p>
+<p>-r, --ref string            指定分支或标签</p>
+</code></pre></p><hr><h2 id="附加命令">附加命令</h2></p><h3 id="gh-agent-task-agent-任务管理-预览"><code>gh agent-task</code> — Agent 任务管理 (预览)</h3></p><p>别名: <code>gh agent-tasks</code>, <code>gh agent</code>, <code>gh agents</code></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gh agent-task create</code></td><td>创建 agent 任务</td></tr><tr><td><code>gh agent-task list</code></td><td>列出 agent 任务</td></tr><tr><td><code>gh agent-task view</code></td><td>查看 agent 任务</td></tr></tbody></table></p>
+<hr><h3 id="gh-alias-命令别名"><code>gh alias</code> — 命令别名</h3></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gh alias delete</code></td><td>删除别名</td></tr><tr><td><code>gh alias import</code></td><td>从 YAML 文件导入别名</td></tr><tr><td><code>gh alias list</code></td><td>列出别名</td></tr><tr><td><code>gh alias set</code></td><td>创建别名</td></tr></tbody></table></p>
+<p>#### <code>gh alias set <alias> <expansion> [flags]</code></p><pre><code>    --clobber   覆盖已有同名别名</p>
+<p>-s, --shell     声明为 shell 别名</p>
+</code></pre></p><hr><h3 id="gh-api-endpoint-flags-github-api-请求"><code>gh api <endpoint> [flags]</code> — GitHub API 请求</h3></p><pre><code>    --cache duration        缓存响应, 如 "3600s", "60m", "1h"</p>
+<p>-F, --field key=value       添加类型化参数</p>
+<p>-H, --header key:value      添加 HTTP 请求头</p>
+<p>    --hostname string       GitHub 主机名 (默认 "github.com")</p>
+<p>-i, --include               包含 HTTP 响应状态和头</p>
+<p>    --input file            请求体文件</p>
+<p>-q, --jq string             使用 jq 语法查询</p>
+<p>-X, --method string         HTTP 方法 (默认 "GET")</p>
+<p>    --paginate              获取所有分页结果</p>
+<p>-p, --preview strings       启用 API 预览</p>
+<p>-f, --raw-field key=value   添加字符串参数</p>
+<p>    --silent                不打印响应体</p>
+<p>    --slurp                 配合 --paginate 返回所有页面的数组</p>
+<p>-t, --template string       使用 Go 模板格式化</p>
+<p>    --verbose               包含完整的 HTTP 请求和响应</p>
+</code></pre></p><hr><h3 id="gh-attestation-制品证明管理"><code>gh attestation</code> — 制品证明管理</h3></p><p>别名: <code>gh at</code></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gh attestation download</code></td><td>下载制品证明</td></tr><tr><td><code>gh attestation trusted-root</code></td><td>输出可信根</td></tr><tr><td><code>gh attestation verify</code></td><td>验证制品完整性</td></tr></tbody></table></p>
+<hr><h3 id="gh-completion--s-shell-shell-补全脚本"><code>gh completion -s <shell></code> — Shell 补全脚本</h3></p><pre><code>-s, --shell string   Shell 类型: {bash|zsh|fish|powershell}</p>
+</code></pre></p><hr><h3 id="gh-config-配置管理"><code>gh config</code> — 配置管理</h3></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gh config clear-cache</code></td><td>清除 CLI 缓存</td></tr><tr><td><code>gh config get <key></code></td><td>获取配置值</td></tr><tr><td><code>gh config list</code></td><td>列出配置</td></tr><tr><td><code>gh config set <key> <value></code></td><td>设置配置值</td></tr></tbody></table></p>
+<hr><h3 id="gh-copilot-github-copilot-cli-预览"><code>gh copilot</code> — GitHub Copilot CLI (预览)</h3></p><pre><code>--remove   删除已下载的 Copilot CLI</p>
+</code></pre></p><hr><h3 id="gh-extension-扩展管理"><code>gh extension</code> — 扩展管理</h3></p><p>别名: <code>gh extensions</code>, <code>gh ext</code></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gh extension browse</code></td><td>浏览扩展 UI</td></tr><tr><td><code>gh extension create</code></td><td>创建扩展</td></tr><tr><td><code>gh extension exec</code></td><td>执行已安装的扩展</td></tr><tr><td><code>gh extension install</code></td><td>安装扩展</td></tr><tr><td><code>gh extension list</code></td><td>列出已安装的扩展</td></tr><tr><td><code>gh extension remove</code></td><td>移除扩展</td></tr><tr><td><code>gh extension search</code></td><td>搜索扩展</td></tr><tr><td><code>gh extension upgrade</code></td><td>升级扩展</td></tr></tbody></table></p>
+<hr><h3 id="gh-gpg-key-gpg-密钥管理"><code>gh gpg-key</code> — GPG 密钥管理</h3></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gh gpg-key add</code></td><td>添加 GPG 密钥</td></tr><tr><td><code>gh gpg-key delete</code></td><td>删除 GPG 密钥</td></tr><tr><td><code>gh gpg-key list</code></td><td>列出 GPG 密钥</td></tr></tbody></table></p>
+<hr><h3 id="gh-label-标签管理"><code>gh label</code> — 标签管理</h3></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gh label clone</code></td><td>从其他仓库克隆标签</td></tr><tr><td><code>gh label create</code></td><td>创建标签</td></tr><tr><td><code>gh label delete</code></td><td>删除标签</td></tr><tr><td><code>gh label edit</code></td><td>编辑标签</td></tr><tr><td><code>gh label list</code></td><td>列出标签</td></tr></tbody></table></p>
+<hr><h3 id="gh-licenses-查看第三方许可证信息"><code>gh licenses</code> — 查看第三方许可证信息</h3></p><hr><h3 id="gh-ruleset-仓库规则集"><code>gh ruleset</code> — 仓库规则集</h3></p><p>别名: <code>gh rs</code></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gh ruleset check</code></td><td>查看适用于分支的规则</td></tr><tr><td><code>gh ruleset list</code></td><td>列出规则集</td></tr><tr><td><code>gh ruleset view</code></td><td>查看规则集详情</td></tr></tbody></table></p>
+<hr><h3 id="gh-search-搜索"><code>gh search</code> — 搜索</h3></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gh search code</code></td><td>搜索代码</td></tr><tr><td><code>gh search commits</code></td><td>搜索 commits</td></tr><tr><td><code>gh search issues</code></td><td>搜索 issues</td></tr><tr><td><code>gh search prs</code></td><td>搜索 PRs</td></tr><tr><td><code>gh search repos</code></td><td>搜索仓库</td></tr></tbody></table></p>
+<p>#### <code>gh search repos [<query>] [flags]</code></p><pre><code>    --language string     按语言筛选</p>
+<p>    --license strings     按许可证筛选</p>
+<p>-L, --limit int           最大数量 (默认 30)</p>
+<p>    --sort string         排序: {forks|help-wanted-issues|stars|updated}</p>
+<p>    --stars number        按星标数筛选</p>
+<p>    --topic strings       按 topic 筛选</p>
+<p>-w, --web                 在浏览器中搜索</p>
+</code></pre></p><hr><h3 id="gh-secret-secret-管理"><code>gh secret</code> — Secret 管理</h3></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gh secret delete</code></td><td>删除 secret</td></tr><tr><td><code>gh secret list</code></td><td>列出 secrets</td></tr><tr><td><code>gh secret set</code></td><td>创建或更新 secret</td></tr></tbody></table></p>
+<p>#### <code>gh secret set <secret-name> [flags]</code></p><pre><code>-a, --app string           应用类型: {actions|codespaces|dependabot}</p>
+<p>-b, --body string          Secret 值 (不指定则从标准输入读取)</p>
+<p>-e, --env environment      环境级 secret</p>
+<p>-o, --org organization     组织级 secret</p>
+<p>-v, --visibility string    可见性: {all|private|selected} (默认 "private")</p>
+</code></pre></p><hr><h3 id="gh-ssh-key-ssh-密钥管理"><code>gh ssh-key</code> — SSH 密钥管理</h3></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gh ssh-key add</code></td><td>添加 SSH 密钥</td></tr><tr><td><code>gh ssh-key delete</code></td><td>删除 SSH 密钥</td></tr><tr><td><code>gh ssh-key list</code></td><td>列出 SSH 密钥</td></tr></tbody></table></p>
+<hr><h3 id="gh-status-状态概览"><code>gh status</code> — 状态概览</h3></p><pre><code>gh status [flags]</p>
+</code></pre></p><pre><code>-e, --exclude strings   排除的仓库列表 (owner/name 格式)</p>
+<p>-o, --org string        在组织范围内报告状态</p>
+</code></pre></p><hr><h3 id="gh-variable-actions-变量管理"><code>gh variable</code> — Actions 变量管理</h3></p><table><thead><tr><th>子命令</th><th>说明</th></tr></thead><tbody><tr><td><code>gh variable delete</code></td><td>删除变量</td></tr><tr><td><code>gh variable get</code></td><td>获取变量</td></tr><tr><td><code>gh variable list</code></td><td>列出变量</td></tr><tr><td><code>gh variable set</code></td><td>创建或更新变量</td></tr></tbody></table></p>
+<p>#### <code>gh variable set <variable-name> [flags]</code></p><pre><code>-b, --body string          变量值</p>
+<p>-e, --env environment      环境级变量</p>
+<p>-o, --org organization     组织级变量</p>
+<p>-v, --visibility string    可见性: {all|private|selected} (默认 "private")</p>
+</code></pre></p><hr><h2 id="环境变量">环境变量</h2></p><table><thead><tr><th>变量</th><th>说明</th></tr></thead><tbody><tr><td><code>GITHUB_TOKEN</code></td><td>认证 token (替代 <code>gh auth login</code>)</td></tr><tr><td><code>GH_HOST</code></td><td>默认 GitHub 主机名</td></tr><tr><td><code>GH<em>ENTERPRISE</em>TOKEN</code></td><td>GitHub Enterprise token</td></tr><tr><td><code>GH_REPO</code></td><td>默认仓库 (格式: <code>owner/repo</code>)</td></tr></tbody></table></p>
+<h2 id="退出码">退出码</h2></p><table><thead><tr><th>退出码</th><th>说明</th></tr></thead><tbody><tr><td>0</td><td>成功</td></tr><tr><td>1</td><td>一般错误</td></tr><tr><td>2</td><td>shell 用法错误 (参数不正确)</td></tr></tbody></table></p>
+<h2 id="通用-json-输出选项">通用 JSON 输出选项</h2></p><p>以下选项在多个命令中通用:</p><pre><code>-q, --jq expression     使用 jq 表达式过滤 JSON 输出</p>
+<p>    --json fields       指定字段输出 JSON</p>
+<p>-t, --template string   使用 Go 模板格式化 JSON</p>
+</code></pre></p><hr><blockquote>完整文档: https://cli.github.com/manual</blockquote></p>
+</main>
+  </div>
+</body>
+</html>

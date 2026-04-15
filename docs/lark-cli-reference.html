@@ -1,0 +1,2116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lark CLI 参考手册</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect rx=%2212%22 width=%22100%22 height=%22100%22 fill=%22%231a1a2e%22/><text x=%2250%22 y=%2268%22 font-size=%2255%22 font-family=%22monospace%22 font-weight=%22bold%22 text-anchor=%22middle%22 fill=%22%2300d4aa%22>&gt;_</text></svg>">
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@600;700;800&display=swap');
+
+:root {
+  --airbnb-pink: #FF385C;
+  --airbnb-pink-dark: #E31C5F;
+  --airbnb-pink-light: #FF5A5F;
+  --airbnb-pink-bg: #FFF0F3;
+  --airbnb-gray-900: #222222;
+  --airbnb-gray-700: #484848;
+  --airbnb-gray-500: #767676;
+  --airbnb-gray-300: #DDDDDD;
+  --airbnb-gray-100: #F7F7F7;
+  --airbnb-gray-50: #FAFAFA;
+  --airbnb-white: #FFFFFF;
+  --airbnb-black: #000000;
+  --airbnb-radial: rgba(0, 0, 0, 0.03);
+  --sidebar-width: 280px;
+  --header-height: 64px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-height) + 24px);
+}
+
+body {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--airbnb-gray-700);
+  background: var(--airbnb-white);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--airbnb-pink);
+  color: var(--airbnb-white);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--airbnb-gray-300);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--airbnb-gray-500);
+}
+
+/* ─── Header ─── */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  background: var(--airbnb-white);
+  border-bottom: 1px solid var(--airbnb-gray-300);
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  z-index: 1000;
+  backdrop-filter: blur(12px);
+  background: rgba(255,255,255,0.92);
+}
+
+.header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--airbnb-pink);
+}
+
+.logo svg {
+  width: 32px;
+  height: 32px;
+}
+
+.logo-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--airbnb-gray-900);
+}
+
+.logo-text span {
+  color: var(--airbnb-pink);
+}
+
+.search-box {
+  position: relative;
+  width: 420px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 16px 10px 42px;
+  border: 2px solid var(--airbnb-gray-300);
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: var(--airbnb-gray-50);
+}
+
+.search-input:focus {
+  border-color: var(--airbnb-gray-900);
+  background: var(--airbnb-white);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--airbnb-gray-500);
+  pointer-events: none;
+}
+
+.search-shortcut {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 2px 8px;
+  border: 1px solid var(--airbnb-gray-300);
+  border-radius: 6px;
+  font-size: 11px;
+  color: var(--airbnb-gray-500);
+  font-family: 'DM Mono', monospace;
+  pointer-events: none;
+}
+
+.version-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--airbnb-gray-100);
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--airbnb-gray-700);
+  font-weight: 500;
+}
+
+.version-badge .dot {
+  width: 8px;
+  height: 8px;
+  background: #008A05;
+  border-radius: 50%;
+  animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ─── Layout ─── */
+.layout {
+  display: flex;
+  margin-top: var(--header-height);
+  min-height: calc(100vh - var(--header-height));
+}
+
+/* ─── Sidebar ─── */
+.sidebar {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  width: var(--sidebar-width);
+  height: calc(100vh - var(--header-height));
+  overflow-y: auto;
+  padding: 24px 16px;
+  background: var(--airbnb-gray-50);
+  border-right: 1px solid var(--airbnb-gray-300);
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.nav-group-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--airbnb-gray-500);
+  padding: 16px 12px 8px;
+}
+
+.nav-group-title:first-child {
+  padding-top: 8px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--airbnb-gray-700);
+  font-size: 14px;
+  font-weight: 400;
+  transition: all 0.15s;
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+.nav-link:hover {
+  background: var(--airbnb-white);
+  color: var(--airbnb-pink);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.nav-link.active {
+  background: var(--airbnb-white);
+  color: var(--airbnb-pink);
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.nav-link .nav-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.nav-link .nav-emoji {
+  font-size: 16px;
+}
+
+.nav-link code {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  background: rgba(255, 56, 92, 0.08);
+  color: var(--airbnb-pink);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* ─── Main Content ─── */
+.main {
+  margin-left: var(--sidebar-width);
+  flex: 1;
+  max-width: 960px;
+  padding: 48px 64px 120px;
+}
+
+/* ─── Hero ─── */
+.hero {
+  margin-bottom: 56px;
+  padding-bottom: 48px;
+  border-bottom: 2px solid var(--airbnb-gray-100);
+}
+
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 52px;
+  font-weight: 800;
+  color: var(--airbnb-gray-900);
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+
+.hero h1 .accent {
+  color: var(--airbnb-pink);
+}
+
+.hero .subtitle {
+  font-size: 18px;
+  color: var(--airbnb-gray-500);
+  line-height: 1.7;
+  max-width: 680px;
+}
+
+.hero-meta {
+  display: flex;
+  gap: 24px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.hero-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--airbnb-gray-500);
+}
+
+.hero-meta-item strong {
+  color: var(--airbnb-gray-700);
+  font-weight: 600;
+}
+
+.hero-install {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 28px;
+  padding: 14px 28px;
+  background: linear-gradient(135deg, var(--airbnb-pink), var(--airbnb-pink-dark));
+  color: var(--airbnb-white);
+  border-radius: 14px;
+  font-family: 'DM Mono', monospace;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(255, 56, 92, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.hero-install:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(255, 56, 92, 0.4);
+}
+
+.hero-install .copy-icon {
+  width: 18px;
+  height: 18px;
+  opacity: 0.8;
+}
+
+/* ─── Section ─── */
+.section {
+  margin-bottom: 64px;
+  scroll-margin-top: calc(var(--header-height) + 24px);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--airbnb-gray-100);
+}
+
+.section-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.section-icon.pink { background: var(--airbnb-pink-bg); }
+.section-icon.blue { background: #EBF5FF; }
+.section-icon.green { background: #E8F5E9; }
+.section-icon.purple { background: #F3E8FF; }
+.section-icon.orange { background: #FFF3E0; }
+.section-icon.yellow { background: #FFFDE7; }
+.section-icon.teal { background: #E0F7FA; }
+.section-icon.red { background: #FFEBEE; }
+
+.section h2 {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--airbnb-gray-900);
+  line-height: 1.3;
+}
+
+.section h2 code {
+  font-family: 'DM Mono', monospace;
+  font-size: 20px;
+  background: rgba(255, 56, 92, 0.08);
+  color: var(--airbnb-pink);
+  padding: 2px 10px;
+  border-radius: 6px;
+}
+
+.section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--airbnb-gray-900);
+  margin: 32px 0 12px;
+}
+
+.section p {
+  margin-bottom: 16px;
+  line-height: 1.75;
+}
+
+/* ─── Code Blocks ─── */
+.code-block {
+  position: relative;
+  margin: 16px 0;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--airbnb-gray-300);
+  background: #1E1E2E;
+}
+
+.code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: #181825;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.code-lang {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: #A6ADC8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.code-copy {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  color: #A6ADC8;
+  font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.code-copy:hover {
+  background: rgba(255,255,255,0.12);
+  color: #CDD6F4;
+}
+
+.code-copy.copied {
+  color: #A6E3A1;
+  border-color: #A6E3A1;
+}
+
+.code-body {
+  padding: 16px 20px;
+  overflow-x: auto;
+}
+
+.code-body pre {
+  font-family: 'DM Mono', 'SF Mono', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #CDD6F4;
+  white-space: pre;
+}
+
+.code-body .comment { color: #6C7086; }
+.code-body .keyword { color: #CBA6F7; }
+.code-body .string { color: #A6E3A1; }
+.code-body .flag { color: #89B4FA; }
+.code-body .cmd { color: #F9E2AF; }
+.code-body .pipe { color: #F38BA8; }
+.code-body .variable { color: #F5C2E7; }
+.code-body .bracket { color: #9399B2; }
+.code-body .url { color: #89DCEB; text-decoration: underline; }
+
+/* ─── Inline Code ─── */
+code.inline {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  background: var(--airbnb-gray-100);
+  color: var(--airbnb-pink-dark);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* ─── Tables ─── */
+.table-wrapper {
+  overflow-x: auto;
+  margin: 16px 0;
+  border-radius: 14px;
+  border: 1px solid var(--airbnb-gray-300);
+}
+
+.table-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table-wrapper thead th {
+  background: var(--airbnb-gray-100);
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--airbnb-gray-900);
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.table-wrapper tbody td {
+  padding: 12px 16px;
+  border-top: 1px solid var(--airbnb-gray-100);
+  color: var(--airbnb-gray-700);
+  vertical-align: top;
+}
+
+.table-wrapper tbody tr:hover {
+  background: var(--airbnb-gray-50);
+}
+
+.table-wrapper td:first-child code {
+  font-family: 'DM Mono', monospace;
+  font-size: 12.5px;
+  background: rgba(255, 56, 92, 0.06);
+  color: var(--airbnb-pink-dark);
+  padding: 3px 8px;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+
+/* ─── Info Cards ─── */
+.info-card {
+  display: flex;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  margin: 16px 0;
+  border-left: 4px solid;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.info-card.tip {
+  background: #F0FDF4;
+  border-color: #22C55E;
+  color: #166534;
+}
+
+.info-card.warning {
+  background: #FFFBEB;
+  border-color: #F59E0B;
+  color: #92400E;
+}
+
+.info-card.info {
+  background: #EFF6FF;
+  border-color: #3B82F6;
+  color: #1E40AF;
+}
+
+.info-card .info-emoji {
+  font-size: 18px;
+  flex-shrink: 0;
+  line-height: 1.6;
+}
+
+/* ─── Quick Reference Grid ─── */
+.cmd-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.cmd-card {
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--airbnb-gray-300);
+  background: var(--airbnb-white);
+  transition: all 0.15s;
+  cursor: default;
+}
+
+.cmd-card:hover {
+  border-color: var(--airbnb-pink);
+  box-shadow: 0 2px 12px rgba(255, 56, 92, 0.1);
+}
+
+.cmd-card .cmd-name {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--airbnb-pink);
+  margin-bottom: 4px;
+}
+
+.cmd-card .cmd-desc {
+  font-size: 13px;
+  color: var(--airbnb-gray-500);
+  line-height: 1.5;
+}
+
+/* ─── Divider ─── */
+.divider {
+  height: 2px;
+  background: linear-gradient(90deg, var(--airbnb-gray-300), transparent);
+  margin: 48px 0;
+}
+
+/* ─── Search Results ─── */
+.search-results {
+  position: fixed;
+  top: calc(var(--header-height) + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 520px;
+  max-height: 480px;
+  overflow-y: auto;
+  background: var(--airbnb-white);
+  border: 1px solid var(--airbnb-gray-300);
+  border-radius: 16px;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.15);
+  z-index: 999;
+  display: none;
+}
+
+.search-results.active {
+  display: block;
+}
+
+.search-result-item {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--airbnb-gray-100);
+  cursor: pointer;
+  transition: background 0.1s;
+  text-decoration: none;
+}
+
+.search-result-item:hover {
+  background: var(--airbnb-gray-50);
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--airbnb-gray-900);
+}
+
+.search-result-title mark {
+  background: rgba(255, 56, 92, 0.15);
+  color: var(--airbnb-pink);
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+.search-result-preview {
+  font-size: 12px;
+  color: var(--airbnb-gray-500);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-no-result {
+  padding: 24px;
+  text-align: center;
+  color: var(--airbnb-gray-500);
+  font-size: 14px;
+}
+
+/* ─── Tags ─── */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  gap: 4px;
+}
+
+.tag.pink { background: var(--airbnb-pink-bg); color: var(--airbnb-pink-dark); }
+.tag.blue { background: #EBF5FF; color: #1D4ED8; }
+.tag.green { background: #E8F5E9; color: #166534; }
+.tag.purple { background: #F3E8FF; color: #7C3AED; }
+.tag.orange { background: #FFF3E0; color: #C2410C; }
+
+/* ─── Footer ─── */
+.footer {
+  margin-top: 80px;
+  padding: 32px 0;
+  border-top: 2px solid var(--airbnb-gray-100);
+  text-align: center;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  font-size: 14px;
+  color: var(--airbnb-pink);
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.15s;
+}
+
+.footer-links a:hover {
+  opacity: 0.8;
+}
+
+.footer-copy {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--airbnb-gray-500);
+}
+
+/* ─── Back to top ─── */
+.back-top {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--airbnb-pink);
+  color: var(--airbnb-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(255, 56, 92, 0.3);
+  transition: transform 0.2s, opacity 0.2s;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 100;
+  border: none;
+}
+
+.back-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.back-top:hover {
+  transform: translateY(-2px);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1024px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; padding: 32px 24px 80px; }
+  .search-box { width: 300px; }
+  .hero h1 { font-size: 36px; }
+}
+
+@media (max-width: 640px) {
+  .header { padding: 0 16px; }
+  .search-box { display: none; }
+  .version-badge { display: none; }
+  .hero h1 { font-size: 28px; }
+  .hero .subtitle { font-size: 15px; }
+  .cmd-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── Fade in animation ─── */
+.section {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: fadeUp 0.5s ease forwards;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section:nth-child(1) { animation-delay: 0s; }
+.section:nth-child(2) { animation-delay: 0.05s; }
+.section:nth-child(3) { animation-delay: 0.1s; }
+.section:nth-child(4) { animation-delay: 0.15s; }
+.section:nth-child(5) { animation-delay: 0.2s; }
+.section:nth-child(6) { animation-delay: 0.25s; }
+.section:nth-child(7) { animation-delay: 0.3s; }
+.section:nth-child(8) { animation-delay: 0.35s; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <svg viewBox="0 0 32 32" fill="none">
+        <rect width="32" height="32" rx="8" fill="#FF385C"/>
+        <path d="M10 12L16 8L22 12V20L16 24L10 20V12Z" stroke="white" stroke-width="2" fill="none"/>
+        <circle cx="16" cy="16" r="3" fill="white"/>
+      </svg>
+      <span class="logo-text"><span>Lark</span> CLI</span>
+    </a>
+
+    <div class="search-box">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+      </svg>
+      <input class="search-input" id="searchInput" type="text" placeholder="搜索命令、标志或模块..." autocomplete="off">
+      <span class="search-shortcut">/</span>
+    </div>
+
+    <div class="version-badge">
+      <span class="dot"></span>
+      v1.0.0
+    </div>
+  </div>
+</header>
+
+<!-- Search Results -->
+<div class="search-results" id="searchResults"></div>
+
+<!-- Layout -->
+<div class="layout">
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="nav-group-title">快速开始</div>
+    <a class="nav-link active" data-section="overview" onclick="scrollToSection('overview')">
+      <span class="nav-emoji">🚀</span> 概述
+    </a>
+    <a class="nav-link" data-section="install" onclick="scrollToSection('install')">
+      <span class="nav-emoji">📦</span> 安装与初始化
+    </a>
+    <a class="nav-link" data-section="global-flags" onclick="scrollToSection('global-flags')">
+      <span class="nav-emoji">⚙️</span> 全局标志
+    </a>
+
+    <div class="nav-group-title">核心命令</div>
+    <a class="nav-link" data-section="auth" onclick="scrollToSection('auth')">
+      <span class="nav-emoji">🔐</span> 认证管理 <code>auth</code>
+    </a>
+    <a class="nav-link" data-section="config" onclick="scrollToSection('config')">
+      <span class="nav-emoji">🔧</span> 配置管理 <code>config</code>
+    </a>
+    <a class="nav-link" data-section="api" onclick="scrollToSection('api')">
+      <span class="nav-emoji">🌐</span> 通用 API <code>api</code>
+    </a>
+    <a class="nav-link" data-section="schema" onclick="scrollToSection('schema')">
+      <span class="nav-emoji">📋</span> Schema 查询 <code>schema</code>
+    </a>
+    <a class="nav-link" data-section="doctor" onclick="scrollToSection('doctor')">
+      <span class="nav-emoji">🩺</span> 健康检查 <code>doctor</code>
+    </a>
+
+    <div class="nav-group-title">业务模块</div>
+    <a class="nav-link" data-section="im" onclick="scrollToSection('im')">
+      <span class="nav-emoji">💬</span> 消息与群聊 <code>im</code>
+    </a>
+    <a class="nav-link" data-section="calendar" onclick="scrollToSection('calendar')">
+      <span class="nav-emoji">📅</span> 日历 <code>calendar</code>
+    </a>
+    <a class="nav-link" data-section="mail" onclick="scrollToSection('mail')">
+      <span class="nav-emoji">📧</span> 邮件 <code>mail</code>
+    </a>
+    <a class="nav-link" data-section="docs" onclick="scrollToSection('docs')">
+      <span class="nav-emoji">📝</span> 云文档 <code>docs</code>
+    </a>
+    <a class="nav-link" data-section="drive" onclick="scrollToSection('drive')">
+      <span class="nav-emoji">💾</span> 云盘 <code>drive</code>
+    </a>
+    <a class="nav-link" data-section="base" onclick="scrollToSection('base')">
+      <span class="nav-emoji">📊</span> 多维表格 <code>base</code>
+    </a>
+    <a class="nav-link" data-section="sheets" onclick="scrollToSection('sheets')">
+      <span class="nav-emoji">📈</span> 电子表格 <code>sheets</code>
+    </a>
+    <a class="nav-link" data-section="task" onclick="scrollToSection('task')">
+      <span class="nav-emoji">✅</span> 任务 <code>task</code>
+    </a>
+    <a class="nav-link" data-section="contact" onclick="scrollToSection('contact')">
+      <span class="nav-emoji">👥</span> 通讯录 <code>contact</code>
+    </a>
+    <a class="nav-link" data-section="vc" onclick="scrollToSection('vc')">
+      <span class="nav-emoji">📹</span> 视频会议 <code>vc</code>
+    </a>
+    <a class="nav-link" data-section="minutes" onclick="scrollToSection('minutes')">
+      <span class="nav-emoji">🎙️</span> 妙记 <code>minutes</code>
+    </a>
+    <a class="nav-link" data-section="wiki" onclick="scrollToSection('wiki')">
+      <span class="nav-emoji">📚</span> 知识库 <code>wiki</code>
+    </a>
+    <a class="nav-link" data-section="event" onclick="scrollToSection('event')">
+      <span class="nav-emoji">⚡</span> 事件订阅 <code>event</code>
+    </a>
+
+    <div class="nav-group-title">参考</div>
+    <a class="nav-link" data-section="output" onclick="scrollToSection('output')">
+      <span class="nav-emoji">🖨️</span> 输出格式
+    </a>
+    <a class="nav-link" data-section="pagination" onclick="scrollToSection('pagination')">
+      <span class="nav-emoji">📄</span> 分页控制
+    </a>
+    <a class="nav-link" data-section="identity" onclick="scrollToSection('identity')">
+      <span class="nav-emoji">🪪</span> 身份类型
+    </a>
+    <a class="nav-link" data-section="ai-agent" onclick="scrollToSection('ai-agent')">
+      <span class="nav-emoji">🤖</span> AI Agent 集成
+    </a>
+    <a class="nav-link" data-section="faq" onclick="scrollToSection('faq')">
+      <span class="nav-emoji">❓</span> 常见问题排查
+    </a>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main" id="main">
+
+    <!-- Hero -->
+    <div class="hero" id="overview">
+      <h1>Lark CLI <span class="accent">参考手册</span></h1>
+      <p class="subtitle">
+        飞书/Lark 官方命令行工具，支持通过终端直接调用飞书开放平台 API，覆盖消息、日历、邮件、文档、云盘、多维表格、通讯录等核心模块，适合快速集成飞书能力到自动化工作流中。
+      </p>
+      <div class="hero-meta">
+        <div class="hero-meta-item"><strong>版本：</strong>lark-cli v1.0.0</div>
+        <div class="hero-meta-item"><strong>路径：</strong><code class="inline">~/.nvm/versions/node/v22.22.1/lib/node_modules/@larksuite/cli</code></div>
+      </div>
+      <div class="hero-install" onclick="copyText('npm install -g @larksuite/cli', this)">
+        <span>$ npm install -g @larksuite/cli</span>
+        <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+      </div>
+    </div>
+
+    <!-- 概述 -->
+    <div class="section" id="sec-overview">
+      <div class="section-header">
+        <div class="section-icon pink">🚀</div>
+        <h2>概述</h2>
+      </div>
+      <p>基本的命令语法支持多种调用模式：</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">基本语法</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="cmd">lark-cli</span> <span class="bracket">&lt;command&gt;</span> <span class="bracket">[subcommand]</span> <span class="bracket">[method]</span> <span class="bracket">[flags]</span>
+<span class="cmd">lark-cli</span> <span class="keyword">api</span> <span class="bracket">&lt;method&gt;</span> <span class="bracket">&lt;path&gt;</span> <span class="flag">--params</span> <span class="string">&lt;json&gt;</span> <span class="flag">--data</span> <span class="string">&lt;json&gt;</span>
+<span class="cmd">lark-cli</span> <span class="keyword">schema</span> <span class="bracket">&lt;service.resource.method&gt;</span> <span class="flag">--format</span> <span class="string">pretty</span></pre></div>
+      </div>
+      <div class="info-card tip">
+        <span class="info-emoji">💡</span>
+        <span>许多子命令提供 <code class="inline">+xxx</code> 形式的高级快捷命令，封装了多步 API 调用。例如 <code class="inline">lark-cli calendar +agenda</code> 比 <code class="inline">lark-cli calendar events list</code> 更易用。</span>
+      </div>
+    </div>
+
+    <!-- 安装与初始化 -->
+    <div class="section" id="sec-install">
+      <div class="section-header">
+        <div class="section-icon blue">📦</div>
+        <h2>安装与初始化</h2>
+      </div>
+
+      <h3>安装</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="cmd">npm</span> install -g @larksuite/cli</pre></div>
+      </div>
+
+      <h3>初始化配置</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="comment"># 交互式初始化（引导创建应用或输入已有 App ID/Secret）</span>
+<span class="cmd">lark-cli</span> config init
+
+<span class="comment"># 非交互式初始化</span>
+<span class="cmd">lark-cli</span> config init <span class="flag">--app-id</span> <span class="string">&lt;APP_ID&gt;</span> <span class="flag">--brand</span> <span class="string">feishu</span>
+
+<span class="comment"># 从标准输入读取 App Secret（安全方式，避免出现在进程列表中）</span>
+<span class="cmd">echo</span> <span class="string">"your-app-secret"</span> <span class="pipe">|</span> <span class="cmd">lark-cli</span> config init <span class="flag">--app-id</span> <span class="string">&lt;APP_ID&gt;</span> <span class="flag">--app-secret-stdin</span>
+
+<span class="comment"># 直接创建新应用</span>
+<span class="cmd">lark-cli</span> config init <span class="flag">--new</span></pre></div>
+      </div>
+
+      <h3>登录授权</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="comment"># 交互式登录（设备码流程，在浏览器中完成授权）</span>
+<span class="cmd">lark-cli</span> auth login
+
+<span class="comment"># 只请求推荐权限（自动审批）</span>
+<span class="cmd">lark-cli</span> auth login <span class="flag">--recommend</span>
+
+<span class="comment"># 指定授权域</span>
+<span class="cmd">lark-cli</span> auth login <span class="flag">--domain</span> <span class="string">calendar,task,im</span>
+
+<span class="comment"># 非阻塞模式（获取验证 URL 后立即返回）</span>
+<span class="cmd">lark-cli</span> auth login <span class="flag">--no-wait</span>
+
+<span class="comment"># 用设备码完成授权（配合 --no-wait 使用）</span>
+<span class="cmd">lark-cli</span> auth login <span class="flag">--device-code</span> <span class="string">&lt;CODE&gt;</span></pre></div>
+      </div>
+
+      <div class="info-card info">
+        <span class="info-emoji">📌</span>
+        <span>可用的域（domain）：<span class="tag pink">base</span> <span class="tag blue">calendar</span> <span class="tag green">contact</span> <span class="tag purple">docs</span> <span class="tag orange">drive</span> <span class="tag pink">event</span> <span class="tag blue">im</span> <span class="tag green">mail</span> <span class="tag purple">minutes</span> <span class="tag orange">sheets</span> <span class="tag pink">task</span> <span class="tag blue">vc</span> <span class="tag green">wiki</span> <span class="tag purple">all</span></span>
+      </div>
+    </div>
+
+    <!-- 全局标志 -->
+    <div class="section" id="sec-global-flags">
+      <div class="section-header">
+        <div class="section-icon green">⚙️</div>
+        <h2>全局标志</h2>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>标志</th><th>说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>--as &lt;type&gt;</code></td><td>身份类型：<code class="inline">user</code>、<code class="inline">bot</code>、<code class="inline">auto</code>（默认 <code class="inline">auto</code>）</td></tr>
+            <tr><td><code>--format &lt;fmt&gt;</code></td><td>输出格式：<code class="inline">json</code>（默认）、<code class="inline">ndjson</code>、<code class="inline">table</code>、<code class="inline">csv</code>、<code class="inline">pretty</code></td></tr>
+            <tr><td><code>--params &lt;json&gt;</code></td><td>URL/查询参数 JSON</td></tr>
+            <tr><td><code>--data &lt;json&gt;</code></td><td>请求体 JSON（POST/PATCH/PUT/DELETE）</td></tr>
+            <tr><td><code>-o, --output &lt;path&gt;</code></td><td>二进制响应的输出文件路径</td></tr>
+            <tr><td><code>--dry-run</code></td><td>只打印请求，不实际执行</td></tr>
+            <tr><td><code>--page-all</code></td><td>自动翻页获取所有数据</td></tr>
+            <tr><td><code>--page-size &lt;N&gt;</code></td><td>每页数量（0 = 使用 API 默认值）</td></tr>
+            <tr><td><code>--page-limit &lt;N&gt;</code></td><td><code class="inline">--page-all</code> 时的最大页数（默认 10，0 = 无限）</td></tr>
+            <tr><td><code>--page-delay &lt;MS&gt;</code></td><td>翻页间隔毫秒数（默认 200，仅 <code class="inline">--page-all</code>）</td></tr>
+            <tr><td><code>-h, --help</code></td><td>显示帮助</td></tr>
+            <tr><td><code>-v, --version</code></td><td>显示版本</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 认证管理 -->
+    <div class="section" id="sec-auth">
+      <div class="section-header">
+        <div class="section-icon purple">🔐</div>
+        <h2>认证管理 <code>auth</code></h2>
+      </div>
+      <div class="cmd-grid">
+        <div class="cmd-card"><div class="cmd-name">lark-cli auth login</div><div class="cmd-desc">设备码流程登录</div></div>
+        <div class="cmd-card"><div class="cmd-name">lark-cli auth status</div><div class="cmd-desc">查看当前认证状态</div></div>
+        <div class="cmd-card"><div class="cmd-name">lark-cli auth status --verify</div><div class="cmd-desc">在线验证 Token 有效性</div></div>
+        <div class="cmd-card"><div class="cmd-name">lark-cli auth list</div><div class="cmd-desc">列出所有已登录用户</div></div>
+        <div class="cmd-card"><div class="cmd-name">lark-cli auth logout</div><div class="cmd-desc">登出（清除 Token）</div></div>
+        <div class="cmd-card"><div class="cmd-name">lark-cli auth scopes</div><div class="cmd-desc">查询应用已启用的权限范围</div></div>
+        <div class="cmd-card"><div class="cmd-name">lark-cli auth check</div><div class="cmd-desc">检查当前 Token 是否有指定权限</div></div>
+      </div>
+    </div>
+
+    <!-- 配置管理 -->
+    <div class="section" id="sec-config">
+      <div class="section-header">
+        <div class="section-icon orange">🔧</div>
+        <h2>配置管理 <code>config</code></h2>
+      </div>
+      <div class="cmd-grid">
+        <div class="cmd-card"><div class="cmd-name">lark-cli config init</div><div class="cmd-desc">初始化配置（App ID / App Secret / 品牌）</div></div>
+        <div class="cmd-card"><div class="cmd-name">lark-cli config show</div><div class="cmd-desc">显示当前配置</div></div>
+        <div class="cmd-card"><div class="cmd-name">lark-cli config remove</div><div class="cmd-desc">移除应用配置（清除所有 Token 和配置）</div></div>
+        <div class="cmd-card"><div class="cmd-name">lark-cli config default-as</div><div class="cmd-desc">查看或设置默认身份类型</div></div>
+      </div>
+    </div>
+
+    <!-- 通用 API 调用 -->
+    <div class="section" id="sec-api">
+      <div class="section-header">
+        <div class="section-icon teal">🌐</div>
+        <h2>通用 API 调用 <code>api</code></h2>
+      </div>
+      <p>直接调用任意飞书 Open API，适合没有快捷命令的场景。</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="comment"># GET 请求</span>
+<span class="cmd">lark-cli</span> api <span class="keyword">GET</span> <span class="url">/open-apis/calendar/v4/calendars</span>
+
+<span class="comment"># 带查询参数</span>
+<span class="cmd">lark-cli</span> api <span class="keyword">GET</span> <span class="url">/open-apis/calendar/v4/calendars</span> <span class="flag">--params</span> <span class="string">'{"page_size":20}'</span>
+
+<span class="comment"># POST 请求</span>
+<span class="cmd">lark-cli</span> api <span class="keyword">POST</span> <span class="url">/open-apis/im/v1/messages</span> <span class="flag">--data</span> <span class="string">'{"msg_type":"text","content":"{\"text\":\"hello\"}"}'</span>
+
+<span class="comment"># 指定身份</span>
+<span class="cmd">lark-cli</span> api <span class="keyword">GET</span> <span class="url">/open-apis/bot/v3/info</span> <span class="flag">--as</span> <span class="string">bot</span>
+
+<span class="comment"># 自动翻页</span>
+<span class="cmd">lark-cli</span> api <span class="keyword">GET</span> <span class="url">/open-apis/contact/v3/users</span> <span class="flag">--page-all</span> <span class="flag">--page-size</span> <span class="string">50</span></pre></div>
+      </div>
+    </div>
+
+    <!-- Schema 查询 -->
+    <div class="section" id="sec-schema">
+      <div class="section-header">
+        <div class="section-icon blue">📋</div>
+        <h2>Schema 查询 <code>schema</code></h2>
+      </div>
+      <p>查看 API 方法的参数、类型和权限范围。</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="comment"># 查看某个 API 的 schema</span>
+<span class="cmd">lark-cli</span> schema <span class="string">calendar.events.list</span> <span class="flag">--format</span> <span class="string">pretty</span>
+
+<span class="comment"># 查看通用格式</span>
+<span class="cmd">lark-cli</span> schema <span class="string">im.messages.create</span></pre></div>
+      </div>
+    </div>
+
+    <!-- 健康检查 -->
+    <div class="section" id="sec-doctor">
+      <div class="section-header">
+        <div class="section-icon green">🩺</div>
+        <h2>健康检查 <code>doctor</code></h2>
+      </div>
+      <p>检查 CLI 的配置、认证和网络连通性。</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="comment"># 完整检查</span>
+<span class="cmd">lark-cli</span> doctor
+
+<span class="comment"># 仅检查本地状态（跳过网络检查）</span>
+<span class="cmd">lark-cli</span> doctor <span class="flag">--offline</span></pre></div>
+      </div>
+    </div>
+
+    <!-- 消息与群聊 -->
+    <div class="section" id="sec-im">
+      <div class="section-header">
+        <div class="section-icon pink">💬</div>
+        <h2>消息与群聊 <code>im</code></h2>
+      </div>
+
+      <h3>发送消息</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="comment"># 发送纯文本到群聊</span>
+<span class="cmd">lark-cli</span> im <span class="keyword">+messages-send</span> <span class="flag">--chat-id</span> <span class="string">oc_xxx</span> <span class="flag">--text</span> <span class="string">"Hello World"</span>
+
+<span class="comment"># 发送 Markdown</span>
+<span class="cmd">lark-cli</span> im <span class="keyword">+messages-send</span> <span class="flag">--chat-id</span> <span class="string">oc_xxx</span> <span class="flag">--markdown</span> <span class="string">"**加粗** 和 [链接](https://example.com)"</span>
+
+<span class="comment"># 发送图片</span>
+<span class="cmd">lark-cli</span> im <span class="keyword">+messages-send</span> <span class="flag">--chat-id</span> <span class="string">oc_xxx</span> <span class="flag">--image</span> <span class="string">/path/to/image.png</span>
+
+<span class="comment"># 发送文件</span>
+<span class="cmd">lark-cli</span> im <span class="keyword">+messages-send</span> <span class="flag">--chat-id</span> <span class="string">oc_xxx</span> <span class="flag">--file</span> <span class="string">/path/to/file.pdf</span>
+
+<span class="comment"># 发送视频</span>
+<span class="cmd">lark-cli</span> im <span class="keyword">+messages-send</span> <span class="flag">--chat-id</span> <span class="string">oc_xxx</span> <span class="flag">--video</span> <span class="string">/path/to/video.mp4</span> <span class="flag">--video-cover</span> <span class="string">/path/to/cover.jpg</span>
+
+<span class="comment"># 发送音频</span>
+<span class="cmd">lark-cli</span> im <span class="keyword">+messages-send</span> <span class="flag">--chat-id</span> <span class="string">oc_xxx</span> <span class="flag">--audio</span> <span class="string">/path/to/audio.mp3</span>
+
+<span class="comment"># 发送给个人（私聊）</span>
+<span class="cmd">lark-cli</span> im <span class="keyword">+messages-send</span> <span class="flag">--user-id</span> <span class="string">ou_xxx</span> <span class="flag">--text</span> <span class="string">"私聊消息"</span>
+
+<span class="comment"># 带幂等键（防重复发送）</span>
+<span class="cmd">lark-cli</span> im <span class="keyword">+messages-send</span> <span class="flag">--chat-id</span> <span class="string">oc_xxx</span> <span class="flag">--text</span> <span class="string">"重要通知"</span> <span class="flag">--idempotency-key</span> <span class="string">"unique-key-123"</span></pre></div>
+      </div>
+
+      <h3>回复消息</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="comment"># 回复消息（支持话题回复）</span>
+<span class="cmd">lark-cli</span> im <span class="keyword">+messages-reply</span> <span class="flag">--message-id</span> <span class="string">om_xxx</span> <span class="flag">--text</span> <span class="string">"回复内容"</span>
+
+<span class="comment"># 回复 Markdown</span>
+<span class="cmd">lark-cli</span> im <span class="keyword">+messages-reply</span> <span class="flag">--message-id</span> <span class="string">om_xxx</span> <span class="flag">--markdown</span> <span class="string">"**回复**内容"</span></pre></div>
+      </div>
+
+      <h3>消息查询</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="cmd">lark-cli</span> im <span class="keyword">+messages-search</span> <span class="flag">--query</span> <span class="string">"关键词"</span>
+<span class="cmd">lark-cli</span> im <span class="keyword">+messages-mget</span> <span class="flag">--ids</span> <span class="string">"om_xxx,om_yyy,om_zzz"</span>
+<span class="cmd">lark-cli</span> im <span class="keyword">+chat-messages-list</span> <span class="flag">--chat-id</span> <span class="string">oc_xxx</span>
+<span class="cmd">lark-cli</span> im <span class="keyword">+chat-messages-list</span> <span class="flag">--user-id</span> <span class="string">ou_xxx</span>
+<span class="cmd">lark-cli</span> im <span class="keyword">+threads-messages-list</span> <span class="flag">--message-id</span> <span class="string">omt_xxx</span></pre></div>
+      </div>
+
+      <h3>下载消息中的资源</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="cmd">lark-cli</span> im <span class="keyword">+messages-resources-download</span> <span class="flag">--message-id</span> <span class="string">om_xxx</span> <span class="flag">--file-key</span> <span class="string">file_xxx</span></pre></div>
+      </div>
+
+      <h3>群聊管理</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="comment"># 创建群聊</span>
+<span class="cmd">lark-cli</span> im <span class="keyword">+chat-create</span> <span class="flag">--name</span> <span class="string">"项目组"</span> <span class="flag">--type</span> <span class="string">private</span> <span class="flag">--users</span> <span class="string">"ou_aaa,ou_bbb"</span>
+
+<span class="comment"># 创建公开群</span>
+<span class="cmd">lark-cli</span> im <span class="keyword">+chat-create</span> <span class="flag">--name</span> <span class="string">"全员群"</span> <span class="flag">--type</span> <span class="string">public</span>
+
+<span class="comment"># 创建群并设置机器人为管理员</span>
+<span class="cmd">lark-cli</span> im <span class="keyword">+chat-create</span> <span class="flag">--name</span> <span class="string">"测试群"</span> <span class="flag">--set-bot-manager</span>
+
+<span class="comment"># 邀请机器人</span>
+<span class="cmd">lark-cli</span> im <span class="keyword">+chat-create</span> <span class="flag">--name</span> <span class="string">"机器人群"</span> <span class="flag">--bots</span> <span class="string">"cli_xxx"</span>
+
+<span class="comment"># 搜索群聊</span>
+<span class="cmd">lark-cli</span> im <span class="keyword">+chat-search</span> <span class="flag">--query</span> <span class="string">"项目"</span>
+
+<span class="comment"># 更新群信息</span>
+<span class="cmd">lark-cli</span> im <span class="keyword">+chat-update</span> <span class="flag">--chat-id</span> <span class="string">oc_xxx</span> <span class="flag">--name</span> <span class="string">"新群名"</span></pre></div>
+      </div>
+
+      <h3>底层 CRUD 命令</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="cmd">lark-cli</span> im chats list                     <span class="comment"># 列出群聊</span>
+<span class="cmd">lark-cli</span> im chats get <span class="flag">--chat-id</span> <span class="string">oc_xxx</span>     <span class="comment"># 获取群聊详情</span>
+<span class="cmd">lark-cli</span> im messages list                  <span class="comment"># 列出消息</span>
+<span class="cmd">lark-cli</span> im images get <span class="flag">--image-key</span> <span class="string">img_xxx</span> <span class="comment"># 获取图片</span>
+<span class="cmd">lark-cli</span> im pins list <span class="flag">--chat-id</span> <span class="string">oc_xxx</span>     <span class="comment"># 列出置顶消息</span>
+<span class="cmd">lark-cli</span> im reactions list                 <span class="comment"># 列出表情回复</span></pre></div>
+      </div>
+    </div>
+
+    <!-- 日历 -->
+    <div class="section" id="sec-calendar">
+      <div class="section-header">
+        <div class="section-icon blue">📅</div>
+        <h2>日历 <code>calendar</code></h2>
+      </div>
+
+      <h3>快捷命令</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="comment"># 查看今日日程</span>
+<span class="cmd">lark-cli</span> calendar <span class="keyword">+agenda</span>
+
+<span class="comment"># 查看指定日期范围</span>
+<span class="cmd">lark-cli</span> calendar <span class="keyword">+agenda</span> <span class="flag">--start</span> <span class="string">2026-04-12T00:00+08:00</span> <span class="flag">--end</span> <span class="string">2026-04-13T00:00+08:00</span>
+
+<span class="comment"># 创建日历事件</span>
+<span class="cmd">lark-cli</span> calendar <span class="keyword">+create</span> \
+  <span class="flag">--summary</span> <span class="string">"周会"</span> \
+  <span class="flag">--start</span> <span class="string">"2026-04-12T10:00+08:00"</span> \
+  <span class="flag">--end</span> <span class="string">"2026-04-12T11:00+08:00"</span> \
+  <span class="flag">--description</span> <span class="string">"每周例会"</span> \
+  <span class="flag">--attendee-ids</span> <span class="string">"ou_aaa,ou_bbb"</span>
+
+<span class="comment"># 创建重复事件（RFC 5545 规则）</span>
+<span class="cmd">lark-cli</span> calendar <span class="keyword">+create</span> \
+  <span class="flag">--summary</span> <span class="string">"每日站会"</span> \
+  <span class="flag">--start</span> <span class="string">"2026-04-12T09:00+08:00"</span> \
+  <span class="flag">--end</span> <span class="string">"2026-04-12T09:15+08:00"</span> \
+  <span class="flag">--rrule</span> <span class="string">"FREQ=DAILY"</span>
+
+<span class="comment"># 查询空闲/忙碌</span>
+<span class="cmd">lark-cli</span> calendar <span class="keyword">+freebusy</span> <span class="flag">--start</span> <span class="string">2026-04-12T00:00+08:00</span> <span class="flag">--end</span> <span class="string">2026-04-12T23:59+08:00</span>
+
+<span class="comment"># 智能推荐会议时间</span>
+<span class="cmd">lark-cli</span> calendar <span class="keyword">+suggestion</span> <span class="flag">--attendee-ids</span> <span class="string">"ou_aaa,ou_bbb"</span> <span class="flag">--duration</span> <span class="string">60</span></pre></div>
+      </div>
+
+      <h3>底层 CRUD 命令</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="cmd">lark-cli</span> calendar calendars list                 <span class="comment"># 列出日历</span>
+<span class="cmd">lark-cli</span> calendar calendars get <span class="flag">--calendar-id</span> <span class="string">x</span>  <span class="comment"># 获取日历</span>
+<span class="cmd">lark-cli</span> calendar events list                    <span class="comment"># 列出事件</span>
+<span class="cmd">lark-cli</span> calendar events get <span class="flag">--event-id</span> <span class="string">x</span>        <span class="comment"># 获取事件</span>
+<span class="cmd">lark-cli</span> calendar event.attendees list           <span class="comment"># 列出参会者</span></pre></div>
+      </div>
+    </div>
+
+    <!-- 邮件 -->
+    <div class="section" id="sec-mail">
+      <div class="section-header">
+        <div class="section-icon orange">📧</div>
+        <h2>邮件 <code>mail</code></h2>
+      </div>
+
+      <h3>发送邮件</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="comment"># 撰写新邮件（默认保存为草稿）</span>
+<span class="cmd">lark-cli</span> mail <span class="keyword">+send</span> \
+  <span class="flag">--to</span> <span class="string">"alice@example.com"</span> \
+  <span class="flag">--subject</span> <span class="string">"会议纪要"</span> \
+  <span class="flag">--body</span> <span class="string">"&lt;h1&gt;纪要&lt;/h1&gt;&lt;p&gt;内容...&lt;/p&gt;"</span>
+
+<span class="comment"># 立即发送（需确认）</span>
+<span class="cmd">lark-cli</span> mail <span class="keyword">+send</span> <span class="flag">--to</span> <span class="string">"alice@example.com"</span> <span class="flag">--subject</span> <span class="string">"紧急通知"</span> <span class="flag">--body</span> <span class="string">"请尽快处理"</span> <span class="flag">--confirm-send</span>
+
+<span class="comment"># 抄送与密送</span>
+<span class="cmd">lark-cli</span> mail <span class="keyword">+send</span> <span class="flag">--to</span> <span class="string">"alice@example.com"</span> <span class="flag">--cc</span> <span class="string">"bob@example.com"</span> <span class="flag">--bcc</span> <span class="string">"carol@example.com"</span> \
+  <span class="flag">--subject</span> <span class="string">"通知"</span> <span class="flag">--body</span> <span class="string">"内容"</span>
+
+<span class="comment"># 添加附件</span>
+<span class="cmd">lark-cli</span> mail <span class="keyword">+send</span> <span class="flag">--to</span> <span class="string">"alice@example.com"</span> <span class="flag">--subject</span> <span class="string">"报告"</span> \
+  <span class="flag">--body</span> <span class="string">"请查收附件"</span> <span class="flag">--attach</span> <span class="string">"/path/to/report.pdf,/path/to/data.xlsx"</span>
+
+<span class="comment"># 纯文本模式</span>
+<span class="cmd">lark-cli</span> mail <span class="keyword">+send</span> <span class="flag">--to</span> <span class="string">"alice@example.com"</span> <span class="flag">--subject</span> <span class="string">"通知"</span> \
+  <span class="flag">--body</span> <span class="string">"纯文本内容"</span> <span class="flag">--plain-text</span></pre></div>
+      </div>
+
+      <h3>回复与转发</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="cmd">lark-cli</span> mail <span class="keyword">+reply</span> <span class="flag">--message-id</span> <span class="string">msg_xxx</span> <span class="flag">--body</span> <span class="string">"回复内容"</span>
+<span class="cmd">lark-cli</span> mail <span class="keyword">+reply</span> <span class="flag">--message-id</span> <span class="string">msg_xxx</span> <span class="flag">--body</span> <span class="string">"回复内容"</span> <span class="flag">--confirm-send</span>
+<span class="cmd">lark-cli</span> mail <span class="keyword">+reply-all</span> <span class="flag">--message-id</span> <span class="string">msg_xxx</span> <span class="flag">--body</span> <span class="string">"回复全部内容"</span>
+<span class="cmd">lark-cli</span> mail <span class="keyword">+forward</span> <span class="flag">--message-id</span> <span class="string">msg_xxx</span> <span class="flag">--to</span> <span class="string">"bob@example.com"</span></pre></div>
+      </div>
+
+      <h3>查看与管理</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="cmd">lark-cli</span> mail <span class="keyword">+triage</span>                                          <span class="comment"># 收件箱一览</span>
+<span class="cmd">lark-cli</span> mail <span class="keyword">+triage</span> <span class="flag">--query</span> <span class="string">"预算报告"</span>                         <span class="comment"># 全文搜索</span>
+<span class="cmd">lark-cli</span> mail <span class="keyword">+triage</span> <span class="flag">--filter</span> <span class="string">'{"folder":"INBOX"}'</span> <span class="flag">--max</span> <span class="string">50</span>    <span class="comment"># 按条件过滤</span>
+<span class="cmd">lark-cli</span> mail <span class="keyword">+message</span> <span class="flag">--message-id</span> <span class="string">msg_xxx</span>                    <span class="comment"># 查看单封邮件</span>
+<span class="cmd">lark-cli</span> mail <span class="keyword">+messages</span> <span class="flag">--ids</span> <span class="string">"msg_aaa,msg_bbb"</span>                 <span class="comment"># 批量查看邮件</span>
+<span class="cmd">lark-cli</span> mail <span class="keyword">+thread</span> <span class="flag">--thread-id</span> <span class="string">thread_xxx</span>                    <span class="comment"># 查看邮件线程</span>
+<span class="cmd">lark-cli</span> mail <span class="keyword">+watch</span>                                          <span class="comment"># 监听新邮件（WebSocket）</span></pre></div>
+      </div>
+
+      <h3>底层 CRUD 命令</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="cmd">lark-cli</span> mail user_mailbox.drafts list                <span class="comment"># 列出草稿</span>
+<span class="cmd">lark-cli</span> mail user_mailbox.folders list               <span class="comment"># 列出文件夹</span>
+<span class="cmd">lark-cli</span> mail user_mailbox.labels list                <span class="comment"># 列出标签</span>
+<span class="cmd">lark-cli</span> mail user_mailbox.messages list              <span class="comment"># 列出消息</span>
+<span class="cmd">lark-cli</span> mail user_mailbox.threads list               <span class="comment"># 列出线程</span>
+<span class="cmd">lark-cli</span> mail user_mailbox.mail_contacts list         <span class="comment"># 列出联系人</span></pre></div>
+      </div>
+    </div>
+
+    <!-- 云文档 -->
+    <div class="section" id="sec-docs">
+      <div class="section-header">
+        <div class="section-icon green">📝</div>
+        <h2>云文档 <code>docs</code></h2>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="comment"># 获取文档内容</span>
+<span class="cmd">lark-cli</span> docs <span class="keyword">+fetch</span> <span class="flag">--doc</span> <span class="url">https://feishu.cn/docx/xxx</span>
+<span class="cmd">lark-cli</span> docs <span class="keyword">+fetch</span> <span class="flag">--doc</span> <span class="string">doxcnxxx</span> <span class="flag">--format</span> <span class="string">pretty</span>
+
+<span class="comment"># 创建文档</span>
+<span class="cmd">lark-cli</span> docs <span class="keyword">+create</span> <span class="flag">--title</span> <span class="string">"新文档"</span> <span class="flag">--markdown</span> <span class="string">"# 标题\n正文内容"</span>
+
+<span class="comment"># 创建文档并放入指定文件夹</span>
+<span class="cmd">lark-cli</span> docs <span class="keyword">+create</span> <span class="flag">--title</span> <span class="string">"新文档"</span> <span class="flag">--folder-token</span> <span class="string">fldcnxxx</span>
+
+<span class="comment"># 更新文档</span>
+<span class="cmd">lark-cli</span> docs <span class="keyword">+update</span> <span class="flag">--doc</span> <span class="string">doxcnxxx</span> <span class="flag">--markdown</span> <span class="string">"新内容"</span>
+
+<span class="comment"># 搜索文档</span>
+<span class="cmd">lark-cli</span> docs <span class="keyword">+search</span> <span class="flag">--query</span> <span class="string">"关键词"</span>
+
+<span class="comment"># 插入图片到文档</span>
+<span class="cmd">lark-cli</span> docs <span class="keyword">+media-insert</span> <span class="flag">--doc</span> <span class="string">doxcnxxx</span> <span class="flag">--file</span> <span class="string">/path/to/image.png</span>
+
+<span class="comment"># 下载文档中的媒体文件</span>
+<span class="cmd">lark-cli</span> docs <span class="keyword">+media-download</span> <span class="flag">--file-id</span> <span class="string">file_xxx</span> <span class="flag">--output</span> <span class="string">./download</span></pre></div>
+      </div>
+    </div>
+
+    <!-- 云盘 -->
+    <div class="section" id="sec-drive">
+      <div class="section-header">
+        <div class="section-icon purple">💾</div>
+        <h2>云盘 <code>drive</code></h2>
+      </div>
+
+      <h3>上传与下载</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="cmd">lark-cli</span> drive <span class="keyword">+upload</span> <span class="flag">--file</span> <span class="string">/path/to/file.pdf</span>
+<span class="cmd">lark-cli</span> drive <span class="keyword">+upload</span> <span class="flag">--file</span> <span class="string">/path/to/file.pdf</span> <span class="flag">--folder-token</span> <span class="string">fldcnxxx</span>
+<span class="cmd">lark-cli</span> drive <span class="keyword">+upload</span> <span class="flag">--file</span> <span class="string">/path/to/file.pdf</span> <span class="flag">--name</span> <span class="string">"新文件名.pdf"</span>
+<span class="cmd">lark-cli</span> drive <span class="keyword">+download</span> <span class="flag">--file-token</span> <span class="string">filcnxxx</span> <span class="flag">--output</span> <span class="string">./download</span>
+<span class="cmd">lark-cli</span> drive <span class="keyword">+download</span> <span class="flag">--file-token</span> <span class="string">filcnxxx</span> <span class="flag">--output</span> <span class="string">./download</span> <span class="flag">--overwrite</span></pre></div>
+      </div>
+
+      <h3>评论与权限</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="cmd">lark-cli</span> drive <span class="keyword">+add-comment</span> <span class="flag">--file-token</span> <span class="string">filcnxxx</span> <span class="flag">--content</span> <span class="string">"评论内容"</span>
+<span class="cmd">lark-cli</span> drive files list                     <span class="comment"># 列出文件</span>
+<span class="cmd">lark-cli</span> drive files get <span class="flag">--file-token</span> <span class="string">xxx</span>     <span class="comment"># 获取文件信息</span>
+<span class="cmd">lark-cli</span> drive metas list                     <span class="comment"># 列出元数据</span>
+<span class="cmd">lark-cli</span> drive permission.members list        <span class="comment"># 列出权限成员</span>
+<span class="cmd">lark-cli</span> drive file.comments list             <span class="comment"># 列出评论</span></pre></div>
+      </div>
+    </div>
+
+    <!-- 多维表格 -->
+    <div class="section" id="sec-base">
+      <div class="section-header">
+        <div class="section-icon orange">📊</div>
+        <h2>多维表格 <code>base</code></h2>
+      </div>
+
+      <h3>表格管理</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="cmd">lark-cli</span> base <span class="keyword">+table-list</span> <span class="flag">--base-token</span> <span class="string">bscnxxx</span>
+<span class="cmd">lark-cli</span> base <span class="keyword">+table-get</span> <span class="flag">--base-token</span> <span class="string">bscnxxx</span> <span class="flag">--table-id</span> <span class="string">tblxxx</span>
+<span class="cmd">lark-cli</span> base <span class="keyword">+table-create</span> <span class="flag">--base-token</span> <span class="string">bscnxxx</span> <span class="flag">--name</span> <span class="string">"新表格"</span>
+<span class="cmd">lark-cli</span> base <span class="keyword">+table-delete</span> <span class="flag">--base-token</span> <span class="string">bscnxxx</span> <span class="flag">--table-id</span> <span class="string">tblxxx</span>
+<span class="cmd">lark-cli</span> base <span class="keyword">+table-update</span> <span class="flag">--base-token</span> <span class="string">bscnxxx</span> <span class="flag">--table-id</span> <span class="string">tblxxx</span> <span class="flag">--name</span> <span class="string">"新名称"</span></pre></div>
+      </div>
+
+      <h3>记录操作</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="cmd">lark-cli</span> base <span class="keyword">+record-list</span> <span class="flag">--base-token</span> <span class="string">bscnxxx</span> <span class="flag">--table-id</span> <span class="string">tblxxx</span>
+<span class="cmd">lark-cli</span> base <span class="keyword">+record-list</span> <span class="flag">--base-token</span> <span class="string">bscnxxx</span> <span class="flag">--table-id</span> <span class="string">tblxxx</span> <span class="flag">--limit</span> <span class="string">50</span> <span class="flag">--offset</span> <span class="string">0</span>
+<span class="cmd">lark-cli</span> base <span class="keyword">+record-get</span> <span class="flag">--base-token</span> <span class="string">bscnxxx</span> <span class="flag">--table-id</span> <span class="string">tblxxx</span> <span class="flag">--record-id</span> <span class="string">recxxx</span>
+<span class="cmd">lark-cli</span> base <span class="keyword">+record-upsert</span> <span class="flag">--base-token</span> <span class="string">bscnxxx</span> <span class="flag">--table-id</span> <span class="string">tblxxx</span> <span class="flag">--data</span> <span class="string">'{...}'</span>
+<span class="cmd">lark-cli</span> base <span class="keyword">+record-delete</span> <span class="flag">--base-token</span> <span class="string">bscnxxx</span> <span class="flag">--table-id</span> <span class="string">tblxxx</span> <span class="flag">--record-id</span> <span class="string">recxxx</span>
+<span class="cmd">lark-cli</span> base <span class="keyword">+record-upload-attachment</span> <span class="flag">--base-token</span> <span class="string">bscnxxx</span> <span class="flag">--table-id</span> <span class="string">tblxxx</span> <span class="flag">--record-id</span> <span class="string">recxxx</span> <span class="flag">--file</span> <span class="string">/path/to/file</span>
+<span class="cmd">lark-cli</span> base <span class="keyword">+record-history-list</span> <span class="flag">--base-token</span> <span class="string">bscnxxx</span> <span class="flag">--table-id</span> <span class="string">tblxxx</span> <span class="flag">--record-id</span> <span class="string">recxxx</span></pre></div>
+      </div>
+
+      <h3>字段操作</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="cmd">lark-cli</span> base <span class="keyword">+field-list</span> <span class="flag">--base-token</span> <span class="string">bscnxxx</span> <span class="flag">--table-id</span> <span class="string">tblxxx</span>
+<span class="cmd">lark-cli</span> base <span class="keyword">+field-get</span> <span class="flag">--base-token</span> <span class="string">bscnxxx</span> <span class="flag">--table-id</span> <span class="string">tblxxx</span> <span class="flag">--field-id</span> <span class="string">fldxxx</span>
+<span class="cmd">lark-cli</span> base <span class="keyword">+field-create</span> <span class="flag">--base-token</span> <span class="string">bscnxxx</span> <span class="flag">--table-id</span> <span class="string">tblxxx</span> <span class="flag">--data</span> <span class="string">'{...}'</span>
+<span class="cmd">lark-cli</span> base <span class="keyword">+field-update</span> <span class="flag">--base-token</span> <span class="string">bscnxxx</span> <span class="flag">--table-id</span> <span class="string">tblxxx</span> <span class="flag">--field-id</span> <span class="string">fldxxx</span> <span class="flag">--data</span> <span class="string">'{...}'</span>
+<span class="cmd">lark-cli</span> base <span class="keyword">+field-delete</span> <span class="flag">--base-token</span> <span class="string">bscnxxx</span> <span class="flag">--table-id</span> <span class="string">tblxxx</span> <span class="flag">--field-id</span> <span class="string">fldxxx</span>
+<span class="cmd">lark-cli</span> base <span class="keyword">+field-search-options</span> <span class="flag">--base-token</span> <span class="string">bscnxxx</span> <span class="flag">--table-id</span> <span class="string">tblxxx</span> <span class="flag">--field-id</span> <span class="string">fldxxx</span></pre></div>
+      </div>
+
+      <h3>视图、仪表盘、表单、工作流</h3>
+      <div class="cmd-grid">
+        <div class="cmd-card"><div class="cmd-name">+view-list / +view-create / +view-delete</div><div class="cmd-desc">视图操作：列表、创建、删除、重命名、筛选/排序/分组</div></div>
+        <div class="cmd-card"><div class="cmd-name">+dashboard-list / +dashboard-create</div><div class="cmd-desc">仪表盘操作：列表、创建、获取、更新、删除</div></div>
+        <div class="cmd-card"><div class="cmd-name">+form-list / +form-create</div><div class="cmd-desc">表单操作：列表、创建、更新、删除、题目管理</div></div>
+        <div class="cmd-card"><div class="cmd-name">+workflow-list / +workflow-create</div><div class="cmd-desc">自动化工作流：列表、获取、创建、更新、启用/禁用</div></div>
+      </div>
+
+      <h3>权限与角色</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="cmd">lark-cli</span> base <span class="keyword">+role-list</span> <span class="flag">--base-token</span> <span class="string">bscnxxx</span>
+<span class="cmd">lark-cli</span> base <span class="keyword">+role-get</span> <span class="flag">--base-token</span> <span class="string">bscnxxx</span> <span class="flag">--role-id</span> <span class="string">rolxxx</span>
+<span class="cmd">lark-cli</span> base <span class="keyword">+role-create</span> <span class="flag">--base-token</span> <span class="string">bscnxxx</span>
+<span class="cmd">lark-cli</span> base <span class="keyword">+advperm-enable</span> <span class="flag">--base-token</span> <span class="string">bscnxxx</span>
+<span class="cmd">lark-cli</span> base <span class="keyword">+advperm-disable</span> <span class="flag">--base-token</span> <span class="string">bscnxxx</span></pre></div>
+      </div>
+    </div>
+
+    <!-- 电子表格 -->
+    <div class="section" id="sec-sheets">
+      <div class="section-header">
+        <div class="section-icon green">📈</div>
+        <h2>电子表格 <code>sheets</code></h2>
+      </div>
+
+      <h3>快捷命令</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="comment"># 查看表格信息</span>
+<span class="cmd">lark-cli</span> sheets <span class="keyword">+info</span> <span class="flag">--spreadsheet-token</span> <span class="string">shtcnxxx</span>
+<span class="cmd">lark-cli</span> sheets <span class="keyword">+info</span> <span class="flag">--url</span> <span class="url">https://feishu.cn/sheets/shtcnxxx</span>
+
+<span class="comment"># 读取数据</span>
+<span class="cmd">lark-cli</span> sheets <span class="keyword">+read</span> <span class="flag">--spreadsheet-token</span> <span class="string">shtcnxxx</span> <span class="flag">--range</span> <span class="string">A1:D10</span>
+<span class="cmd">lark-cli</span> sheets <span class="keyword">+read</span> <span class="flag">--spreadsheet-token</span> <span class="string">shtcnxxx</span> <span class="flag">--range</span> <span class="string">A1:D10</span> <span class="flag">--value-render-option</span> <span class="string">Formula</span>
+
+<span class="comment"># 写入数据（覆盖模式）</span>
+<span class="cmd">lark-cli</span> sheets <span class="keyword">+write</span> <span class="flag">--spreadsheet-token</span> <span class="string">shtcnxxx</span> <span class="flag">--range</span> <span class="string">A1:B2</span> <span class="flag">--values</span> <span class="string">'[["姓名","年龄"],["张三","25"]]'</span>
+
+<span class="comment"># 追加行</span>
+<span class="cmd">lark-cli</span> sheets <span class="keyword">+append</span> <span class="flag">--spreadsheet-token</span> <span class="string">shtcnxxx</span> <span class="flag">--range</span> <span class="string">A1</span> <span class="flag">--values</span> <span class="string">'[["李四","30"]]'</span>
+
+<span class="comment"># 查找单元格</span>
+<span class="cmd">lark-cli</span> sheets <span class="keyword">+find</span> <span class="flag">--spreadsheet-token</span> <span class="string">shtcnxxx</span> <span class="flag">--range</span> <span class="string">A1:D100</span> <span class="flag">--keyword</span> <span class="string">"关键词"</span>
+
+<span class="comment"># 创建电子表格</span>
+<span class="cmd">lark-cli</span> sheets <span class="keyword">+create</span> <span class="flag">--title</span> <span class="string">"新表格"</span>
+
+<span class="comment"># 导出</span>
+<span class="cmd">lark-cli</span> sheets <span class="keyword">+export</span> <span class="flag">--spreadsheet-token</span> <span class="string">shtcnxxx</span></pre></div>
+      </div>
+
+      <h3>底层 CRUD 命令</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="cmd">lark-cli</span> sheets spreadsheets list                          <span class="comment"># 列出电子表格</span>
+<span class="cmd">lark-cli</span> sheets spreadsheet.sheets list                    <span class="comment"># 列出工作表</span>
+<span class="cmd">lark-cli</span> sheets spreadsheet.sheet.filters list             <span class="comment"># 列出筛选条件</span></pre></div>
+      </div>
+    </div>
+
+    <!-- 任务 -->
+    <div class="section" id="sec-task">
+      <div class="section-header">
+        <div class="section-icon purple">✅</div>
+        <h2>任务 <code>task</code></h2>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="comment"># 创建任务</span>
+<span class="cmd">lark-cli</span> task <span class="keyword">+create</span> <span class="flag">--summary</span> <span class="string">"完成报告"</span> <span class="flag">--due</span> <span class="string">2026-04-15</span>
+<span class="cmd">lark-cli</span> task <span class="keyword">+create</span> <span class="flag">--summary</span> <span class="string">"跟进客户"</span> <span class="flag">--due</span> <span class="string">"+3d"</span>
+
+<span class="comment"># 创建任务（完整参数）</span>
+<span class="cmd">lark-cli</span> task <span class="keyword">+create</span> \
+  <span class="flag">--summary</span> <span class="string">"项目上线"</span> \
+  <span class="flag">--description</span> <span class="string">"完成最终测试并上线"</span> \
+  <span class="flag">--due</span> <span class="string">"2026-04-20T18:00+08:00"</span> \
+  <span class="flag">--assignee</span> <span class="string">ou_xxx</span> \
+  <span class="flag">--tasklist-id</span> <span class="string">tasklist_xxx</span>
+
+<span class="comment"># 查看我的任务</span>
+<span class="cmd">lark-cli</span> task <span class="keyword">+get-my-tasks</span>
+
+<span class="comment"># 完成任务 / 重新打开</span>
+<span class="cmd">lark-cli</span> task <span class="keyword">+complete</span> <span class="flag">--task-id</span> <span class="string">task_xxx</span>
+<span class="cmd">lark-cli</span> task <span class="keyword">+reopen</span> <span class="flag">--task-id</span> <span class="string">task_xxx</span>
+
+<span class="comment"># 更新任务</span>
+<span class="cmd">lark-cli</span> task <span class="keyword">+update</span> <span class="flag">--task-id</span> <span class="string">task_xxx</span> <span class="flag">--summary</span> <span class="string">"新标题"</span>
+
+<span class="comment"># 添加评论</span>
+<span class="cmd">lark-cli</span> task <span class="keyword">+comment</span> <span class="flag">--task-id</span> <span class="string">task_xxx</span> <span class="flag">--content</span> <span class="string">"评论内容"</span>
+
+<span class="comment"># 管理任务列表</span>
+<span class="cmd">lark-cli</span> task <span class="keyword">+tasklist-create</span> <span class="flag">--name</span> <span class="string">"项目任务"</span>
+<span class="cmd">lark-cli</span> task <span class="keyword">+tasklist-task-add</span> <span class="flag">--tasklist-id</span> <span class="string">xxx</span> <span class="flag">--task-id</span> <span class="string">task_xxx</span></pre></div>
+      </div>
+
+      <h3>底层 CRUD 命令</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="cmd">lark-cli</span> task tasks list           <span class="comment"># 列出任务</span>
+<span class="cmd">lark-cli</span> task tasks get <span class="flag">--id</span> <span class="string">xxx</span>   <span class="comment"># 获取任务</span>
+<span class="cmd">lark-cli</span> task subtasks list        <span class="comment"># 列出子任务</span>
+<span class="cmd">lark-cli</span> task tasklists list       <span class="comment"># 列出任务列表</span>
+<span class="cmd">lark-cli</span> task members list         <span class="comment"># 列出成员</span></pre></div>
+      </div>
+    </div>
+
+    <!-- 通讯录 -->
+    <div class="section" id="sec-contact">
+      <div class="section-header">
+        <div class="section-icon blue">👥</div>
+        <h2>通讯录 <code>contact</code></h2>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="cmd">lark-cli</span> contact <span class="keyword">+get-user</span>                                <span class="comment"># 获取当前用户信息</span>
+<span class="cmd">lark-cli</span> contact <span class="keyword">+get-user</span> <span class="flag">--user-id</span> <span class="string">ou_xxx</span>              <span class="comment"># 获取指定用户信息</span>
+<span class="cmd">lark-cli</span> contact <span class="keyword">+search-user</span> <span class="flag">--query</span> <span class="string">"张三"</span>              <span class="comment"># 搜索用户</span>
+<span class="cmd">lark-cli</span> contact <span class="keyword">+search-user</span> <span class="flag">--query</span> <span class="string">"John"</span>              <span class="comment"># 搜索用户</span></pre></div>
+      </div>
+    </div>
+
+    <!-- 视频会议 -->
+    <div class="section" id="sec-vc">
+      <div class="section-header">
+        <div class="section-icon red">📹</div>
+        <h2>视频会议 <code>vc</code></h2>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="cmd">lark-cli</span> vc <span class="keyword">+search</span> <span class="flag">--start</span> <span class="string">2026-04-12T00:00+08:00</span> <span class="flag">--end</span> <span class="string">2026-04-12T23:59+08:00</span>
+<span class="cmd">lark-cli</span> vc <span class="keyword">+search</span> <span class="flag">--organizer-ids</span> <span class="string">"ou_xxx"</span>
+<span class="cmd">lark-cli</span> vc <span class="keyword">+search</span> <span class="flag">--query</span> <span class="string">"项目评审"</span> <span class="flag">--start</span> <span class="string">2026-04-01</span> <span class="flag">--end</span> <span class="string">2026-04-12</span>
+<span class="cmd">lark-cli</span> vc <span class="keyword">+notes</span> <span class="flag">--meeting-id</span> <span class="string">meeting_xxx</span>
+<span class="cmd">lark-cli</span> vc meeting list   <span class="comment"># 列出会议</span>
+<span class="cmd">lark-cli</span> vc meeting get    <span class="comment"># 获取会议详情</span></pre></div>
+      </div>
+    </div>
+
+    <!-- 妙记 -->
+    <div class="section" id="sec-minutes">
+      <div class="section-header">
+        <div class="section-icon teal">🎙️</div>
+        <h2>妙记 <code>minutes</code></h2>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="cmd">lark-cli</span> minutes minutes list                        <span class="comment"># 列出妙记</span>
+<span class="cmd">lark-cli</span> minutes minutes get <span class="flag">--minutes-id</span> <span class="string">mins_xxx</span>  <span class="comment"># 获取妙记详情</span></pre></div>
+      </div>
+    </div>
+
+    <!-- 知识库 -->
+    <div class="section" id="sec-wiki">
+      <div class="section-header">
+        <div class="section-icon purple">📚</div>
+        <h2>知识库 <code>wiki</code></h2>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="cmd">lark-cli</span> wiki spaces list              <span class="comment"># 列出知识库空间</span>
+<span class="cmd">lark-cli</span> wiki spaces get <span class="flag">--space-id</span> <span class="string">xxx</span>  <span class="comment"># 获取空间详情</span></pre></div>
+      </div>
+    </div>
+
+    <!-- 事件订阅 -->
+    <div class="section" id="sec-event">
+      <div class="section-header">
+        <div class="section-icon orange">⚡</div>
+        <h2>事件订阅 <code>event</code></h2>
+      </div>
+      <p>通过 WebSocket 实时订阅飞书事件。</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="comment"># 订阅所有事件（NDJSON 输出到 stdout）</span>
+<span class="cmd">lark-cli</span> event <span class="keyword">+subscribe</span>
+
+<span class="comment"># 订阅特定类型事件</span>
+<span class="cmd">lark-cli</span> event <span class="keyword">+subscribe</span> <span class="flag">--event-types</span> <span class="string">"im.message.receive_v1"</span>
+
+<span class="comment"># 用正则过滤事件</span>
+<span class="cmd">lark-cli</span> event <span class="keyword">+subscribe</span> <span class="flag">--filter</span> <span class="string">"^im\.message"</span>
+
+<span class="comment"># Pretty JSON 输出</span>
+<span class="cmd">lark-cli</span> event <span class="keyword">+subscribe</span> <span class="flag">--json</span>
+
+<span class="comment"># 保存到文件</span>
+<span class="cmd">lark-cli</span> event <span class="keyword">+subscribe</span> <span class="flag">--output-dir</span> <span class="string">./events</span>
+
+<span class="comment"># 按路由分发到不同目录</span>
+<span class="cmd">lark-cli</span> event <span class="keyword">+subscribe</span> \
+  <span class="flag">--route</span> <span class="string">'^im\.message=dir:./im/'</span> \
+  <span class="flag">--route</span> <span class="string">'^contact\.=dir:./contacts/'</span>
+
+<span class="comment"># 静默模式（抑制状态消息）</span>
+<span class="cmd">lark-cli</span> event <span class="keyword">+subscribe</span> <span class="flag">--quiet</span></pre></div>
+      </div>
+    </div>
+
+    <!-- 输出格式 -->
+    <div class="section" id="sec-output">
+      <div class="section-header">
+        <div class="section-icon blue">🖨️</div>
+        <h2>输出格式</h2>
+      </div>
+      <p>大多数命令支持 <code class="inline">--format</code> 标志控制输出：</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>格式</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>json</code></td><td>标准 JSON（默认）</td></tr>
+            <tr><td><code>ndjson</code></td><td>换行分隔的 JSON（流式输出）</td></tr>
+            <tr><td><code>table</code></td><td>表格形式</td></tr>
+            <tr><td><code>csv</code></td><td>CSV 格式</td></tr>
+            <tr><td><code>pretty</code></td><td>格式化的人类可读输出</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">示例</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="cmd">lark-cli</span> calendar <span class="keyword">+agenda</span> <span class="flag">--format</span> <span class="string">pretty</span>
+<span class="cmd">lark-cli</span> im <span class="keyword">+chat-search</span> <span class="flag">--query</span> <span class="string">"项目"</span> <span class="flag">--format</span> <span class="string">table</span>
+<span class="cmd">lark-cli</span> sheets <span class="keyword">+read</span> <span class="flag">--spreadsheet-token</span> <span class="string">xxx</span> <span class="flag">--range</span> <span class="string">A1:D10</span> <span class="flag">--format</span> <span class="string">csv</span></pre></div>
+      </div>
+    </div>
+
+    <!-- 分页控制 -->
+    <div class="section" id="sec-pagination">
+      <div class="section-header">
+        <div class="section-icon green">📄</div>
+        <h2>分页控制</h2>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="comment"># 自动翻页获取所有数据</span>
+<span class="cmd">lark-cli</span> base <span class="keyword">+record-list</span> <span class="flag">--base-token</span> <span class="string">xxx</span> <span class="flag">--table-id</span> <span class="string">xxx</span> <span class="flag">--page-all</span>
+
+<span class="comment"># 控制每页数量</span>
+<span class="cmd">lark-cli</span> api <span class="keyword">GET</span> <span class="url">/open-apis/contact/v3/users</span> <span class="flag">--page-all</span> <span class="flag">--page-size</span> <span class="string">50</span>
+
+<span class="comment"># 限制最大页数</span>
+<span class="cmd">lark-cli</span> api <span class="keyword">GET</span> <span class="url">/open-apis/contact/v3/users</span> <span class="flag">--page-all</span> <span class="flag">--page-limit</span> <span class="string">5</span>
+
+<span class="comment"># 翻页间隔（避免频率限制）</span>
+<span class="cmd">lark-cli</span> api <span class="keyword">GET</span> <span class="url">/open-apis/contact/v3/users</span> <span class="flag">--page-all</span> <span class="flag">--page-delay</span> <span class="string">500</span></pre></div>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>标志</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>--page-all</code></td><td>自动翻页获取所有数据</td></tr>
+            <tr><td><code>--page-size &lt;N&gt;</code></td><td>每页数量</td></tr>
+            <tr><td><code>--page-limit &lt;N&gt;</code></td><td>最大页数（默认 10，0 = 无限）</td></tr>
+            <tr><td><code>--page-delay &lt;MS&gt;</code></td><td>翻页间隔毫秒（默认 200）</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 身份类型 -->
+    <div class="section" id="sec-identity">
+      <div class="section-header">
+        <div class="section-icon purple">🪪</div>
+        <h2>身份类型</h2>
+      </div>
+      <p>使用 <code class="inline">--as</code> 标志控制请求身份：</p>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>身份</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>auto</code></td><td>自动选择（默认）</td></tr>
+            <tr><td><code>user</code></td><td>以用户身份请求（需要用户授权）</td></tr>
+            <tr><td><code>bot</code></td><td>以机器人身份请求</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">示例</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="cmd">lark-cli</span> im <span class="keyword">+messages-send</span> <span class="flag">--as</span> <span class="string">bot</span> <span class="flag">--chat-id</span> <span class="string">oc_xxx</span> <span class="flag">--text</span> <span class="string">"机器人消息"</span>
+<span class="cmd">lark-cli</span> sheets <span class="keyword">+read</span> <span class="flag">--as</span> <span class="string">user</span> <span class="flag">--spreadsheet-token</span> <span class="string">xxx</span> <span class="flag">--range</span> <span class="string">A1:D10</span></pre></div>
+      </div>
+    </div>
+
+    <!-- AI Agent 集成 -->
+    <div class="section" id="sec-ai-agent">
+      <div class="section-header">
+        <div class="section-icon pink">🤖</div>
+        <h2>AI Agent 技能集成</h2>
+      </div>
+      <p>lark-cli 可与 AI Agent（如 Claude Code）集成，安装领域技能包以获得更智能的 API 使用指导。</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="comment"># 安装所有技能</span>
+<span class="cmd">npx</span> skills add larksuite/cli <span class="flag">--all</span> <span class="flag">-y</span>
+
+<span class="comment"># 安装特定领域</span>
+<span class="cmd">npx</span> skills add larksuite/cli <span class="flag">-s</span> <span class="string">lark-calendar</span> <span class="flag">-y</span>
+<span class="cmd">npx</span> skills add larksuite/cli <span class="flag">-s</span> <span class="string">lark-im</span> <span class="flag">-y</span></pre></div>
+      </div>
+    </div>
+
+    <!-- 常见问题排查 -->
+    <div class="section" id="sec-faq">
+      <div class="section-header">
+        <div class="section-icon orange">❓</div>
+        <h2>常见问题排查</h2>
+      </div>
+
+      <h3>检查 CLI 状态</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">bash</span>
+          <button class="code-copy" onclick="copyCode(this)">复制</button>
+        </div>
+        <div class="code-body"><pre><span class="cmd">lark-cli</span> doctor            <span class="comment"># 完整检查</span>
+<span class="cmd">lark-cli</span> doctor <span class="flag">--offline</span>  <span class="comment"># 仅本地状态</span>
+<span class="cmd">lark-cli</span> auth status       <span class="comment"># 认证状态</span>
+<span class="cmd">lark-cli</span> auth status <span class="flag">--verify</span>  <span class="comment"># 在线验证</span>
+<span class="cmd">lark-cli</span> config show       <span class="comment"># 查看配置</span></pre></div>
+      </div>
+
+      <h3>常见错误</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>问题</th><th>解决方案</th></tr></thead>
+          <tbody>
+            <tr><td>未认证</td><td>运行 <code class="inline">lark-cli auth login</code></td></tr>
+            <tr><td>权限不足</td><td>运行 <code class="inline">lark-cli auth scopes</code> 检查已启用权限，重新登录时加 <code class="inline">--domain</code> 指定域</td></tr>
+            <tr><td>Token 过期</td><td>运行 <code class="inline">lark-cli auth login</code> 重新授权</td></tr>
+            <tr><td>配置缺失</td><td>运行 <code class="inline">lark-cli config init</code> 初始化</td></tr>
+            <tr><td>网络问题</td><td>运行 <code class="inline">lark-cli doctor</code> 检查连通性</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="divider"></div>
+    <div class="footer">
+      <div class="footer-links">
+        <a href="https://github.com/larksuite/cli" target="_blank">GitHub</a>
+        <a href="https://github.com/larksuite/cli/issues" target="_blank">Issues</a>
+        <a href="https://open.feishu.cn/document/" target="_blank">飞书开放平台文档</a>
+        <a href="https://open.larksuite.com/document/" target="_blank">Lark Open Platform</a>
+      </div>
+      <p class="footer-copy">Lark CLI Reference &mdash; lark-cli v1.0.0</p>
+    </div>
+
+  </main>
+</div>
+
+<!-- Back to top -->
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
+
+<script>
+const sectionMap = {
+  'overview': 'sec-overview',
+  'install': 'sec-install',
+  'global-flags': 'sec-global-flags',
+  'auth': 'sec-auth',
+  'config': 'sec-config',
+  'api': 'sec-api',
+  'schema': 'sec-schema',
+  'doctor': 'sec-doctor',
+  'im': 'sec-im',
+  'calendar': 'sec-calendar',
+  'mail': 'sec-mail',
+  'docs': 'sec-docs',
+  'drive': 'sec-drive',
+  'base': 'sec-base',
+  'sheets': 'sec-sheets',
+  'task': 'sec-task',
+  'contact': 'sec-contact',
+  'vc': 'sec-vc',
+  'minutes': 'sec-minutes',
+  'wiki': 'sec-wiki',
+  'event': 'sec-event',
+  'output': 'sec-output',
+  'pagination': 'sec-pagination',
+  'identity': 'sec-identity',
+  'ai-agent': 'sec-ai-agent',
+  'faq': 'sec-faq'
+};
+
+function scrollToSection(id) {
+  const el = document.getElementById(sectionMap[id] || id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+const navLinks = document.querySelectorAll('.nav-link');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id.replace('sec-', '');
+      navLinks.forEach(link => {
+        link.classList.toggle('active', link.dataset.section === id);
+      });
+    }
+  });
+}, { rootMargin: '-80px 0px -70% 0px', threshold: 0 });
+
+Object.values(sectionMap).forEach(id => {
+  const el = document.getElementById(id);
+  if (el) observer.observe(el);
+});
+
+// Copy code
+function copyCode(btn) {
+  const block = btn.closest('.code-block');
+  const pre = block.querySelector('pre');
+  const text = pre.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '已复制';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '复制';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+function copyText(text) {
+  navigator.clipboard.writeText(text);
+}
+
+// Back to top
+const backTop = document.getElementById('backTop');
+window.addEventListener('scroll', () => {
+  backTop.classList.toggle('visible', window.scrollY > 400);
+});
+
+// Search
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+
+const searchData = [
+  { title: '安装与初始化', section: 'install', keywords: 'install npm init config 配置 安装 初始化' },
+  { title: '全局标志 --format', section: 'global-flags', keywords: 'format json ndjson table csv pretty output 输出格式' },
+  { title: '全局标志 --as', section: 'global-flags', keywords: 'as user bot auto 身份 identity' },
+  { title: '全局标志 --page-all', section: 'global-flags', keywords: 'page-all page-size page-limit page-delay 分页 pagination' },
+  { title: '全局标志 --dry-run', section: 'global-flags', keywords: 'dry-run dry 干运行 测试' },
+  { title: '认证管理 auth login', section: 'auth', keywords: 'login logout status verify scopes check 认证 登录 登出 权限' },
+  { title: '配置管理 config', section: 'config', keywords: 'config init show remove default-as 配置' },
+  { title: '通用 API 调用', section: 'api', keywords: 'api GET POST PATCH PUT DELETE params data 通用' },
+  { title: 'Schema 查询', section: 'schema', keywords: 'schema 查询 参数 类型 权限' },
+  { title: '健康检查 doctor', section: 'doctor', keywords: 'doctor 健康 检查 offline 网络' },
+  { title: '消息发送 messages-send', section: 'im', keywords: 'messages-send chat-id text markdown image file video audio user-id 私聊 幂等 idempotency 发送 消息' },
+  { title: '消息回复 messages-reply', section: 'im', keywords: 'messages-reply message-id 回复 reply' },
+  { title: '消息查询 search/mget/list', section: 'im', keywords: 'messages-search messages-mget chat-messages-list threads 搜索 查询 消息' },
+  { title: '资源下载 resources-download', section: 'im', keywords: 'resources-download file-key 下载 图片 文件' },
+  { title: '群聊管理 chat-create/search/update', section: 'im', keywords: 'chat-create chat-search chat-update 群聊 group 私密 公开' },
+  { title: '日历 agenda 日程', section: 'calendar', keywords: 'agenda 日程 start end calendar-id 今日' },
+  { title: '日历事件 create', section: 'calendar', keywords: 'create summary start end attendee-ids rrule 重复事件 创建' },
+  { title: '日历 freebusy/suggestion', section: 'calendar', keywords: 'freebusy suggestion 空闲 忙碌 推荐会议时间' },
+  { title: '邮件发送 mail +send', section: 'mail', keywords: 'send to cc bcc subject body attach confirm-send plain-text inline 发送 邮件 抄送 密送 附件' },
+  { title: '邮件回复/转发 reply/forward', section: 'mail', keywords: 'reply reply-all forward message-id 回复 转发' },
+  { title: '邮件查看 triage', section: 'mail', keywords: 'triage query filter max message thread watch 收件箱 搜索 过滤 监听' },
+  { title: '云文档 docs', section: 'docs', keywords: 'docs fetch create update search media-insert media-download 文档 markdown folder wiki' },
+  { title: '云盘 drive', section: 'drive', keywords: 'drive upload download file-token folder-token name overwrite comment add-comment 上传 下载' },
+  { title: '多维表格 base', section: 'base', keywords: 'base table record field view dashboard form workflow role 创建 删除 更新 记录 字段 视图 仪表盘 表单 工作流 权限' },
+  { title: '电子表格 sheets', section: 'sheets', keywords: 'sheets info read write append find create export spreadsheet range values 查找 写入 追加 导出' },
+  { title: '任务 task', section: 'task', keywords: 'task create complete reopen update comment assign followers reminder tasklist due summary 任务 完成 评论 分配 关注者 提醒 列表' },
+  { title: '通讯录 contact', section: 'contact', keywords: 'contact get-user search-user 用户 搜索 通讯录' },
+  { title: '视频会议 vc', section: 'vc', keywords: 'vc search meeting notes organizer participant 会议 录制 纪要' },
+  { title: '妙记 minutes', section: 'minutes', keywords: 'minutes 妙记 会议记录 转写' },
+  { title: '知识库 wiki', section: 'wiki', keywords: 'wiki spaces 知识库 空间' },
+  { title: '事件订阅 event', section: 'event', keywords: 'event subscribe event-types filter route compact json output-dir quiet 事件 WebSocket 订阅 实时' },
+  { title: '输出格式 format', section: 'output', keywords: 'format json ndjson table csv pretty 输出' },
+  { title: '分页控制 page', section: 'pagination', keywords: 'page-all page-size page-limit page-delay 分页 翻页' },
+  { title: '身份类型 --as', section: 'identity', keywords: 'as auto user bot 身份' },
+  { title: 'AI Agent 技能集成', section: 'ai-agent', keywords: 'skills npx claude agent AI 集成' },
+  { title: '常见问题排查', section: 'faq', keywords: 'doctor auth config 错误 排查 问题 token 过期 网络 权限' }
+];
+
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.trim().toLowerCase();
+  if (!q) {
+    searchResults.classList.remove('active');
+    return;
+  }
+
+  const results = searchData.filter(item =>
+    item.title.toLowerCase().includes(q) || item.keywords.toLowerCase().includes(q)
+  );
+
+  if (results.length === 0) {
+    searchResults.innerHTML = '<div class="search-no-result">没有找到匹配的命令</div>';
+  } else {
+    searchResults.innerHTML = results.map(r => {
+      const title = r.title.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'), '<mark>$1</mark>');
+      return `<div class="search-result-item" onclick="jumpToSection('${r.section}'); searchResults.classList.remove('active'); searchInput.value='';">
+        <div class="search-result-title">${title}</div>
+        <div class="search-result-preview">${r.keywords}</div>
+      </div>`;
+    }).join('');
+  }
+  searchResults.classList.add('active');
+});
+
+function jumpToSection(section) {
+  scrollToSection(section);
+}
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.search-box') && !e.target.closest('.search-results')) {
+    searchResults.classList.remove('active');
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === '/' && !e.ctrlKey && !e.metaKey && document.activeElement !== searchInput) {
+    e.preventDefault();
+    searchInput.focus();
+  }
+  if (e.key === 'Escape') {
+    searchResults.classList.remove('active');
+    searchInput.blur();
+  }
+});
+</script>
+</body>
+</html>

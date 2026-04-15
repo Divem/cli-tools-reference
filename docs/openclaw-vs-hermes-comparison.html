@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenClaw vs Hermes — 对比报告</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect rx='20' width='100' height='100' fill='%231d1d1f'/><text x='50' y='62' font-size='40' font-family='system-ui' font-weight='700' text-anchor='middle' fill='%23fff'>VS</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fbfbfd;
+      --bg-card: #ffffff;
+      --bg-dark: #1d1d1f;
+      --text: #1d1d1f;
+      --text-secondary: #86868b;
+      --text-tertiary: #aeaeb2;
+      --accent-oc: #FF5A2D;
+      --accent-oc-light: #fff3ef;
+      --accent-hm: #6C5CE7;
+      --accent-hm-light: #f0edfc;
+      --border: rgba(0,0,0,0.06);
+      --border-strong: rgba(0,0,0,0.12);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+      --shadow-md: 0 4px 14px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.03);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(251,251,253,0.72);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0.75rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      overflow-x: auto;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .nav-inner::-webkit-scrollbar { display: none; }
+    .nav-brand {
+      font-weight: 700;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+    .nav a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: color 0.2s;
+      padding: 0.3rem 0;
+    }
+    .nav a:hover { color: var(--text); }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 5rem 0 3rem;
+    }
+    .hero-eyebrow {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1rem;
+    }
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, var(--accent-oc) 0%, var(--accent-hm) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+      font-weight: 400;
+      line-height: 1.6;
+    }
+
+    .vs-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 2.5rem;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 1rem;
+      border-radius: 100px;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+    .badge-oc {
+      background: var(--accent-oc-light);
+      color: var(--accent-oc);
+    }
+    .badge-vs {
+      background: var(--bg);
+      color: var(--text-tertiary);
+      font-weight: 700;
+      font-size: 0.75rem;
+    }
+    .badge-hm {
+      background: var(--accent-hm-light);
+      color: var(--accent-hm);
+    }
+
+    .section {
+      padding: 3rem 0;
+    }
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .section-desc {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 1.25rem;
+    }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      transition: box-shadow 0.25s, transform 0.25s;
+    }
+    .card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+    .card-icon-oc { background: var(--accent-oc-light); }
+    .card-icon-hm { background: var(--accent-hm-light); }
+    .card-icon-neutral { background: #f5f5f7; }
+    .card h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .card p, .card ul {
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+    .card ul {
+      padding-left: 1.1rem;
+      margin-top: 0.5rem;
+    }
+    .card li { margin: 0.35rem 0; }
+
+    .full-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      margin-bottom: 1.25rem;
+    }
+    .full-card h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      letter-spacing: -0.01em;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 0;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+    }
+    .info-col {
+      padding: 2rem;
+    }
+    .info-col h4 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .info-col.oc h4 { color: var(--accent-oc); }
+    .info-col.hm h4 { color: var(--accent-hm); }
+    .info-divider {
+      width: 1px;
+      background: var(--border);
+      position: relative;
+    }
+    .info-divider::after {
+      content: 'VS';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--bg);
+      padding: 0.5rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      border-radius: 100px;
+      border: 1px solid var(--border);
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.88rem;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-row .label { color: var(--text-secondary); }
+    .info-row .value { font-weight: 500; text-align: right; }
+
+    .feature-table-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+    }
+    .feature-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    .feature-table th {
+      font-weight: 600;
+      text-align: left;
+      padding: 0.85rem 1.25rem;
+      background: #f5f5f7;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .feature-table th.col-oc { color: var(--accent-oc); }
+    .feature-table th.col-hm { color: var(--accent-hm); }
+    .feature-table td {
+      padding: 0.7rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .feature-table tr:last-child td { border-bottom: none; }
+    .feature-table tr:hover { background: #fafafa; }
+    .feature-table .feat-name { font-weight: 500; }
+    .feature-table .note { color: var(--text-tertiary); font-size: 0.8rem; }
+
+    .check { color: #34c759; font-weight: 600; }
+    .cross { color: #d1d1d6; font-weight: 600; }
+    .partial { color: #ff9500; font-weight: 600; }
+
+    .arch-section {
+      background: var(--bg-dark);
+      color: #f5f5f7;
+      border-radius: var(--radius);
+      padding: 2.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .arch-section h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: #fff;
+    }
+    .arch-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    .arch-box {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-sm);
+      padding: 1.5rem;
+    }
+    .arch-box h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .arch-box h4 .dot-oc {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent-oc);
+      display: inline-block;
+    }
+    .arch-box h4 .dot-hm {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent-hm);
+      display: inline-block;
+    }
+    .arch-box pre {
+      background: rgba(0,0,0,0.3);
+      padding: 1rem;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      line-height: 1.65;
+      overflow-x: auto;
+      font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace;
+      color: #aeaeb2;
+    }
+    .arch-diff {
+      margin-top: 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .arch-diff-item {
+      background: rgba(255,255,255,0.04);
+      border-radius: 8px;
+      padding: 1rem;
+      font-size: 0.82rem;
+    }
+    .arch-diff-item .dl { color: var(--text-tertiary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.3rem; }
+    .arch-diff-item .dv { color: #f5f5f7; font-weight: 500; }
+
+    .score-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 0.5rem 0;
+    }
+    .score-label {
+      font-size: 0.82rem;
+      font-weight: 500;
+      min-width: 80px;
+    }
+    .score-bar-track {
+      flex: 1;
+      height: 6px;
+      background: #f0f0f0;
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .score-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      transition: width 0.6s ease;
+    }
+    .score-bar-fill.oc { background: linear-gradient(90deg, var(--accent-oc), #ff8a5b); }
+    .score-bar-fill.hm { background: linear-gradient(90deg, var(--accent-hm), #a29bfe); }
+    .score-value {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      min-width: 24px;
+      text-align: right;
+    }
+
+    .recommend-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.25rem;
+    }
+    .recommend-card {
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-align: center;
+    }
+    .recommend-card.oc-card {
+      background: linear-gradient(135deg, var(--accent-oc-light) 0%, #fff 100%);
+      border: 1px solid rgba(255,90,45,0.15);
+    }
+    .recommend-card.coexist-card {
+      background: linear-gradient(135deg, #f5f5f7 0%, #fff 100%);
+      border: 1px solid var(--border);
+    }
+    .recommend-card.hm-card {
+      background: linear-gradient(135deg, var(--accent-hm-light) 0%, #fff 100%);
+      border: 1px solid rgba(108,92,231,0.15);
+    }
+    .recommend-card .emoji { font-size: 2rem; margin-bottom: 0.75rem; }
+    .recommend-card h4 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    .recommend-card ul {
+      text-align: left;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      padding-left: 1rem;
+      line-height: 1.7;
+    }
+
+    .summary-bar {
+      background: var(--bg-dark);
+      border-radius: var(--radius);
+      padding: 2.5rem;
+      color: #f5f5f7;
+      text-align: center;
+    }
+    .summary-bar h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .summary-bar p {
+      color: #aeaeb2;
+      font-size: 1rem;
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+    .summary-bar .highlight-oc { color: var(--accent-oc); font-weight: 600; }
+    .summary-bar .highlight-hm { color: var(--accent-hm); font-weight: 600; }
+
+    .footer {
+      text-align: center;
+      padding: 3rem 0;
+      color: var(--text-tertiary);
+      font-size: 0.82rem;
+    }
+    .footer a { color: var(--text-secondary); text-decoration: none; }
+    .footer a:hover { color: var(--text); }
+
+    @media (max-width: 768px) {
+      .page { padding: 0 1rem; }
+      .hero { padding: 3rem 0 2rem; }
+      .arch-grid, .arch-diff, .recommend-grid { grid-template-columns: 1fr; }
+      .info-grid { grid-template-columns: 1fr; }
+      .info-divider { display: none; }
+      .card-grid { grid-template-columns: 1fr; }
+      .nav-inner { padding: 0.75rem 1rem; gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <span class="nav-brand">OpenClaw vs Hermes</span>
+    <a href="#overview">概览</a>
+    <a href="#arch">架构</a>
+    <a href="#features">功能对比</a>
+    <a href="#deep">深度对比</a>
+    <a href="#ecosystem">生态</a>
+    <a href="#ops">运维</a>
+    <a href="#migrate">迁移</a>
+    <a href="#recommend">推荐</a>
+    <a href="#summary">总结</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <section class="hero" id="overview">
+    <div class="hero-eyebrow">AI Agent 工具对比报告</div>
+    <h1>OpenClaw vs Hermes</h1>
+    <p class="hero-sub">基于本地安装的 OpenClaw 2026.3.13 与 Hermes Agent v0.9.0，结合官方文档与 GitHub 仓库的全面对比分析。</p>
+    <div class="vs-badge">
+      <span class="badge badge-oc">🦞 OpenClaw</span>
+      <span class="badge badge-vs">VS</span>
+      <span class="badge badge-hm">☤ Hermes</span>
+    </div>
+  </section>
+
+  <section class="section" id="info">
+    <h2 class="section-title">基本信息</h2>
+    <p class="section-desc">两款工具的核心属性对比</p>
+
+    <div class="info-grid">
+      <div class="info-col oc">
+        <h4>🦞 OpenClaw</h4>
+        <div class="info-row"><span class="label">版本</span><span class="value">2026.3.13</span></div>
+        <div class="info-row"><span class="label">作者</span><span class="value">anpicasso</span></div>
+        <div class="info-row"><span class="label">语言</span><span class="value">TypeScript / Node.js</span></div>
+        <div class="info-row"><span class="label">许可证</span><span class="value">专有</span></div>
+        <div class="info-row"><span class="label">安装</span><span class="value">npm install -g</span></div>
+        <div class="info-row"><span class="label">配置</span><span class="value">openclaw.json</span></div>
+        <div class="info-row"><span class="label">数据目录</span><span class="value">~/.openclaw/</span></div>
+        <div class="info-row"><span class="label">顶级命令</span><span class="value">~45 个</span></div>
+      </div>
+      <div class="info-divider"></div>
+      <div class="info-col hm">
+        <h4>☤ Hermes</h4>
+        <div class="info-row"><span class="label">版本</span><span class="value">v0.9.0</span></div>
+        <div class="info-row"><span class="label">作者</span><span class="value">Nous Research</span></div>
+        <div class="info-row"><span class="label">语言</span><span class="value">Python</span></div>
+        <div class="info-row"><span class="label">许可证</span><span class="value">MIT（开源）</span></div>
+        <div class="info-row"><span class="label">安装</span><span class="value">curl | bash</span></div>
+        <div class="info-row"><span class="label">配置</span><span class="value">config.yaml + .env</span></div>
+        <div class="info-row"><span class="label">数据目录</span><span class="value">~/.hermes/</span></div>
+        <div class="info-row"><span class="label">顶级命令</span><span class="value">~30 个</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="arch">
+    <h2 class="section-title">技术架构</h2>
+    <p class="section-desc">OpenClaw 网关中心化 vs Hermes Agent 中心化</p>
+
+    <div class="arch-section">
+      <div class="arch-grid">
+        <div class="arch-box">
+          <h4><span class="dot-oc"></span> OpenClaw — 网关中心化</h4>
+          <pre>┌─────────────────────────────────┐
+│          CLI (Node.js)          │
+├─────────────────────────────────┤
+│     WebSocket Gateway (核心)     │
+│  ┌──────┬──────┬──────┬───────┐ │
+│  │ TG   │ DC   │ WA   │ 飞书  │ │
+│  └──────┴──────┴──────┴───────┘ │
+│  ┌──────┬──────┬──────┬───────┐ │
+│  │ 浏览器│ Agent│ Cron │ 沙箱  │ │
+│  └──────┴──────┴──────┴───────┘ │
+├─────────────────────────────────┤
+│     Node Host (可选远程节点)      │
+└─────────────────────────────────┘</pre>
+        </div>
+        <div class="arch-box">
+          <h4><span class="dot-hm"></span> Hermes — Agent 中心化</h4>
+          <pre>┌─────────────────────────────────┐
+│          CLI (Python)           │
+│  ┌──────────────────────────────┐│
+│  │    Agent Core (直接运行)      ││
+│  │  ┌─────┬──────┬─────┬─────┐ ││
+│  │  │Tools│Skills│Mem  │User │ ││
+│  │  └─────┴──────┴─────┴─────┘ ││
+│  └──────────────────────────────┘│
+│  ┌──────────────────────────────┐│
+│  │   Gateway (可选)             ││
+│  └──────────────────────────────┘│
+├─────────────────────────────────┤
+│     MCP / ACP Bridge            │
+└─────────────────────────────────┘</pre>
+        </div>
+      </div>
+      <div class="arch-diff">
+        <div class="arch-diff-item"><div class="dl">运行模式</div><div class="dv">OpenClaw：网关必须运行</div></div>
+        <div class="arch-diff-item"><div class="dl">运行模式</div><div class="dv">Hermes：CLI 直接运行</div></div>
+        <div class="arch-diff-item"><div class="dl">通信方式</div><div class="dv">OpenClaw：CLI → 网关 → Agent</div></div>
+        <div class="arch-diff-item"><div class="dl">通信方式</div><div class="dv">Hermes：CLI → Agent（直连）</div></div>
+        <div class="arch-diff-item"><div class="dl">部署粒度</div><div class="dv">OpenClaw：单网关多 Agent</div></div>
+        <div class="arch-diff-item"><div class="dl">部署粒度</div><div class="dv">Hermes：Profile 隔离</div></div>
+        <div class="arch-diff-item"><div class="dl">终端后端</div><div class="dv">OpenClaw：1 种（本地）</div></div>
+        <div class="arch-diff-item"><div class="dl">终端后端</div><div class="dv">Hermes：6 种（含 Serverless）</div></div>
+      </div>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon card-icon-oc">🦞</div>
+          <h3>OpenClaw — "AI 代理网关"</h3>
+        </div>
+        <p>全能型本地 AI 基础设施，核心是 WebSocket 网关服务。</p>
+        <ul>
+          <li>强调系统级集成</li>
+          <li>追求功能广度：50+ 顶级命令</li>
+          <li>面向高级用户和自动化爱好者</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon card-icon-hm">☤</div>
+          <h3>Hermes — "自我进化的 AI 助手"</h3>
+        </div>
+        <p>具备学习能力的 AI 助手，核心是闭环学习系统。</p>
+        <ul>
+          <li>强调学习与进化</li>
+          <li>追求易用性：一条命令启动</li>
+          <li>面向开发者日常 + 生产部署</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="features">
+    <h2 class="section-title">功能对比总表</h2>
+    <p class="section-desc">覆盖消息平台、工具能力、安全、部署等 35+ 项功能</p>
+
+    <div class="feature-table-wrap">
+      <table class="feature-table">
+        <thead>
+          <tr>
+            <th style="width:35%">功能</th>
+            <th class="col-oc" style="width:15%">OpenClaw</th>
+            <th class="col-hm" style="width:15%">Hermes</th>
+            <th style="width:35%">说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="feat-name">交互式对话</td><td class="check">✅</td><td class="check">✅</td><td class="note">OpenClaw TUI 需连接网关</td></tr>
+          <tr><td class="feat-name">单次查询</td><td class="check">✅</td><td class="check">✅</td><td class="note"></td></tr>
+          <tr><td class="feat-name">Telegram</td><td class="check">✅</td><td class="check">✅</td><td class="note">OC 支持多账号</td></tr>
+          <tr><td class="feat-name">Discord</td><td class="check">✅</td><td class="check">✅</td><td class="note">OC 支持多账号</td></tr>
+          <tr><td class="feat-name">WhatsApp</td><td class="check">✅</td><td class="check">✅</td><td class="note"></td></tr>
+          <tr><td class="feat-name">Slack</td><td class="check">✅</td><td class="check">✅</td><td class="note"></td></tr>
+          <tr><td class="feat-name">Signal</td><td class="check">✅</td><td class="check">✅</td><td class="note"></td></tr>
+          <tr><td class="feat-name">飞书 / Lark</td><td class="check">✅</td><td class="cross">❌</td><td class="note">OC 插件：文档/聊天/知识库/云盘/多维表格</td></tr>
+          <tr><td class="feat-name">iMessage</td><td class="check">✅</td><td class="cross">❌</td><td class="note">BlueBubbles 插件</td></tr>
+          <tr><td class="feat-name">微信 / Kimi</td><td class="check">✅</td><td class="cross">❌</td><td class="note">OC 独有</td></tr>
+          <tr><td class="feat-name">Google Chat / Teams</td><td class="check">✅</td><td class="cross">❌</td><td class="note">OC 独有</td></tr>
+          <tr><td class="feat-name">Email</td><td class="cross">❌</td><td class="check">✅</td><td class="note">Hermes 独有</td></tr>
+          <tr><td class="feat-name">浏览器自动化</td><td class="check">✅</td><td class="cross">❌</td><td class="note">OC 40+ 子命令，核心优势</td></tr>
+          <tr><td class="feat-name">技能系统</td><td class="check">✅</td><td class="check">✅</td><td class="note">Hermes 支持自创建/自改进</td></tr>
+          <tr><td class="feat-name">插件系统</td><td class="check">✅</td><td class="check">✅</td><td class="note">OC 插件生态更丰富</td></tr>
+          <tr><td class="feat-name">MCP 协议</td><td class="check">✅</td><td class="check">✅</td><td class="note">功能相当</td></tr>
+          <tr><td class="feat-name">定时任务</td><td class="check">✅</td><td class="check">✅</td><td class="note">功能相当</td></tr>
+          <tr><td class="feat-name">记忆系统</td><td class="check">✅</td><td class="check">✅</td><td class="note">Hermes 7 种外部提供商</td></tr>
+          <tr><td class="feat-name">用户建模</td><td class="cross">❌</td><td class="check">✅</td><td class="note">Hermes Honcho 集成</td></tr>
+          <tr><td class="feat-name">安全审计</td><td class="check">✅</td><td class="cross">❌</td><td class="note">OC: audit / sandbox / secrets</td></tr>
+          <tr><td class="feat-name">沙箱隔离</td><td class="check">✅</td><td class="cross">❌</td><td class="note">OC Docker 容器隔离</td></tr>
+          <tr><td class="feat-name">远程节点</td><td class="check">✅</td><td class="cross">❌</td><td class="note">OC: node host + 摄像头/屏幕</td></tr>
+          <tr><td class="feat-name">图片/视频/语音</td><td class="check">✅</td><td class="cross">❌</td><td class="note">OC infer 统一推理入口</td></tr>
+          <tr><td class="feat-name">并行子 Agent</td><td class="cross">❌</td><td class="check">✅</td><td class="note">Hermes delegate 机制</td></tr>
+          <tr><td class="feat-name">Git Worktree</td><td class="cross">❌</td><td class="check">✅</td><td class="note">Hermes --worktree</td></tr>
+          <tr><td class="feat-name">文件检查点</td><td class="cross">❌</td><td class="check">✅</td><td class="note">Hermes --checkpoints + /rollback</td></tr>
+          <tr><td class="feat-name">使用洞察</td><td class="cross">❌</td><td class="check">✅</td><td class="note">Hermes insights 命令</td></tr>
+          <tr><td class="feat-name">RL 训练</td><td class="cross">❌</td><td class="check">✅</td><td class="note">Hermes Atropos 环境</td></tr>
+          <tr><td class="feat-name">Dashboard</td><td class="check">✅</td><td class="check">✅</td><td class="note"></td></tr>
+          <tr><td class="feat-name">备份恢复</td><td class="check">✅</td><td class="check">✅</td><td class="note"></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section" id="deep">
+    <h2 class="section-title">核心功能深度对比</h2>
+    <p class="section-desc">消息平台、推理模型、技能系统、浏览器、记忆、安全等维度深入分析</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon card-icon-oc">💬</div>
+          <h3>消息平台</h3>
+        </div>
+        <p><strong>OpenClaw：</strong>12+ 平台（含飞书/微信/iMessage/Teams/Google Chat/Mattermost），多账号管理，消息管理最完善（广播/投票/表情/置顶/搜索/线程）</p>
+        <p style="margin-top:0.5rem"><strong>Hermes：</strong>5+ 平台（TG/Discord/WA/Slack/Signal），跨平台对话连续性是亮点</p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon card-icon-neutral">🧠</div>
+          <h3>推理模型</h3>
+        </div>
+        <p><strong>OpenClaw：</strong>深度管理（scan/probe/fallbacks），支持 DeepSeek/火山/千问/Ollama 本地模型，统一推理入口（infer）</p>
+        <p style="margin-top:0.5rem"><strong>Hermes：</strong>17 个提供商，凭证池轮转，含 zai/kimi/minimax/小米等中国厂商</p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon card-icon-hm">⚡</div>
+          <h3>技能系统</h3>
+        </div>
+        <p><strong>OpenClaw：</strong>70+ 预置技能，ClawHub 注册中心，按需激活。更像预置能力模块。</p>
+        <p style="margin-top:0.5rem"><strong>Hermes：</strong>40+ 技能，自动创建/自改进，用户建模，多注册中心搜索。更像可进化的程序记忆。</p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon card-icon-oc">🌐</div>
+          <h3>浏览器控制</h3>
+        </div>
+        <p><strong>OpenClaw 核心优势：</strong>40+ 浏览器子命令，相当于内置完整 Playwright CLI（start/navigate/click/type/screenshot/pdf/fill/upload/cookies...）</p>
+        <p style="margin-top:0.5rem"><strong>Hermes：</strong>无内置浏览器控制，需通过 MCP 服务器扩展</p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon card-icon-hm">🧠</div>
+          <h3>记忆与上下文</h3>
+        </div>
+        <p><strong>OpenClaw：</strong>MEMORY.md + 向量搜索 + 记忆晋升（短期→长期）</p>
+        <p style="margin-top:0.5rem"><strong>Hermes：</strong>MEMORY.md + 7 种外部提供商（honcho/mem0/hindsight...）+ Honcho 用户建模 + FTS5 会话搜索 + 自动记忆提醒</p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon card-icon-oc">🔒</div>
+          <h3>安全机制</h3>
+        </div>
+        <p><strong>OpenClaw：</strong>security audit（深度探测）、SecretRef 密钥管理、Docker 沙箱隔离、per-agent 执行审批白名单</p>
+        <p style="margin-top:0.5rem"><strong>Hermes：</strong>默认危险确认、--checkpoints 文件检查点、配对码授权、凭证池轮转</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="ecosystem">
+    <h2 class="section-title">生态与扩展</h2>
+    <p class="section-desc">开源、社区、部署灵活度</p>
+
+    <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+      <div class="card" style="text-align:center; padding:2rem;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">🔓</div>
+        <h3>开源</h3>
+        <div class="score-bar-wrap">
+          <span class="score-label" style="color:var(--accent-oc)">OpenClaw</span>
+          <div class="score-bar-track"><div class="score-bar-fill oc" style="width:20%"></div></div>
+          <span class="score-value">闭源</span>
+        </div>
+        <div class="score-bar-wrap">
+          <span class="score-label" style="color:var(--accent-hm)">Hermes</span>
+          <div class="score-bar-track"><div class="score-bar-fill hm" style="width:100%"></div></div>
+          <span class="score-value">MIT</span>
+        </div>
+      </div>
+      <div class="card" style="text-align:center; padding:2rem;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">📡</div>
+        <h3>消息平台数</h3>
+        <div class="score-bar-wrap">
+          <span class="score-label" style="color:var(--accent-oc)">OpenClaw</span>
+          <div class="score-bar-track"><div class="score-bar-fill oc" style="width:92%"></div></div>
+          <span class="score-value">12+</span>
+        </div>
+        <div class="score-bar-wrap">
+          <span class="score-label" style="color:var(--accent-hm)">Hermes</span>
+          <div class="score-bar-track"><div class="score-bar-fill hm" style="width:46%"></div></div>
+          <span class="score-value">6</span>
+        </div>
+      </div>
+      <div class="card" style="text-align:center; padding:2rem;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">🖥</div>
+        <h3>终端后端</h3>
+        <div class="score-bar-wrap">
+          <span class="score-label" style="color:var(--accent-oc)">OpenClaw</span>
+          <div class="score-bar-track"><div class="score-bar-fill oc" style="width:17%"></div></div>
+          <span class="score-value">1</span>
+        </div>
+        <div class="score-bar-wrap">
+          <span class="score-label" style="color:var(--accent-hm)">Hermes</span>
+          <div class="score-bar-track"><div class="score-bar-fill hm" style="width:100%"></div></div>
+          <span class="score-value">6</span>
+        </div>
+      </div>
+      <div class="card" style="text-align:center; padding:2rem;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">🛡</div>
+        <h3>安全体系</h3>
+        <div class="score-bar-wrap">
+          <span class="score-label" style="color:var(--accent-oc)">OpenClaw</span>
+          <div class="score-bar-track"><div class="score-bar-fill oc" style="width:95%"></div></div>
+          <span class="score-value">完善</span>
+        </div>
+        <div class="score-bar-wrap">
+          <span class="score-label" style="color:var(--accent-hm)">Hermes</span>
+          <div class="score-bar-track"><div class="score-bar-fill hm" style="width:40%"></div></div>
+          <span class="score-value">基础</span>
+        </div>
+      </div>
+      <div class="card" style="text-align:center; padding:2rem;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">🧩</div>
+        <h3>学习能力</h3>
+        <div class="score-bar-wrap">
+          <span class="score-label" style="color:var(--accent-oc)">OpenClaw</span>
+          <div class="score-bar-track"><div class="score-bar-fill oc" style="width:35%"></div></div>
+          <span class="score-value">有限</span>
+        </div>
+        <div class="score-bar-wrap">
+          <span class="score-label" style="color:var(--accent-hm)">Hermes</span>
+          <div class="score-bar-track"><div class="score-bar-fill hm" style="width:95%"></div></div>
+          <span class="score-value">强大</span>
+        </div>
+      </div>
+      <div class="card" style="text-align:center; padding:2rem;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">🇨🇳</div>
+        <h3>中国生态</h3>
+        <div class="score-bar-wrap">
+          <span class="score-label" style="color:var(--accent-oc)">OpenClaw</span>
+          <div class="score-bar-track"><div class="score-bar-fill oc" style="width:85%"></div></div>
+          <span class="score-value">强</span>
+        </div>
+        <div class="score-bar-wrap">
+          <span class="score-label" style="color:var(--accent-hm)">Hermes</span>
+          <div class="score-bar-track"><div class="score-bar-fill hm" style="width:65%"></div></div>
+          <span class="score-value">中</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="ops">
+    <h2 class="section-title">运维能力</h2>
+    <p class="section-desc">健康检查、日志、备份、安全审计等运维工具</p>
+
+    <div class="feature-table-wrap">
+      <table class="feature-table">
+        <thead>
+          <tr>
+            <th style="width:30%">运维任务</th>
+            <th class="col-oc" style="width:35%">OpenClaw</th>
+            <th class="col-hm" style="width:35%">Hermes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="feat-name">健康检查</td><td>doctor + health + status --deep</td><td>doctor + status</td></tr>
+          <tr><td class="feat-name">日志查看</td><td>logs（RPC 方式）</td><td>logs（文件方式，--since/--level/--component）</td></tr>
+          <tr><td class="feat-name">配置验证</td><td>config validate + schema</td><td>config check</td></tr>
+          <tr><td class="feat-name">安全审计</td><td>security audit --deep --fix</td><td class="cross">无</td></tr>
+          <tr><td class="feat-name">状态导出</td><td>status --all（可分享）</td><td>dump --show-keys</td></tr>
+          <tr><td class="feat-name">调试报告</td><td class="cross">无</td><td>debug share（上传获取 URL）</td></tr>
+          <tr><td class="feat-name">备份恢复</td><td>backup create/verify</td><td>backup/import</td></tr>
+          <tr><td class="feat-name">模型探测</td><td>models status --probe</td><td class="cross">无</td></tr>
+          <tr><td class="feat-name">配置热重载</td><td>secrets reload</td><td class="cross">无</td></tr>
+          <tr><td class="feat-name">更新渠道</td><td>stable/beta/dev</td><td>git pull</td></tr>
+          <tr><td class="feat-name">多环境隔离</td><td>--dev / --profile</td><td>profile 命令</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section" id="migrate">
+    <h2 class="section-title">迁移路径</h2>
+    <p class="section-desc">Hermes 内置了从 OpenClaw 的一键迁移工具</p>
+
+    <div class="full-card">
+      <h3>hermes claw migrate — 从 OpenClaw 迁移</h3>
+      <div class="card-grid" style="margin-top:1rem;">
+        <div class="card" style="border:none; background:#f5f5f7; padding:1.25rem;">
+          <h3 style="font-size:0.95rem; margin-bottom:0.75rem;">可迁移内容</h3>
+          <ul>
+            <li>SOUL.md（人格文件）</li>
+            <li>记忆（MEMORY.md + USER.md）</li>
+            <li>技能（→ ~/.hermes/skills/openclaw-imports/）</li>
+            <li>命令白名单</li>
+            <li>消息平台配置</li>
+            <li>API 密钥（TG/OpenRouter/OpenAI/Anthropic/ElevenLabs）</li>
+            <li>TTS 资源</li>
+            <li>工作区指令（AGENTS.md）</li>
+          </ul>
+        </div>
+        <div class="card" style="border:none; background:#f5f5f7; padding:1.25rem;">
+          <h3 style="font-size:0.95rem; margin-bottom:0.75rem;">迁移命令</h3>
+          <pre style="background:var(--bg-dark); color:#f5f5f7; padding:1rem; border-radius:8px; border:none; font-size:0.82rem; line-height:1.8;">hermes claw migrate              # 交互式迁移
+hermes claw migrate --dry-run    # 预览
+hermes claw migrate --preset user-data
+hermes claw migrate --overwrite</pre>
+          <p style="margin-top:0.75rem; color:var(--text-secondary); font-size:0.85rem;">反向迁移（Hermes → OpenClaw）无官方支持。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="recommend">
+    <h2 class="section-title">适用场景推荐</h2>
+    <p class="section-desc">根据你的需求选择最合适的工具</p>
+
+    <div class="recommend-grid">
+      <div class="recommend-card oc-card">
+        <div class="emoji">🦞</div>
+        <h4>选择 OpenClaw</h4>
+        <ul>
+          <li>需要完整的浏览器自动化</li>
+          <li>飞书/Lark 深度集成</li>
+          <li>需要覆盖微信/iMessage/Teams</li>
+          <li>高安全要求（沙箱/审计）</li>
+          <li>远程节点/IoT 控制</li>
+          <li>内置图片/视频/语音推理</li>
+          <li>Tailscale + DNS 网络部署</li>
+        </ul>
+      </div>
+      <div class="recommend-card coexist-card">
+        <div class="emoji">🤝</div>
+        <h4>共存使用</h4>
+        <ul>
+          <li>可同时安装在同一台机器</li>
+          <li>Hermes 可一键迁移 OpenClaw 数据</li>
+          <li>日常对话/编程 → Hermes</li>
+          <li>自动化/多平台 → OpenClaw</li>
+          <li>两者互补，不冲突</li>
+        </ul>
+      </div>
+      <div class="recommend-card hm-card">
+        <div class="emoji">☤</div>
+        <h4>选择 Hermes</h4>
+        <ul>
+          <li>完全开源透明（MIT）</li>
+          <li>自动创建/改进技能</li>
+          <li>轻量起步，无需网关</li>
+          <li>6 种终端后端灵活部署</li>
+          <li>RL 训练/研究用途</li>
+          <li>Git worktree + 文件检查点</li>
+          <li>Token 用量/费用分析</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="summary">
+    <div class="summary-bar">
+      <h3>总结</h3>
+      <p><span class="highlight-oc">OpenClaw 是瑞士军刀</span>——功能最全、平台最广、自动化最深，12+ 消息平台、40+ 浏览器命令、完整安全体系。<span class="highlight-hm">Hermes 是会学习的伙伴</span>——越用越懂你、越用越强大，自创建技能、用户建模、完全开源，且部署更灵活。两者可以共存互补。</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    基于本地安装版本分析 · OpenClaw 2026.3.13 · Hermes v0.9.0 · 生成于 2026.4.15
+  </footer>
+
+</div>
+
+</body>
+</html>
