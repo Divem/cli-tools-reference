@@ -297,8 +297,47 @@
       outline: 2px solid var(--color-accent, #333);
       outline-offset: 1px;
     }
+    .search-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: -0.25rem 0 0.75rem;
+      font-size: 0.75rem;
+      color: var(--color-secondary, #666);
+    }
+    .search-controls button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      padding: 0;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      background: var(--color-bg, #fff);
+      color: var(--color-text);
+      cursor: pointer;
+      font-size: 0.75rem;
+      line-height: 1;
+    }
+    .search-controls button:hover {
+      border-color: var(--color-accent, #333);
+    }
+    .search-controls button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .search-controls span {
+      min-width: 2.5em;
+      text-align: center;
+    }
+    .search-highlight-current {
+      background: rgba(255, 165, 0, 0.75);
+      border-radius: 2px;
+      padding: 0 2px;
+    }
     .search-highlight {
-      background: rgba(255, 193, 7, 0.45);
+      background: rgba(255, 193, 7, 0.35);
       border-radius: 2px;
       padding: 0 2px;
     }
@@ -309,6 +348,11 @@
     <aside class="sidebar">
       <h2>Documentation</h2>
       <input type="search" class="sidebar-search" id="pageSearch" placeholder="搜索页面内容..." autocomplete="off">
+      <div class="search-controls" id="searchControls" style="display:none;">
+        <button id="searchPrev" title="上一个 (Shift+Enter)">&#8593;</button>
+        <span id="searchCount">0/0</span>
+        <button id="searchNext" title="下一个 (Enter)">&#8595;</button>
+      </div>
       <nav><a href="#目录" >目录</a>
 <a href="#概述" >概述</a>
 <a href="#全局选项" >全局选项</a>
@@ -438,20 +482,48 @@
     // 页面内搜索
     (function() {
       var input = document.getElementById('pageSearch');
+      var controls = document.getElementById('searchControls');
+      var countEl = document.getElementById('searchCount');
+      var prevBtn = document.getElementById('searchPrev');
+      var nextBtn = document.getElementById('searchNext');
       if (!input) return;
       var main = document.querySelector('.main');
+      var currentIndex = 0;
+      var highlights = [];
       function clearHighlights() {
-        document.querySelectorAll('.search-highlight').forEach(function(el) {
+        document.querySelectorAll('.search-highlight, .search-highlight-current').forEach(function(el) {
           var parent = el.parentNode;
           parent.replaceChild(document.createTextNode(el.textContent), el);
           parent.normalize();
         });
+        highlights = [];
+        currentIndex = 0;
+        if (controls) controls.style.display = 'none';
       }
-      input.addEventListener('input', function() {
+      function updateUI() {
+        if (!highlights.length) {
+          if (controls) controls.style.display = 'none';
+          return;
+        }
+        if (countEl) countEl.textContent = (currentIndex + 1) + '/' + highlights.length;
+        if (controls) controls.style.display = 'flex';
+        if (prevBtn) prevBtn.disabled = currentIndex <= 0;
+        if (nextBtn) nextBtn.disabled = currentIndex >= highlights.length - 1;
+        highlights.forEach(function(el, i) {
+          el.className = i === currentIndex ? 'search-highlight-current' : 'search-highlight';
+        });
+        highlights[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      function goTo(delta) {
+        if (!highlights.length) return;
+        currentIndex = Math.max(0, Math.min(highlights.length - 1, currentIndex + delta));
+        updateUI();
+      }
+      function performSearch() {
         clearHighlights();
         var query = input.value.trim();
         if (!query) return;
-        var regex = new RegExp('(' + query.replace(/[.*+?^\${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+        var regex = new RegExp('(' + query.replace(/[.*+?^$\\{}()|[\]\\\\]/g, '\\\\$&') + ')', 'gi');
         var walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT, null, false);
         var nodes = [];
         var node;
@@ -460,7 +532,13 @@
             nodes.push(node);
           }
         }
-        if (!nodes.length) return;
+        if (!nodes.length) {
+          if (controls) controls.style.display = 'flex';
+          if (countEl) countEl.textContent = '0/0';
+          if (prevBtn) prevBtn.disabled = true;
+          if (nextBtn) nextBtn.disabled = true;
+          return;
+        }
         nodes.forEach(function(n) {
           var span = document.createElement('span');
           span.innerHTML = n.textContent.replace(regex, '<mark class="search-highlight">$1</mark>');
@@ -468,8 +546,18 @@
           while (span.firstChild) frag.appendChild(span.firstChild);
           n.parentNode.replaceChild(frag, n);
         });
-        var first = document.querySelector('.search-highlight');
-        if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        highlights = Array.prototype.slice.call(document.querySelectorAll('.search-highlight'));
+        currentIndex = 0;
+        updateUI();
+      }
+      input.addEventListener('input', performSearch);
+      if (prevBtn) prevBtn.addEventListener('click', function() { goTo(-1); });
+      if (nextBtn) nextBtn.addEventListener('click', function() { goTo(1); });
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (e.shiftKey) goTo(-1); else goTo(1);
+        }
       });
     })();
   </script>
