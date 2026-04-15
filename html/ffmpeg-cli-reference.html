@@ -7,25 +7,26 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect rx=%2212%22 width=%22100%22 height=%22100%22 fill=%22%231a1a2e%22/><text x=%2250%22 y=%2268%22 font-size=%2255%22 font-family=%22monospace%22 font-weight=%22bold%22 text-anchor=%22middle%22 fill=%22%2300d4aa%22>&gt;_</text></svg>">
   <style>
     :root {
-      --color-bg: #f5f4ed;
-      --color-text: #141413;
-      --color-secondary: #5e5d59;
-      --color-tertiary: #87867f;
-      --color-accent: #c96442;
-      --color-accent-light: #f5e9e4;
-      --color-border: #f0eee6;
-      --color-code-bg: #f5f5f0;
-      --color-sidebar-bg: #faf9f5;
-      --color-btn-bg: #e8e6dc;
-      --color-btn-text: #4d4c48;
+      --color-bg: #1a1918;
+      --color-text: #faf9f6;
+      --color-secondary: #afaeac;
+      --color-tertiary: #868584;
+      --color-accent: #e8a87c;
+      --color-accent-light: #2a2520;
+      --color-border: rgba(226, 226, 226, 0.35);
+      --color-code-bg: #252322;
+      --color-sidebar-bg: #1e1d1c;
+      --color-btn-bg: #353534;
+      --color-btn-text: #faf9f6;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
       background: var(--color-bg);
       color: var(--color-text);
-      line-height: 1.6;
-      font-size: 16px;
+      line-height: 1.30;
+      font-size: 18px;
+      letter-spacing: -0.18px;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
@@ -38,11 +39,11 @@
       background: var(--color-sidebar-bg);
     }
     .sidebar h2 {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--color-accent);
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--color-tertiary);
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 2.4px;
       margin-bottom: 1rem;
     }
     .sidebar a {
@@ -56,7 +57,7 @@
     }
     .sidebar a:hover {
       color: var(--color-accent);
-      background: rgba(201,100,66,0.06);
+      background: rgba(232,168,124,0.08);
     }
     .main {
       flex: 1;
@@ -64,27 +65,27 @@
       max-width: 900px;
     }
     h1 {
-      font-family: Georgia, 'Times New Roman', serif;
-      font-size: 2.5rem;
-      font-weight: 500;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      font-size: 36px;
+      font-weight: 400;
       margin-bottom: 1.5rem;
       color: var(--color-text);
-      letter-spacing: -0.01em;
-      line-height: 1.15;
+      letter-spacing: -1px;
+      line-height: 1.00;
     }
     h2 {
       font-size: 1.5rem;
-      font-weight: 500;
+      font-weight: 400;
       margin-top: 2.5rem;
       margin-bottom: 1rem;
       color: var(--color-text);
       padding-bottom: 0.5rem;
       border-bottom: 1px solid var(--color-border);
-      letter-spacing: -0.01em;
+      letter-spacing: -0.5px;
     }
     h3 {
       font-size: 1.125rem;
-      font-weight: 600;
+      font-weight: 400;
       margin-top: 2rem;
       margin-bottom: 0.75rem;
       color: var(--color-text);
@@ -94,7 +95,7 @@
       color: var(--color-secondary);
     }
     code {
-      font-family: 'SF Mono', 'Fira Code', Monaco, monospace;
+      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
       background: var(--color-code-bg);
       padding: 0.2rem 0.45rem;
       border-radius: 4px;
@@ -108,7 +109,6 @@
       overflow-x: auto;
       margin: 1.5rem 0;
       border-left: 3px solid var(--color-accent);
-      box-shadow: 0px 0px 0px 1px rgba(0,0,0,0.04);
     }
     pre code {
       background: none;
@@ -132,7 +132,7 @@
       border-bottom: 1px solid var(--color-border);
     }
     th {
-      font-weight: 600;
+      font-weight: 400;
       background: var(--color-accent-light);
       color: var(--color-accent);
     }
@@ -142,7 +142,7 @@
       margin: 1.5rem 0;
       color: var(--color-tertiary);
       font-style: italic;
-      background: var(--color-sidebar-bg);
+      background: rgba(255,255,255,0.04);
       border-radius: 0 8px 8px 0;
     }
     ul { margin: 1rem 0; padding-left: 1.5rem; }
@@ -151,10 +151,8 @@
     a { color: var(--color-accent); text-decoration: none; }
     a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
     
-    /* 桌面端：菜单按钮和遮罩层隐藏 */
     .drawer-toggle { display: none; }
     .overlay { display: none; }
-    /* 粘性标题 */
     .sticky-header {
       position: sticky;
       top: 0;
@@ -167,11 +165,11 @@
     }
     .sticky-header.visible { display: block; }
     .sticky-header h1 {
-      font-family: Georgia, 'Times New Roman', serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
       font-size: 1.125rem;
-      font-weight: 600;
+      font-weight: 400;
       margin: 0;
-      letter-spacing: -0.01em;
+      letter-spacing: -0.5px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -192,7 +190,7 @@
       color: var(--color-secondary);
       text-decoration: none;
       font-size: 0.8125rem;
-      font-weight: 500;
+      font-weight: 400;
       border-radius: 8px;
       border: 1px solid var(--color-border);
       transition: all 0.2s;
@@ -205,7 +203,6 @@
     
     @media (max-width: 768px) {
       .container { flex-direction: column; }
-      /* 移动端：侧边栏变为抽屉 */
       .sidebar {
         position: fixed;
         top: 0;
@@ -220,9 +217,8 @@
       }
       .sidebar.open {
         transform: translateX(0);
-        box-shadow: 4px 0 24px rgba(0,0,0,0.08);
+        box-shadow: rgba(0,0,0,0.2) 0px 5px 15px;
       }
-      /* 移动端：显示菜单按钮 */
       .drawer-toggle {
         display: flex;
         position: fixed;
@@ -237,18 +233,17 @@
         cursor: pointer;
         align-items: center;
         justify-content: center;
-        box-shadow: 0px 0px 0px 1px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.04);
+        box-shadow: rgba(0,0,0,0.2) 0px 5px 15px;
         transition: all 0.2s;
       }
-      .drawer-toggle:hover { box-shadow: 0px 0px 0px 1px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.06); }
+      .drawer-toggle:hover { box-shadow: rgba(0,0,0,0.2) 0px 5px 15px; }
       .drawer-toggle svg { transition: transform 0.3s ease; }
       .drawer-toggle.active svg { transform: rotate(180deg); }
-      /* 移动端：显示遮罩层 */
       .overlay {
         display: block;
         position: fixed;
         inset: 0;
-        background: rgba(20,20,19,0.15);
+        background: rgba(0,0,0,0.5);
         z-index: 999;
         opacity: 0;
         pointer-events: none;
@@ -258,7 +253,6 @@
         opacity: 1;
         pointer-events: auto;
       }
-      /* 移动端粘性标题：左侧留出菜单按钮空间 */
       .sticky-header { margin: 0 -1.5rem 1rem; padding: 12px 1rem 12px 64px; }
       .main { padding: 2.5rem 1.5rem 2rem; }
       h1 { font-size: 1.75rem; }
