@@ -20,19 +20,15 @@
     .sidebar {
       width: 280px;
       padding: 1.5rem;
-      position: fixed;
+      position: sticky;
       top: 0;
-      left: 0;
       height: 100vh;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
       border-right: 1px solid var(--color-border);
       background: var(--color-sidebar-bg);
-      z-index: 1000;
-      transform: translateX(-100%);
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: none;
+      flex-shrink: 0;
     }
     .sidebar h2 { font-size: 0.75rem; font-weight: 600; color: var(--color-gray); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; }
     .sidebar a { display: block; padding: 0.5rem 0; color: var(--color-gray); text-decoration: none; font-size: 0.875rem; transition: color 0.2s; }
