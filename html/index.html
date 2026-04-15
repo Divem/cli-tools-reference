@@ -3,49 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CLI 参考手册 - 文档列表</title>
+    <title>CLI 参考手册 - 文档中心</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;510;590&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #00d4ff;
-            --secondary: #ff00a0;
-            --accent: #39ff14;
-            --bg-dark: #0a0a0f;
-            --bg-card: #12121a;
-            --bg-hover: #1a1a25;
-            --text-primary: #ffffff;
-            --text-secondary: #a0a0b0;
-            --border: rgba(255, 255, 255, 0.08);
-            --glow: 0 0 20px rgba(0, 212, 255, 0.3);
+            --bg: #08090a;
+            --surface: #191a1b;
+            --text-primary: #f7f8f8;
+            --text-secondary: #d0d6e0;
+            --text-tertiary: #8a8f98;
+            --accent: #5e6ad2;
+            --accent-interactive: #7170ff;
+            --accent-hover: #828fff;
+            --border: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 255, 255, 0.12);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-bg-hover: rgba(255, 255, 255, 0.06);
+            --radius-card: 8px;
+            --radius-btn: 6px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Space Grotesk', sans-serif;
-            background: var(--bg-dark);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-feature-settings: 'cv01', 'ss03';
+            background: var(--bg);
             color: var(--text-primary);
             line-height: 1.6;
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        .bg-grid {
+        .page-bg {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             pointer-events: none;
             z-index: 0;
-            opacity: 0.4;
-            background-image:
-                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
+            background:
+                radial-gradient(ellipse 60% 40% at 50% -10%, rgba(94, 106, 210, 0.08), transparent),
+                radial-gradient(ellipse 50% 50% at 80% 100%, rgba(130, 143, 255, 0.04), transparent);
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 720px;
             margin: 0 auto;
             padding: 0 24px;
             position: relative;
@@ -53,306 +58,367 @@
         }
 
         header {
-            padding: 60px 0 40px;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 40px;
+            padding: 80px 0 48px;
         }
 
         .back-link {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            color: var(--primary);
+            gap: 6px;
+            color: var(--text-tertiary);
             text-decoration: none;
-            font-size: 0.875rem;
-            margin-bottom: 20px;
-            font-family: 'JetBrains Mono', monospace;
-            letter-spacing: 1px;
-            transition: opacity 0.3s;
+            font-size: 0.8125rem;
+            font-weight: 400;
+            margin-bottom: 32px;
+            padding: 6px 12px;
+            border-radius: var(--radius-btn);
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
         }
 
-        .back-link:hover { opacity: 0.7; }
+        .back-link:hover {
+            color: var(--text-primary);
+            border-color: var(--border-hover);
+            background: var(--card-bg-hover);
+        }
 
-        h1 {
-            font-size: clamp(1.8rem, 4vw, 2.8rem);
-            font-weight: 700;
+        .header-content {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .header-left h1 {
+            font-size: 48px;
+            font-weight: 590;
+            letter-spacing: -1.056px;
+            color: var(--text-primary);
+            line-height: 1.1;
+        }
+
+        .header-left .subtitle {
+            color: var(--text-tertiary);
+            font-size: 0.9375rem;
+            font-weight: 400;
+            margin-top: 10px;
+            letter-spacing: -0.01em;
+        }
+
+        .doc-count {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6875rem;
+            font-weight: 500;
+            color: var(--accent-hover);
+            background: rgba(94, 106, 210, 0.12);
+            padding: 5px 12px;
+            border-radius: 20px;
+            white-space: nowrap;
+            letter-spacing: 0.02em;
+            border: 1px solid rgba(94, 106, 210, 0.2);
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, var(--border-hover), transparent 80%);
             margin-bottom: 8px;
-            background: linear-gradient(135deg, #fff 0%, var(--primary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .subtitle {
-            color: var(--text-secondary);
-            font-size: 1rem;
-            font-weight: 300;
-        }
-
-        .count {
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--primary);
-            font-weight: 600;
         }
 
         .doc-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            padding-bottom: 60px;
+            gap: 2px;
+            padding-bottom: 80px;
         }
 
         .doc-item {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 20px 24px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
+            gap: 16px;
+            padding: 14px 18px;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: var(--radius-card);
             text-decoration: none;
             color: var(--text-primary);
-            transition: all 0.3s ease;
+            transition: all 0.15s ease;
         }
 
         .doc-item:hover {
-            transform: translateX(6px);
-            border-color: rgba(0, 212, 255, 0.3);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), var(--glow);
-        }
-
-        .doc-info {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            flex: 1;
-            min-width: 0;
+            background: var(--card-bg);
+            border-color: var(--border);
         }
 
         .doc-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'JetBrains Mono', monospace;
-            font-weight: 700;
-            font-size: 0.875rem;
+            font-weight: 500;
+            font-size: 0.6875rem;
             flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            color: var(--text-tertiary);
+            transition: all 0.15s ease;
         }
 
-        .doc-item:nth-child(1) .doc-icon { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
-        .doc-item:nth-child(2) .doc-icon { background: linear-gradient(135deg, #10b981, #34d399); }
-        .doc-item:nth-child(3) .doc-icon { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
-        .doc-item:nth-child(4) .doc-icon { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
-        .doc-item:nth-child(5) .doc-icon { background: linear-gradient(135deg, #ec4899, #f472b6); }
-        .doc-item:nth-child(6) .doc-icon { background: linear-gradient(135deg, #14b8a6, #2dd4bf); }
-        .doc-item:nth-child(7) .doc-icon { background: linear-gradient(135deg, #f97316, #fb923c); }
-        .doc-item:nth-child(8) .doc-icon { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
-        .doc-item:nth-child(9) .doc-icon { background: linear-gradient(135deg, #06b6d4, #22d3ee); }
-        .doc-item:nth-child(10) .doc-icon { background: linear-gradient(135deg, #e11d48, #f43f5e); }
-        .doc-item:nth-child(11) .doc-icon { background: linear-gradient(135deg, #7c3aed, #a855f7); }
-        .doc-item:nth-child(12) .doc-icon { background: linear-gradient(135deg, #0ea5e9, #38bdf8); }
-        .doc-item:nth-child(13) .doc-icon { background: linear-gradient(135deg, #84cc16, #a3e635); }
+        .doc-item:hover .doc-icon {
+            border-color: var(--border-hover);
+            color: var(--text-secondary);
+        }
+
+        .doc-body {
+            flex: 1;
+            min-width: 0;
+        }
 
         .doc-name {
-            font-size: 1.0625rem;
-            font-weight: 600;
+            font-size: 0.875rem;
+            font-weight: 510;
+            color: var(--text-secondary);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            transition: color 0.15s ease;
         }
 
         .doc-tag {
             font-size: 0.75rem;
-            color: var(--text-secondary);
-            margin-top: 2px;
+            color: var(--text-tertiary);
+            margin-top: 1px;
+            font-weight: 400;
         }
 
         .doc-arrow {
-            color: var(--text-secondary);
-            font-size: 1.25rem;
-            transition: all 0.3s;
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.15);
+            transition: all 0.15s ease;
             flex-shrink: 0;
-            margin-left: 16px;
         }
 
         .doc-item:hover .doc-arrow {
-            color: var(--primary);
-            transform: translateX(4px);
+            color: var(--accent-hover);
+        }
+
+        .doc-item:hover .doc-name {
+            color: var(--text-primary);
         }
 
         footer {
             text-align: center;
-            padding: 40px 0;
-            border-top: 1px solid var(--border);
-            color: var(--text-secondary);
-            font-size: 0.875rem;
+            padding: 32px 0 48px;
+            color: var(--text-tertiary);
+            font-size: 0.75rem;
         }
 
-        @media (max-width: 640px) {
-            .doc-item { padding: 16px; }
-            .doc-name { font-size: 0.9375rem; }
+        footer a {
+            color: var(--accent-interactive);
+            text-decoration: none;
+            font-weight: 400;
+            transition: color 0.15s ease;
+        }
+
+        footer a:hover { color: var(--accent-hover); }
+
+        @media (max-width: 768px) {
+            header { padding: 56px 0 36px; }
+            .header-content { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .header-left h1 {
+                font-size: 32px;
+                letter-spacing: -0.704px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 0 16px; }
+            header { padding: 40px 0 28px; }
+            .header-left h1 { font-size: 28px; }
+            .doc-item {
+                padding: 12px 10px;
+                gap: 12px;
+            }
+            .doc-icon { width: 32px; height: 32px; font-size: 0.625rem; }
+            .doc-name { font-size: 0.8125rem; }
+            .doc-arrow { width: 24px; height: 24px; }
         }
     </style>
 </head>
 <body>
-    <div class="bg-grid"></div>
+    <div class="page-bg"></div>
     <div class="container">
         <header>
-            <a href="../index.html" class="back-link">← 返回首页</a>
-            <h1>CLI 参考手册</h1>
-            <p class="subtitle">共 <span class="count">13</span> 篇文档</p>
+            <a href="../index.html" class="back-link">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+                返回首页
+            </a>
+            <div class="header-content">
+                <div class="header-left">
+                    <h1>CLI 参考手册</h1>
+                    <p class="subtitle">精选命令行工具速查文档</p>
+                </div>
+                <span class="doc-count">13 docs</span>
+            </div>
         </header>
+
+        <div class="divider"></div>
 
         <div class="doc-list">
             <a href="./claude-cli-reference.html" class="doc-item">
-                <div class="doc-info">
-                    <div class="doc-icon">C</div>
-                    <div>
-                        <div class="doc-name">Claude Code CLI 参考手册</div>
-                        <div class="doc-tag">Anthropic AI 编程助手</div>
-                    </div>
+                <div class="doc-icon">C</div>
+                <div class="doc-body">
+                    <div class="doc-name">Claude Code CLI 参考手册</div>
+                    <div class="doc-tag">Anthropic AI 编程助手</div>
                 </div>
-                <div class="doc-arrow">→</div>
+                <div class="doc-arrow">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </div>
             </a>
 
             <a href="./cli-tools-inventory.html" class="doc-item">
-                <div class="doc-info">
-                    <div class="doc-icon">INV</div>
-                    <div>
-                        <div class="doc-name">CLI 工具清单</div>
-                        <div class="doc-tag">工具索引与概览</div>
-                    </div>
+                <div class="doc-icon">INV</div>
+                <div class="doc-body">
+                    <div class="doc-name">CLI 工具清单</div>
+                    <div class="doc-tag">工具索引与概览</div>
                 </div>
-                <div class="doc-arrow">→</div>
+                <div class="doc-arrow">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </div>
             </a>
 
             <a href="./design-skills-reference.html" class="doc-item">
-                <div class="doc-info">
-                    <div class="doc-icon">DS</div>
-                    <div>
-                        <div class="doc-name">Design Skills 参考手册</div>
-                        <div class="doc-tag">62 品牌设计风格 + 主题工厂</div>
-                    </div>
+                <div class="doc-icon">DS</div>
+                <div class="doc-body">
+                    <div class="doc-name">Design Skills 参考手册</div>
+                    <div class="doc-tag">62 品牌设计风格 + 主题工厂</div>
                 </div>
-                <div class="doc-arrow">→</div>
+                <div class="doc-arrow">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </div>
             </a>
 
             <a href="./ffmpeg-cli-reference.html" class="doc-item">
-                <div class="doc-info">
-                    <div class="doc-icon">FF</div>
-                    <div>
-                        <div class="doc-name">FFmpeg CLI 参考手册</div>
-                        <div class="doc-tag">音视频处理</div>
-                    </div>
+                <div class="doc-icon">FF</div>
+                <div class="doc-body">
+                    <div class="doc-name">FFmpeg CLI 参考手册</div>
+                    <div class="doc-tag">音视频处理</div>
                 </div>
-                <div class="doc-arrow">→</div>
+                <div class="doc-arrow">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </div>
             </a>
 
             <a href="./github-cli-reference.html" class="doc-item">
-                <div class="doc-info">
-                    <div class="doc-icon">GH</div>
-                    <div>
-                        <div class="doc-name">GitHub CLI 参考手册</div>
-                        <div class="doc-tag">GitHub 官方命令行工具</div>
-                    </div>
+                <div class="doc-icon">GH</div>
+                <div class="doc-body">
+                    <div class="doc-name">GitHub CLI 参考手册</div>
+                    <div class="doc-tag">GitHub 官方命令行工具</div>
                 </div>
-                <div class="doc-arrow">→</div>
+                <div class="doc-arrow">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </div>
             </a>
 
             <a href="./granularity.html" class="doc-item">
-                <div class="doc-info">
-                    <div class="doc-icon">GR</div>
-                    <div>
-                        <div class="doc-name">Granularity 参考手册</div>
-                        <div class="doc-tag">设计粒度控制</div>
-                    </div>
+                <div class="doc-icon">GR</div>
+                <div class="doc-body">
+                    <div class="doc-name">Granularity 参考手册</div>
+                    <div class="doc-tag">设计粒度控制</div>
                 </div>
-                <div class="doc-arrow">→</div>
+                <div class="doc-arrow">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </div>
             </a>
 
             <a href="./granularity-apple.html" class="doc-item">
-                <div class="doc-info">
-                    <div class="doc-icon">AP</div>
-                    <div>
-                        <div class="doc-name">Granularity Apple 风格</div>
-                        <div class="doc-tag">Apple 设计风格参考</div>
-                    </div>
+                <div class="doc-icon">AP</div>
+                <div class="doc-body">
+                    <div class="doc-name">Granularity Apple 风格</div>
+                    <div class="doc-tag">Apple 设计风格参考</div>
                 </div>
-                <div class="doc-arrow">→</div>
+                <div class="doc-arrow">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </div>
             </a>
 
             <a href="./lark-cli-reference.html" class="doc-item">
-                <div class="doc-info">
-                    <div class="doc-icon">L</div>
-                    <div>
-                        <div class="doc-name">Lark CLI 参考手册</div>
-                        <div class="doc-tag">飞书开放平台</div>
-                    </div>
+                <div class="doc-icon">L</div>
+                <div class="doc-body">
+                    <div class="doc-name">Lark CLI 参考手册</div>
+                    <div class="doc-tag">飞书开放平台</div>
                 </div>
-                <div class="doc-arrow">→</div>
+                <div class="doc-arrow">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </div>
             </a>
 
             <a href="./opencode-cli-reference.html" class="doc-item">
-                <div class="doc-info">
-                    <div class="doc-icon">OC</div>
-                    <div>
-                        <div class="doc-name">OpenCode CLI 参考手册</div>
-                        <div class="doc-tag">终端 AI 编程工具</div>
-                    </div>
+                <div class="doc-icon">OC</div>
+                <div class="doc-body">
+                    <div class="doc-name">OpenCode CLI 参考手册</div>
+                    <div class="doc-tag">终端 AI 编程工具</div>
                 </div>
-                <div class="doc-arrow">→</div>
+                <div class="doc-arrow">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </div>
             </a>
 
             <a href="./openclaw-vs-hermes-comparison.html" class="doc-item">
-                <div class="doc-info">
-                    <div class="doc-icon">VS</div>
-                    <div>
-                        <div class="doc-name">OpenClaw vs Hermes 对比</div>
-                        <div class="doc-tag">AI 编程工具对比分析</div>
-                    </div>
+                <div class="doc-icon">VS</div>
+                <div class="doc-body">
+                    <div class="doc-name">OpenClaw vs Hermes 对比</div>
+                    <div class="doc-tag">AI 编程工具对比分析</div>
                 </div>
-                <div class="doc-arrow">→</div>
+                <div class="doc-arrow">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </div>
             </a>
 
             <a href="./pandoc-cli-reference.html" class="doc-item">
-                <div class="doc-info">
-                    <div class="doc-icon">PD</div>
-                    <div>
-                        <div class="doc-name">Pandoc CLI 参考手册</div>
-                        <div class="doc-tag">通用文档格式转换</div>
-                    </div>
+                <div class="doc-icon">PD</div>
+                <div class="doc-body">
+                    <div class="doc-name">Pandoc CLI 参考手册</div>
+                    <div class="doc-tag">通用文档格式转换</div>
                 </div>
-                <div class="doc-arrow">→</div>
+                <div class="doc-arrow">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </div>
             </a>
 
             <a href="./pencil-cli-reference.html" class="doc-item">
-                <div class="doc-info">
-                    <div class="doc-icon">P</div>
-                    <div>
-                        <div class="doc-name">Pencil CLI 参考手册</div>
-                        <div class="doc-tag">AI 驱动设计工具</div>
-                    </div>
+                <div class="doc-icon">P</div>
+                <div class="doc-body">
+                    <div class="doc-name">Pencil CLI 参考手册</div>
+                    <div class="doc-tag">AI 驱动设计工具</div>
                 </div>
-                <div class="doc-arrow">→</div>
+                <div class="doc-arrow">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </div>
             </a>
 
             <a href="./playwright-cli-reference.html" class="doc-item">
-                <div class="doc-info">
-                    <div class="doc-icon">PW</div>
-                    <div>
-                        <div class="doc-name">Playwright CLI 参考手册</div>
-                        <div class="doc-tag">E2E 测试框架</div>
-                    </div>
+                <div class="doc-icon">PW</div>
+                <div class="doc-body">
+                    <div class="doc-name">Playwright CLI 参考手册</div>
+                    <div class="doc-tag">E2E 测试框架</div>
                 </div>
-                <div class="doc-arrow">→</div>
+                <div class="doc-arrow">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </div>
             </a>
         </div>
 
         <footer>
-            <p>基于 <a href="../docs/cli-tools-inventory.md" style="color: var(--primary); text-decoration: none;">CLI 工具清单</a> 构建</p>
+            <p>基于 <a href="../docs/cli-tools-inventory.md">CLI 工具清单</a> 构建</p>
         </footer>
     </div>
 </body>

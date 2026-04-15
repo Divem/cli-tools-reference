@@ -3,133 +3,287 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Playwright CLI 参考手册 - Stripe Style</title>
+  <title>Playwright CLI 参考手册</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect rx=%2212%22 width=%22100%22 height=%22100%22 fill=%22%231a1a2e%22/><text x=%2250%22 y=%2268%22 font-size=%2255%22 font-family=%22monospace%22 font-weight=%22bold%22 text-anchor=%22middle%22 fill=%22%2300d4aa%22>&gt;_</text></svg>">
   <style>
     :root {
-      --color-bg: #ffffff;
-      --color-text: #061b31;
-      --color-gray: #64748d;
-      --color-accent: #533afd;
-      --color-border: #e5edf5;
-      --color-code-bg: #f6f9fc;
+      --color-bg: #f5f4ed;
+      --color-text: #141413;
+      --color-secondary: #5e5d59;
+      --color-tertiary: #87867f;
+      --color-accent: #c96442;
+      --color-accent-light: #f5e9e4;
+      --color-border: #f0eee6;
+      --color-code-bg: #f5f5f0;
+      --color-sidebar-bg: #faf9f5;
+      --color-btn-bg: #e8e6dc;
+      --color-btn-text: #4d4c48;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
       background: var(--color-bg);
       color: var(--color-text);
-      line-height: 1.5;
+      line-height: 1.6;
       font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
     .container { display: flex; max-width: 1400px; margin: 0 auto; }
     .sidebar {
       width: 280px;
-      padding: 2rem 1.5rem;
-      position: sticky;
-      top: 0;
-      height: 100vh;
+      padding: 1.5rem;
       overflow-y: auto;
-      background: #fff;
       border-right: 1px solid var(--color-border);
+      background: var(--color-sidebar-bg);
     }
     .sidebar h2 {
       font-size: 0.75rem;
-      font-weight: 500;
-      color: var(--color-gray);
+      font-weight: 600;
+      color: var(--color-accent);
       text-transform: uppercase;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       margin-bottom: 1rem;
     }
     .sidebar a {
       display: block;
-      padding: 0.5rem 0;
-      color: var(--color-gray);
+      padding: 0.4rem 0.75rem;
+      color: var(--color-secondary);
       text-decoration: none;
       font-size: 0.875rem;
-      font-weight: 400;
-      transition: color 0.2s;
+      border-radius: 8px;
+      transition: all 0.15s;
     }
-    .sidebar a:hover { color: var(--color-accent); }
+    .sidebar a:hover {
+      color: var(--color-accent);
+      background: rgba(201,100,66,0.06);
+    }
     .main {
       flex: 1;
-      padding: 3rem 4rem;
+      padding: 3.75rem 4rem 3rem;
       max-width: 900px;
     }
     h1 {
+      font-family: Georgia, 'Times New Roman', serif;
       font-size: 2.5rem;
-      font-weight: 300;
+      font-weight: 500;
       margin-bottom: 1.5rem;
       color: var(--color-text);
-      letter-spacing: -0.02em;
+      letter-spacing: -0.01em;
+      line-height: 1.15;
     }
     h2 {
       font-size: 1.5rem;
-      font-weight: 400;
+      font-weight: 500;
       margin-top: 2.5rem;
       margin-bottom: 1rem;
       color: var(--color-text);
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--color-border);
       letter-spacing: -0.01em;
     }
     h3 {
       font-size: 1.125rem;
-      font-weight: 500;
-      margin-top: 1.5rem;
+      font-weight: 600;
+      margin-top: 2rem;
       margin-bottom: 0.75rem;
       color: var(--color-text);
     }
-    p { margin-bottom: 1rem; color: var(--color-gray); }
+    p {
+      margin-bottom: 1rem;
+      color: var(--color-secondary);
+    }
     code {
-      font-family: 'SF Mono', Monaco, monospace;
+      font-family: 'SF Mono', 'Fira Code', Monaco, monospace;
       background: var(--color-code-bg);
-      padding: 0.2rem 0.4rem;
+      padding: 0.2rem 0.45rem;
       border-radius: 4px;
       font-size: 0.875em;
-      color: var(--color-text);
+      color: var(--color-accent);
     }
     pre {
       background: var(--color-code-bg);
       padding: 1.25rem;
-      border-radius: 6px;
+      border-radius: 8px;
       overflow-x: auto;
       margin: 1.5rem 0;
-      box-shadow: rgba(50,50,93,0.1) 0px 15px 35px, rgba(0,0,0,0.07) 0px 5px 15px;
+      border-left: 3px solid var(--color-accent);
+      box-shadow: 0px 0px 0px 1px rgba(0,0,0,0.04);
     }
     pre code {
       background: none;
       padding: 0;
+      color: var(--color-text);
       font-size: 0.875rem;
-      line-height: 1.6;
+      line-height: 1.7;
     }
     table {
       width: 100%;
       border-collapse: collapse;
       margin: 1.5rem 0;
-      font-size: 0.9rem;
+      font-size: 0.875rem;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0px 0px 0px 1px var(--color-border);
     }
     th, td {
       padding: 0.75rem 1rem;
       text-align: left;
       border-bottom: 1px solid var(--color-border);
     }
-    th { font-weight: 500; color: var(--color-text); }
+    th {
+      font-weight: 600;
+      background: var(--color-accent-light);
+      color: var(--color-accent);
+    }
     blockquote {
-      border-left: 4px solid var(--color-accent);
-      padding-left: 1rem;
+      border-left: 3px solid var(--color-accent);
+      padding: 0.75rem 1rem;
       margin: 1.5rem 0;
-      color: var(--color-gray);
+      color: var(--color-tertiary);
       font-style: italic;
+      background: var(--color-sidebar-bg);
+      border-radius: 0 8px 8px 0;
     }
     ul { margin: 1rem 0; padding-left: 1.5rem; }
-    li { margin: 0.5rem 0; color: var(--color-gray); }
-    hr { border: none; border-top: 1px solid var(--color-border); margin: 2rem 0; }
+    li { margin: 0.5rem 0; color: var(--color-secondary); }
+    hr { border: none; border-top: 1px solid var(--color-border); margin: 2.5rem 0; }
     a { color: var(--color-accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    
+    /* 桌面端：菜单按钮和遮罩层隐藏 */
+    .drawer-toggle { display: none; }
+    .overlay { display: none; }
+    /* 粘性标题 */
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--color-bg);
+      padding: 12px 1.5rem;
+      margin: 0 -4rem 1.5rem;
+      border-bottom: 1px solid var(--color-border);
+      display: none;
+    }
+    .sticky-header.visible { display: block; }
+    .sticky-header h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin: 0;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .drawer-toggle { background: var(--color-sidebar-bg); }
+    
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+    .sidebar-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      margin-bottom: 1rem;
+      color: var(--color-secondary);
+      text-decoration: none;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      border-radius: 8px;
+      border: 1px solid var(--color-border);
+      transition: all 0.2s;
+    }
+    .sidebar-back:hover {
+      color: var(--color-accent);
+      border-color: var(--color-accent);
+    }
+    .sidebar nav { display: flex; flex-direction: column; gap: 2px; }
+    
+    @media (max-width: 768px) {
+      .container { flex-direction: column; }
+      /* 移动端：侧边栏变为抽屉 */
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 280px;
+        height: 100vh;
+        z-index: 1000;
+        padding: 1.5rem;
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: none;
+      }
+      .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 4px 0 24px rgba(0,0,0,0.08);
+      }
+      /* 移动端：显示菜单按钮 */
+      .drawer-toggle {
+        display: flex;
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        z-index: 1100;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        border: 1px solid var(--color-border);
+        background: var(--color-sidebar-bg);
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0px 0px 0px 1px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.04);
+        transition: all 0.2s;
+      }
+      .drawer-toggle:hover { box-shadow: 0px 0px 0px 1px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.06); }
+      .drawer-toggle svg { transition: transform 0.3s ease; }
+      .drawer-toggle.active svg { transform: rotate(180deg); }
+      /* 移动端：显示遮罩层 */
+      .overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(20,20,19,0.15);
+        z-index: 999;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+      }
+      .overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      /* 移动端粘性标题：左侧留出菜单按钮空间 */
+      .sticky-header { margin: 0 -1.5rem 1rem; padding: 12px 1rem 12px 64px; }
+      .main { padding: 2.5rem 1.5rem 2rem; }
+      h1 { font-size: 1.75rem; }
+      h2 { font-size: 1.375rem; }
+      pre { padding: 1rem; font-size: 0.8125rem; }
+      table { font-size: 0.8125rem; display: block; overflow-x: auto; }
+      th, td { padding: 0.5rem; min-width: 60px; }
+    }
+    @media (max-width: 480px) {
+      .main { padding: 1.25rem 1rem; }
+      h1 { font-size: 1.5rem; }
+      h2 { font-size: 1.25rem; }
+      pre { padding: 0.75rem; font-size: 0.75rem; border-radius: 6px; }
+      code { font-size: 0.8125rem; }
+      table { font-size: 0.75rem; }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <aside class="sidebar">
+      <a href="./index.html" class="sidebar-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        返回文档列表
+      </a>
       <h2>Documentation</h2>
       <nav><a href="#目录" >目录</a>
 <a href="#概述" >概述</a>
@@ -239,5 +393,40 @@
 <hr><h3 id="浏览器快捷命令">浏览器快捷命令</h3></p><table><thead><tr><th>快捷命令</th><th>等价于</th><th>说明</th></tr></thead><tbody><tr><td><code>npx playwright cr [url]</code></td><td><code>npx playwright open -b chromium [url]</code></td><td>用 Chromium 打开</td></tr><tr><td><code>npx playwright ff [url]</code></td><td><code>npx playwright open -b firefox [url]</code></td><td>用 Firefox 打开</td></tr><tr><td><code>npx playwright wk [url]</code></td><td><code>npx playwright open -b webkit [url]</code></td><td>用 WebKit 打开</td></tr></tbody></table></p>
 <p>这些快捷命令支持与 <code>open</code> 命令相同的 <a href="#通用浏览器选项">通用浏览器选项</a>。</p><hr><h2 id="通用浏览器选项">通用浏览器选项</h2></p><p>以下选项适用于 <code>open</code>、<code>codegen</code>、<code>screenshot</code>、<code>pdf</code> 以及浏览器快捷命令（<code>cr</code>、<code>ff</code>、<code>wk</code>）：</p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>-b, --browser <browserType></code></td><td>浏览器类型：<code>cr</code>, <code>chromium</code>, <code>ff</code>, <code>firefox</code>, <code>wk</code>, <code>webkit</code>（默认：<code>chromium</code>）</td></tr><tr><td><code>--block-service-workers</code></td><td>阻止 Service Workers</td></tr><tr><td><code>--channel <channel></code></td><td>Chromium 发行渠道，如 <code>chrome</code>, <code>chrome-beta</code>, <code>msedge-dev</code> 等</td></tr><tr><td><code>--color-scheme <scheme></code></td><td>模拟配色方案：<code>light</code> 或 <code>dark</code></td></tr><tr><td><code>--device <deviceName></code></td><td>模拟设备，如 <code>iPhone 11</code></td></tr><tr><td><code>--geolocation <coordinates></code></td><td>指定地理位置坐标，如 <code>37.819722,-122.478611</code></td></tr><tr><td><code>--ignore-https-errors</code></td><td>忽略 HTTPS 错误</td></tr><tr><td><code>--load-storage <filename></code></td><td>加载之前用 <code>--save-storage</code> 保存的上下文存储状态</td></tr><tr><td><code>--lang <language></code></td><td>指定语言/区域设置，如 <code>en-GB</code>, <code>zh-CN</code></td></tr><tr><td><code>--proxy-server <proxy></code></td><td>指定代理服务器，如 <code>http://myproxy:3128</code> 或 <code>socks5://myproxy:8080</code></td></tr><tr><td><code>--proxy-bypass <bypass></code></td><td>逗号分隔的代理绕过域名，如 <code>.com,chromium.org,.domain.com</code></td></tr><tr><td><code>--save-har <filename></code></td><td>在结束时保存包含所有网络活动的 HAR 文件</td></tr><tr><td><code>--save-har-glob <glob></code></td><td>通过 glob 模式匹配 URL 来过滤 HAR 条目</td></tr><tr><td><code>--save-storage <filename></code></td><td>在结束时保存上下文存储状态</td></tr><tr><td><code>--timezone <time zone></code></td><td>模拟时区，如 <code>Europe/Rome</code>, <code>Asia/Shanghai</code></td></tr><tr><td><code>--timeout <timeout></code></td><td>Playwright 操作超时（毫秒），默认无超时</td></tr><tr><td><code>--user-agent <ua string></code></td><td>指定 User-Agent 字符串</td></tr><tr><td><code>--user-data-dir <directory></code></td><td>使用指定的用户数据目录（而非新上下文）</td></tr><tr><td><code>--viewport-size <size></code></td><td>指定浏览器视口大小（像素），如 <code>1280,720</code></td></tr></tbody></table></p></main>
   </div>
+  
+  <button class="drawer-toggle" id="drawerToggle" onclick="toggleDrawer()" title="打开目录">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <div class="overlay" id="overlay" onclick="toggleDrawer()"></div>
+  <script>
+    function toggleDrawer() {
+      var s = document.querySelector('.sidebar');
+      var o = document.getElementById('overlay');
+      var t = document.getElementById('drawerToggle');
+      s.classList.toggle('open');
+      o.classList.toggle('active');
+      t.classList.toggle('active');
+    }
+    // 点击侧边栏链接后自动关闭抽屉
+    document.querySelectorAll('.sidebar nav a').forEach(function(a) {
+      a.addEventListener('click', function() {
+        if (document.querySelector('.sidebar').classList.contains('open')) toggleDrawer();
+      });
+    });
+    // 粘性标题
+    (function() {
+      var h1el = document.querySelector('.main > h1');
+      if (!h1el) return;
+      var title = h1el.textContent;
+      var header = document.createElement('div');
+      header.className = 'sticky-header';
+      header.innerHTML = '<h1>' + title + '</h1>';
+      h1el.parentNode.insertBefore(header, h1el.nextSibling);
+      window.addEventListener('scroll', function() {
+        var rect = h1el.getBoundingClientRect();
+        header.classList.toggle('visible', rect.bottom < 0);
+      }, { passive: true });
+    })();
+  </script>
 </body>
 </html>

@@ -1,1586 +1,587 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pencil CLI 参考手册</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pencil CLI 参考手册</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect rx=%2212%22 width=%22100%22 height=%22100%22 fill=%22%231a1a2e%22/><text x=%2250%22 y=%2268%22 font-size=%2255%22 font-family=%22monospace%22 font-weight=%22bold%22 text-anchor=%22middle%22 fill=%22%2300d4aa%22>&gt;_</text></svg>">
   <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
-:root {
-  --nike-black: #111111;
-  --nike-white: #FFFFFF;
-  --nike-snow: #FAFAFA;
-  --nike-grey-100: #F5F5F5;
-  --nike-grey-200: #E5E5E5;
-  --nike-grey-300: #CACACB;
-  --nike-grey-500: #707072;
-  --nike-grey-700: #39393B;
-  --nike-grey-800: #28282A;
-  --nike-grey-900: #1F1F21;
-  --nike-red: #D30005;
-  --nike-orange-badge: #D33918;
-  --nike-success: #007D48;
-  --nike-success-inv: #1EAA52;
-  --nike-blue: #1151FF;
-  --nike-focus-ring: rgba(39, 93, 197, 1);
-  --sidebar-width: 272px;
-  --header-height: 60px;
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--header-height) + 24px);
-}
-
-body {
-  font-family: 'Inter', 'Helvetica Now Text', Helvetica, Arial, sans-serif;
-  color: var(--nike-black);
-  background: var(--nike-white);
-  line-height: 1.75;
-  font-size: 16px;
-  -webkit-font-smoothing: antialiased;
-}
-
-::selection {
-  background: var(--nike-black);
-  color: var(--nike-white);
-}
-
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--nike-grey-300); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--nike-grey-500); }
-
-/* ─── Promo Banner ─── */
-.promo-banner {
-  background: var(--nike-black);
-  color: var(--nike-white);
-  text-align: center;
-  padding: 8px 16px;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1001;
-}
-
-/* ─── Header ─── */
-.header {
-  position: fixed;
-  top: 32px;
-  left: 0;
-  right: 0;
-  height: var(--header-height);
-  background: var(--nike-white);
-  display: flex;
-  align-items: center;
-  padding: 0 48px;
-  z-index: 1000;
-}
-
-.header::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: var(--nike-grey-200);
-}
-
-.header-inner {
-  max-width: 1920px;
-  margin: 0 auto;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  color: var(--nike-black);
-}
-
-.logo svg { width: 28px; height: 28px; }
-
-.logo-text {
-  font-size: 16px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.search-box {
-  position: relative;
-  width: 400px;
-}
-
-.search-input {
-  width: 100%;
-  padding: 10px 16px 10px 40px;
-  border: 1px solid var(--nike-grey-300);
-  border-radius: 24px;
-  font-size: 14px;
-  font-family: inherit;
-  outline: none;
-  transition: border-color 200ms ease;
-  background: var(--nike-grey-100);
-  color: var(--nike-black);
-}
-
-.search-input:focus {
-  border-color: var(--nike-black);
-  background: var(--nike-white);
-  box-shadow: 0 0 0 2px var(--nike-focus-ring);
-}
-
-.search-icon {
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--nike-grey-500);
-  pointer-events: none;
-}
-
-.search-shortcut {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 2px 8px;
-  border: 1px solid var(--nike-grey-300);
-  border-radius: 6px;
-  font-size: 11px;
-  color: var(--nike-grey-500);
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  pointer-events: none;
-}
-
-.version-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  background: var(--nike-grey-100);
-  border-radius: 30px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--nike-black);
-}
-
-.version-badge .dot {
-  width: 7px;
-  height: 7px;
-  background: var(--nike-success);
-  border-radius: 50%;
-}
-
-/* ─── Layout ─── */
-.layout {
-  display: flex;
-  margin-top: calc(32px + var(--header-height));
-  min-height: calc(100vh - 32px - var(--header-height));
-}
-
-/* ─── Sidebar ─── */
-.sidebar {
-  position: fixed;
-  top: calc(32px + var(--header-height));
-  left: 0;
-  width: var(--sidebar-width);
-  height: calc(100vh - 32px - var(--header-height));
-  overflow-y: auto;
-  padding: 24px 16px;
-  background: var(--nike-snow);
-}
-
-.sidebar::-webkit-scrollbar { width: 4px; }
-
-.nav-group-title {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--nike-grey-500);
-  padding: 20px 12px 8px;
-}
-
-.nav-group-title:first-child { padding-top: 8px; }
-
-.nav-link {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  border-radius: 20px;
-  text-decoration: none;
-  color: var(--nike-black);
-  font-size: 14px;
-  font-weight: 500;
-  transition: background 200ms ease, color 200ms ease;
-  cursor: pointer;
-  line-height: 1.4;
-}
-
-.nav-link:hover {
-  background: var(--nike-grey-200);
-  color: var(--nike-grey-500);
-}
-
-.nav-link.active {
-  background: var(--nike-black);
-  color: var(--nike-white);
-}
-
-.nav-link .nav-icon {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-}
-
-.nav-link code {
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  font-size: 11px;
-  background: rgba(0,0,0,0.06);
-  color: var(--nike-grey-500);
-  padding: 1px 6px;
-  border-radius: 4px;
-}
-
-.nav-link.active code {
-  background: rgba(255,255,255,0.15);
-  color: rgba(255,255,255,0.7);
-}
-
-/* ─── Main Content ─── */
-.main {
-  margin-left: var(--sidebar-width);
-  flex: 1;
-  max-width: 920px;
-  padding: 48px 64px 120px;
-}
-
-/* ─── Hero ─── */
-.hero {
-  margin-bottom: 64px;
-  padding-bottom: 48px;
-  position: relative;
-}
-
-.hero h1 {
-  font-size: 64px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: -0.03em;
-  line-height: 0.90;
-  color: var(--nike-black);
-  margin-bottom: 24px;
-}
-
-.hero .subtitle {
-  font-size: 16px;
-  color: var(--nike-grey-500);
-  line-height: 1.75;
-  max-width: 640px;
-}
-
-.hero-meta {
-  display: flex;
-  gap: 24px;
-  margin-top: 24px;
-  flex-wrap: wrap;
-}
-
-.hero-meta-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  color: var(--nike-grey-500);
-  font-weight: 500;
-}
-
-.hero-meta-item strong {
-  color: var(--nike-black);
-  font-weight: 600;
-}
-
-.hero-install {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 28px;
-  padding: 12px 28px;
-  background: var(--nike-black);
-  color: var(--nike-white);
-  border-radius: 30px;
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  font-size: 14px;
-  font-weight: 500;
-  text-decoration: none;
-  transition: background 200ms ease;
-  cursor: pointer;
-  border: none;
-}
-
-.hero-install:hover {
-  background: var(--nike-grey-500);
-}
-
-.hero-install .copy-icon {
-  width: 16px;
-  height: 16px;
-  opacity: 0.7;
-}
-
-/* ─── Section ─── */
-.section {
-  margin-bottom: 64px;
-  scroll-margin-top: calc(32px + var(--header-height) + 24px);
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-  padding-bottom: 12px;
-  position: relative;
-}
-
-.section-header::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: var(--nike-grey-200);
-}
-
-.section-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  flex-shrink: 0;
-}
-
-.section h2 {
-  font-size: 24px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
-  color: var(--nike-black);
-  line-height: 1.20;
-}
-
-.section h2 code {
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  font-size: 16px;
-  text-transform: none;
-  letter-spacing: 0;
-  color: var(--nike-black);
-  padding: 2px 8px;
-  background: var(--nike-grey-100);
-  border-radius: 4px;
-}
-
-.section h3 {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--nike-black);
-  margin: 28px 0 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-}
-
-.section p {
-  margin-bottom: 16px;
-  color: var(--nike-grey-500);
-}
-
-/* ─── Code Blocks ─── */
-.code-block {
-  position: relative;
-  margin: 16px 0;
-  border-radius: 0;
-  overflow: hidden;
-  background: var(--nike-black);
-}
-
-.code-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 16px;
-  background: var(--nike-grey-900);
-}
-
-.code-lang {
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--nike-grey-500);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.code-copy {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 12px;
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 30px;
-  color: var(--nike-grey-500);
-  font-size: 11px;
-  font-family: inherit;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 200ms ease;
-}
-
-.code-copy:hover {
-  background: rgba(255,255,255,0.08);
-  color: var(--nike-white);
-  border-color: rgba(255,255,255,0.25);
-}
-
-.code-copy.copied {
-  color: var(--nike-success-inv);
-  border-color: var(--nike-success-inv);
-}
-
-.code-body {
-  padding: 16px 20px;
-  overflow-x: auto;
-}
-
-.code-body pre {
-  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-  font-size: 13px;
-  line-height: 1.70;
-  color: #E5E5E5;
-  white-space: pre;
-}
-
-.code-body .comment { color: #6E6E70; }
-.code-body .keyword { color: #CACACB; }
-.code-body .string { color: #1EAA52; }
-.code-body .flag { color: #1190FF; }
-.code-body .cmd { color: #E5E5E5; }
-.code-body .pipe { color: #6E6E70; }
-.code-body .variable { color: #ED1AA0; }
-.code-body .bracket { color: #6E6E70; }
-.code-body .url { color: #1190FF; text-decoration: underline; }
-
-/* ─── Inline Code ─── */
-code.inline {
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  font-size: 13px;
-  background: var(--nike-grey-100);
-  color: var(--nike-black);
-  padding: 2px 7px;
-  border-radius: 4px;
-  font-weight: 500;
-}
-
-/* ─── Tables ─── */
-.table-wrapper {
-  overflow-x: auto;
-  margin: 16px 0;
-}
-
-.table-wrapper table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-}
-
-.table-wrapper thead th {
-  background: var(--nike-grey-100);
-  padding: 12px 16px;
-  text-align: left;
-  font-weight: 600;
-  color: var(--nike-black);
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  white-space: nowrap;
-  border-bottom: 1px solid var(--nike-grey-200);
-}
-
-.table-wrapper tbody td {
-  padding: 11px 16px;
-  border-bottom: 1px solid var(--nike-grey-200);
-  color: var(--nike-grey-500);
-  vertical-align: top;
-  font-size: 14px;
-}
-
-.table-wrapper tbody tr:last-child td {
-  border-bottom: none;
-}
-
-.table-wrapper td:first-child code {
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  font-size: 12px;
-  background: var(--nike-grey-100);
-  color: var(--nike-black);
-  padding: 2px 7px;
-  border-radius: 4px;
-  white-space: nowrap;
-  font-weight: 500;
-}
-
-/* ─── Info Cards ─── */
-.info-card {
-  display: flex;
-  gap: 12px;
-  padding: 16px 20px;
-  margin: 16px 0;
-  border-radius: 0;
-  font-size: 14px;
-  line-height: 1.7;
-  background: var(--nike-grey-100);
-  color: var(--nike-black);
-}
-
-.info-card.tip { border-left: 3px solid var(--nike-success); }
-.info-card.warning { border-left: 3px solid var(--nike-orange-badge); }
-.info-card.info { border-left: 3px solid var(--nike-blue); }
-
-.info-card .info-emoji {
-  font-size: 16px;
-  flex-shrink: 0;
-  line-height: 1.6;
-}
-
-/* ─── Cmd Grid ─── */
-.cmd-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 4px;
-  margin: 16px 0;
-}
-
-.cmd-card {
-  padding: 14px 16px;
-  border-radius: 0;
-  border: 1px solid var(--nike-grey-200);
-  background: var(--nike-white);
-  transition: border-color 200ms ease;
-  cursor: default;
-}
-
-.cmd-card:hover {
-  border-color: var(--nike-black);
-}
-
-.cmd-card .cmd-name {
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--nike-black);
-  margin-bottom: 4px;
-}
-
-.cmd-card .cmd-desc {
-  font-size: 13px;
-  color: var(--nike-grey-500);
-  line-height: 1.5;
-}
-
-/* ─── Tags ─── */
-.tag {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px 10px;
-  border-radius: 30px;
-  font-size: 12px;
-  font-weight: 500;
-  gap: 4px;
-}
-
-.tag.dark { background: var(--nike-black); color: var(--nike-white); }
-.tag.grey { background: var(--nike-grey-100); color: var(--nike-black); }
-.tag.blue { background: rgba(17,81,255,0.08); color: var(--nike-blue); }
-.tag.green { background: rgba(0,125,72,0.08); color: var(--nike-success); }
-.tag.orange { background: rgba(211,57,24,0.08); color: var(--nike-orange-badge); }
-
-/* ─── Divider ─── */
-.divider {
-  height: 0;
-  box-shadow: 0 -1px 0 0 var(--nike-grey-200);
-  margin: 48px 0;
-}
-
-/* ─── Search Results ─── */
-.search-results {
-  position: fixed;
-  top: calc(32px + var(--header-height) + 8px);
-  left: 50%;
-  transform: translateX(-50%);
-  width: 520px;
-  max-height: 480px;
-  overflow-y: auto;
-  background: var(--nike-white);
-  border: 1px solid var(--nike-grey-300);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-  z-index: 999;
-  display: none;
-}
-
-.search-results.active { display: block; }
-
-.search-result-item {
-  display: flex;
-  flex-direction: column;
-  padding: 12px 20px;
-  border-bottom: 1px solid var(--nike-grey-200);
-  cursor: pointer;
-  transition: background 100ms;
-  text-decoration: none;
-}
-
-.search-result-item:hover { background: var(--nike-grey-100); }
-.search-result-item:last-child { border-bottom: none; }
-
-.search-result-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--nike-black);
-  text-transform: uppercase;
-  letter-spacing: 0.01em;
-}
-
-.search-result-title mark {
-  background: rgba(0,0,0,0.08);
-  color: var(--nike-black);
-  padding: 0 2px;
-}
-
-.search-result-preview {
-  font-size: 12px;
-  color: var(--nike-grey-500);
-  margin-top: 2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.search-no-result {
-  padding: 32px;
-  text-align: center;
-  color: var(--nike-grey-500);
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-/* ─── Footer ─── */
-.footer {
-  margin-top: 80px;
-  padding: 32px 0;
-  position: relative;
-}
-
-.footer::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: var(--nike-grey-200);
-}
-
-.footer-links {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-
-.footer-links a {
-  font-size: 14px;
-  color: var(--nike-black);
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 200ms ease;
-}
-
-.footer-links a:hover { color: var(--nike-grey-500); }
-
-.footer-copy {
-  margin-top: 12px;
-  font-size: 12px;
-  color: var(--nike-grey-500);
-  text-align: center;
-}
-
-/* ─── Back to top ─── */
-.back-top {
-  position: fixed;
-  bottom: 32px;
-  right: 32px;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--nike-black);
-  color: var(--nike-white);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 200ms ease, opacity 200ms ease;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 100;
-  border: none;
-}
-
-.back-top.visible { opacity: 1; pointer-events: auto; }
-.back-top:hover { background: var(--nike-grey-500); }
-
-/* ─── Responsive ─── */
-@media (max-width: 1024px) {
-  .sidebar { display: none; }
-  .main { margin-left: 0; padding: 32px 24px 80px; }
-  .search-box { width: 280px; }
-  .hero h1 { font-size: 48px; }
-  .header { padding: 0 24px; }
-}
-
-@media (max-width: 640px) {
-  .header { padding: 0 16px; }
-  .search-box { display: none; }
-  .version-badge { display: none; }
-  .promo-banner { font-size: 10px; padding: 6px 12px; }
-  .hero h1 { font-size: 36px; }
-  .hero .subtitle { font-size: 14px; }
-  .cmd-grid { grid-template-columns: 1fr; }
-  .main { padding: 24px 16px 64px; }
-}
-
-/* ─── Animations ─── */
-.section {
-  opacity: 0;
-  transform: translateY(8px);
-  animation: fadeUp 0.4s ease forwards;
-}
-
-@keyframes fadeUp {
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.section:nth-child(1) { animation-delay: 0s; }
-.section:nth-child(2) { animation-delay: 0.04s; }
-.section:nth-child(3) { animation-delay: 0.08s; }
-.section:nth-child(4) { animation-delay: 0.12s; }
-.section:nth-child(5) { animation-delay: 0.16s; }
-.section:nth-child(6) { animation-delay: 0.20s; }
-.section:nth-child(7) { animation-delay: 0.24s; }
-.section:nth-child(8) { animation-delay: 0.28s; }
-</style>
+    :root {
+      --color-bg: #f5f4ed;
+      --color-text: #141413;
+      --color-secondary: #5e5d59;
+      --color-tertiary: #87867f;
+      --color-accent: #c96442;
+      --color-accent-light: #f5e9e4;
+      --color-border: #f0eee6;
+      --color-code-bg: #f5f5f0;
+      --color-sidebar-bg: #faf9f5;
+      --color-btn-bg: #e8e6dc;
+      --color-btn-text: #4d4c48;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.6;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .container { display: flex; max-width: 1400px; margin: 0 auto; }
+    .sidebar {
+      width: 280px;
+      padding: 1.5rem;
+      overflow-y: auto;
+      border-right: 1px solid var(--color-border);
+      background: var(--color-sidebar-bg);
+    }
+    .sidebar h2 {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--color-accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1rem;
+    }
+    .sidebar a {
+      display: block;
+      padding: 0.4rem 0.75rem;
+      color: var(--color-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      border-radius: 8px;
+      transition: all 0.15s;
+    }
+    .sidebar a:hover {
+      color: var(--color-accent);
+      background: rgba(201,100,66,0.06);
+    }
+    .main {
+      flex: 1;
+      padding: 3.75rem 4rem 3rem;
+      max-width: 900px;
+    }
+    h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 2.5rem;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      color: var(--color-text);
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--color-text);
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--color-border);
+      letter-spacing: -0.01em;
+    }
+    h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+      color: var(--color-text);
+    }
+    p {
+      margin-bottom: 1rem;
+      color: var(--color-secondary);
+    }
+    code {
+      font-family: 'SF Mono', 'Fira Code', Monaco, monospace;
+      background: var(--color-code-bg);
+      padding: 0.2rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.875em;
+      color: var(--color-accent);
+    }
+    pre {
+      background: var(--color-code-bg);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-left: 3px solid var(--color-accent);
+      box-shadow: 0px 0px 0px 1px rgba(0,0,0,0.04);
+    }
+    pre code {
+      background: none;
+      padding: 0;
+      color: var(--color-text);
+      font-size: 0.875rem;
+      line-height: 1.7;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.875rem;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0px 0px 0px 1px var(--color-border);
+    }
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--color-border);
+    }
+    th {
+      font-weight: 600;
+      background: var(--color-accent-light);
+      color: var(--color-accent);
+    }
+    blockquote {
+      border-left: 3px solid var(--color-accent);
+      padding: 0.75rem 1rem;
+      margin: 1.5rem 0;
+      color: var(--color-tertiary);
+      font-style: italic;
+      background: var(--color-sidebar-bg);
+      border-radius: 0 8px 8px 0;
+    }
+    ul { margin: 1rem 0; padding-left: 1.5rem; }
+    li { margin: 0.5rem 0; color: var(--color-secondary); }
+    hr { border: none; border-top: 1px solid var(--color-border); margin: 2.5rem 0; }
+    a { color: var(--color-accent); text-decoration: none; }
+    a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    
+    /* 桌面端：菜单按钮和遮罩层隐藏 */
+    .drawer-toggle { display: none; }
+    .overlay { display: none; }
+    /* 粘性标题 */
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--color-bg);
+      padding: 12px 1.5rem;
+      margin: 0 -4rem 1.5rem;
+      border-bottom: 1px solid var(--color-border);
+      display: none;
+    }
+    .sticky-header.visible { display: block; }
+    .sticky-header h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin: 0;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .drawer-toggle { background: var(--color-sidebar-bg); }
+    
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+    .sidebar-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      margin-bottom: 1rem;
+      color: var(--color-secondary);
+      text-decoration: none;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      border-radius: 8px;
+      border: 1px solid var(--color-border);
+      transition: all 0.2s;
+    }
+    .sidebar-back:hover {
+      color: var(--color-accent);
+      border-color: var(--color-accent);
+    }
+    .sidebar nav { display: flex; flex-direction: column; gap: 2px; }
+    
+    @media (max-width: 768px) {
+      .container { flex-direction: column; }
+      /* 移动端：侧边栏变为抽屉 */
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 280px;
+        height: 100vh;
+        z-index: 1000;
+        padding: 1.5rem;
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: none;
+      }
+      .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 4px 0 24px rgba(0,0,0,0.08);
+      }
+      /* 移动端：显示菜单按钮 */
+      .drawer-toggle {
+        display: flex;
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        z-index: 1100;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        border: 1px solid var(--color-border);
+        background: var(--color-sidebar-bg);
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0px 0px 0px 1px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.04);
+        transition: all 0.2s;
+      }
+      .drawer-toggle:hover { box-shadow: 0px 0px 0px 1px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.06); }
+      .drawer-toggle svg { transition: transform 0.3s ease; }
+      .drawer-toggle.active svg { transform: rotate(180deg); }
+      /* 移动端：显示遮罩层 */
+      .overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(20,20,19,0.15);
+        z-index: 999;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+      }
+      .overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      /* 移动端粘性标题：左侧留出菜单按钮空间 */
+      .sticky-header { margin: 0 -1.5rem 1rem; padding: 12px 1rem 12px 64px; }
+      .main { padding: 2.5rem 1.5rem 2rem; }
+      h1 { font-size: 1.75rem; }
+      h2 { font-size: 1.375rem; }
+      pre { padding: 1rem; font-size: 0.8125rem; }
+      table { font-size: 0.8125rem; display: block; overflow-x: auto; }
+      th, td { padding: 0.5rem; min-width: 60px; }
+    }
+    @media (max-width: 480px) {
+      .main { padding: 1.25rem 1rem; }
+      h1 { font-size: 1.5rem; }
+      h2 { font-size: 1.25rem; }
+      pre { padding: 0.75rem; font-size: 0.75rem; border-radius: 6px; }
+      code { font-size: 0.8125rem; }
+      table { font-size: 0.75rem; }
+    }
+  </style>
 </head>
 <body>
-
-<!-- Promo Banner -->
-<div class="promo-banner">AI-POWERED DESIGN TOOL — PENCIL CLI v0.2.4</div>
-
-<!-- Header -->
-<header class="header">
-  <div class="header-inner">
-    <a class="logo" href="#">
-      <svg viewBox="0 0 28 28" fill="none">
-        <rect width="28" height="28" fill="#111111"/>
-        <path d="M7 8L14 5L21 8V20L14 23L7 20V8Z" stroke="#FFFFFF" stroke-width="1.5" fill="none"/>
-        <circle cx="14" cy="14" r="3" fill="#FFFFFF"/>
-      </svg>
-      <span class="logo-text">Pencil CLI</span>
-    </a>
-
-    <div class="search-box">
-      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
-      </svg>
-      <input class="search-input" id="searchInput" type="text" placeholder="搜索命令、操作或工具..." autocomplete="off">
-      <span class="search-shortcut">/</span>
-    </div>
-
-    <div class="version-badge">
-      <span class="dot"></span>
-      v0.2.4
-    </div>
+  <div class="container">
+    <aside class="sidebar">
+      <a href="./index.html" class="sidebar-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        返回文档列表
+      </a>
+      <h2>Documentation</h2>
+      <nav><a href="#目录" >目录</a>
+<a href="#安装信息" >安装信息</a>
+<a href="#安装方式" style="padding-left: 1rem;">安装方式</a>
+<a href="#本机配置" style="padding-left: 1rem;">本机配置</a>
+<a href="#目录结构" style="padding-left: 1rem;">目录结构</a>
+<a href="#基础语法" >基础语法</a>
+<a href="#命令速查" style="padding-left: 1rem;">命令速查</a>
+<a href="#认证管理" >认证管理</a>
+<a href="#登录" style="padding-left: 1rem;">登录</a>
+<a href="#查看状态" style="padding-left: 1rem;">查看状态</a>
+<a href="#cicd-使用" style="padding-left: 1rem;">CI/CD 使用</a>
+<a href="#单次命令模式" >单次命令模式</a>
+<a href="#完整参数" style="padding-left: 1rem;">完整参数</a>
+<a href="#示例" style="padding-left: 1rem;">示例</a>
+<a href="#交互式-shell" >交互式 Shell</a>
+<a href="#启动方式" style="padding-left: 1rem;">启动方式</a>
+<a href="#启动参数" style="padding-left: 1rem;">启动参数</a>
+<a href="#shell-内置命令" style="padding-left: 1rem;">Shell 内置命令</a>
+<a href="#mcp-工具一览" style="padding-left: 1rem;">MCP 工具一览</a>
+<a href="#batchdesign-操作详解" >batch_design 操作详解</a>
+<a href="#关键规则" style="padding-left: 1rem;">关键规则</a>
+<a href="#insert-i-插入节点" style="padding-left: 1rem;">Insert (I) — 插入节点</a>
+<a href="#copy-c-复制节点" style="padding-left: 1rem;">Copy (C) — 复制节点</a>
+<a href="#update-u-更新节点" style="padding-left: 1rem;">Update (U) — 更新节点</a>
+<a href="#replace-r-替换节点" style="padding-left: 1rem;">Replace (R) — 替换节点</a>
+<a href="#move-m-移动节点" style="padding-left: 1rem;">Move (M) — 移动节点</a>
+<a href="#delete-d-删除节点" style="padding-left: 1rem;">Delete (D) — 删除节点</a>
+<a href="#generate-image-g-生成图片" style="padding-left: 1rem;">Generate Image (G) — 生成图片</a>
+<a href="#batchget-查询详解" >batch_get 查询详解</a>
+<a href="#参数" style="padding-left: 1rem;">参数</a>
+<a href="#搜索模式-patterns" style="padding-left: 1rem;">搜索模式 (patterns)</a>
+<a href="#遍历大型文档的策略" style="padding-left: 1rem;">遍历大型文档的策略</a>
+<a href="#其他-mcp-工具" >其他 MCP 工具</a>
+<a href="#geteditorstate" style="padding-left: 1rem;">get_editor_state</a>
+<a href="#getguidelines" style="padding-left: 1rem;">get_guidelines</a>
+<a href="#findemptyspaceoncanvas" style="padding-left: 1rem;">find_empty_space_on_canvas</a>
+<a href="#getscreenshot" style="padding-left: 1rem;">get_screenshot</a>
+<a href="#exportnodes" style="padding-left: 1rem;">export_nodes</a>
+<a href="#getvariables-setvariables" style="padding-left: 1rem;">get_variables / set_variables</a>
+<a href="#replaceallmatchingproperties" style="padding-left: 1rem;">replace_all_matching_properties</a>
+<a href="#searchalluniqueproperties" style="padding-left: 1rem;">search_all_unique_properties</a>
+<a href="#snapshotlayout" style="padding-left: 1rem;">snapshot_layout</a>
+<a href="#模型选择" >模型选择</a>
+<a href="#可用模型" style="padding-left: 1rem;">可用模型</a>
+<a href="#使用方式" style="padding-left: 1rem;">使用方式</a>
+<a href="#环境变量" >环境变量</a>
+<a href="#批量任务" >批量任务</a>
+<a href="#导出功能" >导出功能</a>
+<a href="#单次命令导出" style="padding-left: 1rem;">单次命令导出</a>
+<a href="#交互式-shell-导出" style="padding-left: 1rem;">交互式 Shell 导出</a>
+<a href="#预览" style="padding-left: 1rem;">预览</a>
+<a href="#常用命令示例" >常用命令示例</a>
+<a href="#单次命令" style="padding-left: 1rem;">单次命令</a>
+<a href="#交互式设计工作流" style="padding-left: 1rem;">交互式设计工作流</a>
+<a href="#编辑现有设计" style="padding-left: 1rem;">编辑现有设计</a>
+<a href="#cicd-集成" style="padding-left: 1rem;">CI/CD 集成</a></nav>
+    </aside>
+    <main class="main"><h1>Pencil CLI 参考手册</h1></p><blockquote>本机版本：<strong>@pencil.dev/cli 0.2.4</strong> | 安装路径：<code>~/.nvm/versions/node/v22.22.1/lib/node_modules/@pencil.dev/cli</code></blockquote></p>
+<blockquote>登录账号：imyuanwen@gmail.com | 后端 API：https://api.pencil.dev</blockquote></p><p>Pencil CLI 是 Pencil.dev 推出的 AI 驱动设计文件操作命令行工具。通过自然语言 Prompt 直接生成或修改 <code>.pen</code> 设计文件，支持交互式 Shell（MCP 工具调用）、批量任务、多模型选择和图片导出，适合将 AI 设计能力集成到开发工作流中。</p><h2 id="目录">目录</h2></p>
+<ul><li><a href="#安装信息">安装信息</a></li></p>
+<li><a href="#基础语法">基础语法</a></li></p>
+<li><a href="#认证管理">认证管理</a></li></p>
+<li><a href="#单次命令模式">单次命令模式</a></li></p>
+<li><a href="#交互式-shell">交互式 Shell</a></li></p>
+<li><a href="#启动方式">启动方式</a></li></p>
+<li><a href="#shell-内置命令">Shell 内置命令</a></li></p>
+<li><a href="#mcp-工具一览">MCP 工具一览</a></li></p>
+<li><a href="#batch</em>design-操作详解">batch<em>design 操作详解</a></li></p>
+<li><a href="#insert-i--插入节点">Insert (I) — 插入节点</a></li></p>
+<li><a href="#copy-c--复制节点">Copy (C) — 复制节点</a></li></p>
+<li><a href="#update-u--更新节点">Update (U) — 更新节点</a></li></p>
+<li><a href="#replace-r--替换节点">Replace (R) — 替换节点</a></li></p>
+<li><a href="#move-m--移动节点">Move (M) — 移动节点</a></li></p>
+<li><a href="#delete-d--删除节点">Delete (D) — 删除节点</a></li></p>
+<li><a href="#generate-image-g--生成图片">Generate Image (G) — 生成图片</a></li></p>
+<li><a href="#batch</em>get-查询详解">batch<em>get 查询详解</a></li></p>
+<li><a href="#其他-mcp-工具">其他 MCP 工具</a></li></p>
+<li><a href="#模型选择">模型选择</a></li></p>
+<li><a href="#环境变量">环境变量</a></li></p>
+<li><a href="#批量任务">批量任务</a></li></p>
+<li><a href="#导出功能">导出功能</a></li></p>
+<li><a href="#常用命令示例">常用命令示例</a></li></p>
+</ul></p>
+<hr><h2 id="安装信息">安装信息</h2></p><h3 id="安装方式">安装方式</h3></p><pre><code>npm install -g @pencil.dev/cli</p>
+</code></pre></p><h3 id="本机配置">本机配置</h3></p><table><thead><tr><th>项目</th><th>值</th></tr></thead><tbody><tr><td>版本</td><td>0.2.4</td></tr><tr><td>可执行文件</td><td><code>~/.nvm/versions/node/v22.22.1/bin/pencil</code></td></tr><tr><td>配置目录</td><td><code>~/.pencil/</code></td></tr><tr><td>会话文件</td><td><code>~/.pencil/session-cli.json</code></td></tr><tr><td>后端 API</td><td><code>https://api.pencil.dev</code></td></tr><tr><td>设计文件格式</td><td><code>.pen</code></td></tr></tbody></table></p>
+<h3 id="目录结构">目录结构</h3></p><pre><code>~/.pencil/</p>
+<p>├── apps/                  # 应用配置</p>
+<p>├── resources/             # 资源文件</p>
+<p>├── session-cli.json       # CLI 会话凭证</p>
+<p>└── session-desktop.json   # Desktop 会话凭证</p>
+</code></pre></p><hr><h2 id="基础语法">基础语法</h2></p><pre><code>pencil [command] [options]</p>
+</code></pre></p><h3 id="命令速查">命令速查</h3></p><table><thead><tr><th>命令</th><th>说明</th></tr></thead><tbody><tr><td><code>pencil login</code></td><td>交互式登录（邮箱 + 密码或 OTP）</td></tr><tr><td><code>pencil status</code></td><td>查看认证状态</td></tr><tr><td><code>pencil version</code></td><td>显示版本号</td></tr><tr><td><code>pencil interactive</code></td><td>启动交互式 Shell（Agent 模式）</td></tr><tr><td><code>pencil --out <file> --prompt "..."</code></td><td>单次 AI 生成</td></tr></tbody></table></p>
+<hr><h2 id="认证管理">认证管理</h2></p><h3 id="登录">登录</h3></p><pre><code><h1>交互式登录（邮箱 + 密码/OTP）</h1></p>
+<p>pencil login</p>
+</code></pre></p><p>登录后凭证保存在 <code>~/.pencil/session-cli.json</code>。</p><h3 id="查看状态">查看状态</h3></p><pre><code>pencil status</p>
+</code></pre></p><h3 id="cicd-使用">CI/CD 使用</h3></p><pre><code><h1>通过环境变量传入 CLI Key</h1></p>
+<p>PENCIL<em>CLI</em>KEY=pencil<em>cli</em>... pencil --out design.pen --prompt "Create a form"</p>
+</code></pre></p><p>认证优先级：<code>PENCIL<em>CLI</em>KEY</code> > <code>~/.pencil/session-cli.json</code></p><hr><h2 id="单次命令模式">单次命令模式</h2></p><p>通过 <code>--prompt</code> 参数一次性生成或修改设计文件。</p><h3 id="完整参数">完整参数</h3></p><table><thead><tr><th>参数</th><th>短选项</th><th>说明</th></tr></thead><tbody><tr><td><code>--in <path></code></td><td><code>-i</code></td><td>输入 <code>.pen</code> 文件（省略则为空白画布）</td></tr><tr><td><code>--out <path></code></td><td><code>-o</code></td><td>输出 <code>.pen</code> 文件路径（必填）</td></tr><tr><td><code>--prompt <text></code></td><td><code>-p</code></td><td>AI Agent Prompt（必填）</td></tr><tr><td><code>--model <id></code></td><td><code>-m</code></td><td>指定模型（默认 Claude Opus）</td></tr><tr><td><code>--custom</code></td><td><code>-c</code></td><td>使用自定义 Claude 模型配置</td></tr><tr><td><code>--list-models</code></td><td>列出可用模型并退出</td></tr><tr><td><code>--tasks <path></code></td><td><code>-t</code></td><td>JSON 批量任务文件</td></tr><tr><td><code>--workspace <path></code></td><td><code>-w</code></td><td>Agent 运行的工作区目录</td></tr><tr><td><code>--export <path></code></td><td><code>-e</code></td><td>导出最终结果图片</td></tr><tr><td><code>--export-scale <n></code></td><td>导出缩放倍数（默认 1）</td></tr><tr><td><code>--export-type <type></code></td><td>导出格式：png/jpeg/webp/pdf（默认 png）</td></tr><tr><td><code>--preview-output <path></code></td><td>预览图保存路径（默认 ~/.pencil/latest-preview.png）</td></tr><tr><td><code>--enable-preview</code></td><td>每次设计变更后保存预览图</td></tr><tr><td><code>--verbose-mcp</code></td><td>在响应中包含完整 MCP 工具错误详情</td></tr><tr><td><code>--help</code></td><td><code>-h</code></td><td>显示帮助</td></tr></tbody></table></p>
+<h3 id="示例">示例</h3></p><pre><code><h1>从零创建设计</h1></p>
+<p>pencil -o landing.pen -p "Create a landing page with hero section"</p><h1>基于现有文件修改</h1></p>
+<p>pencil -i existing.pen -o modified.pen -p "Add a footer with social links"</p><h1>指定模型</h1></p>
+<p>pencil -o form.pen -p "Create a login form" -m claude-sonnet-4-6</p><h1>生成并导出图片</h1></p>
+<p>pencil -o design.pen -p "Create a pricing page" -e ./exports/pricing.png --export-scale 2</p>
+</code></pre></p><hr><h2 id="交互式-shell">交互式 Shell</h2></p><p>交互式 Shell 是 Pencil CLI 的核心模式，通过 MCP 工具直接操作 <code>.pen</code> 文件，适合复杂设计任务。Agent（如 Claude）应使用此模式进行设计。</p><h3 id="启动方式">启动方式</h3></p><pre><code><h1>连接桌面应用</h1></p>
+<p>pencil interactive --app desktop -i design.pen</p><h1>无头模式：新建文件</h1></p>
+<p>pencil interactive -o output.pen</p><h1>无头模式：编辑现有文件</h1></p>
+<p>pencil interactive -i input.pen -o output.pen</p>
+</code></pre></p><h3 id="启动参数">启动参数</h3></p><table><thead><tr><th>参数</th><th>短选项</th><th>说明</th></tr></thead><tbody><tr><td><code>--app <name></code></td><td><code>-a</code></td><td>连接运行中的 Pencil 应用名（如 desktop）</td></tr><tr><td><code>--in <path></code></td><td><code>-i</code></td><td>输入 <code>.pen</code> 文件（省略则为空白画布）</td></tr><tr><td><code>--out <path></code></td><td><code>-o</code></td><td>输出 <code>.pen</code> 文件（无头模式必填）</td></tr><tr><td><code>--preview-output <path></code></td><td>预览图保存路径</td></tr><tr><td><code>--enable-preview</code></td><td>启用变更预览</td></tr></tbody></table></p>
+<h3 id="shell-内置命令">Shell 内置命令</h3></p><table><thead><tr><th>命令</th><th>说明</th></tr></thead><tbody><tr><td><code>tool_name({ key: value })</code></td><td>调用 MCP 工具（JS 对象参数）</td></tr><tr><td><code>tool_name()</code></td><td>调用无参数的 MCP 工具</td></tr><tr><td><code>save()</code></td><td>保存文档到磁盘</td></tr><tr><td><code>exit()</code></td><td>退出交互式 Shell</td></tr></tbody></table></p>
+<blockquote><strong>注意</strong>：文件路径自动注入，无需手动传递 <code>filePath</code> 参数。</blockquote></p><h3 id="mcp-工具一览">MCP 工具一览</h3></p><table><thead><tr><th>工具</th><th>说明</th></tr></thead><tbody><tr><td><code>get<em>editor</em>state</code></td><td>获取编辑器状态和文档信息</td></tr><tr><td><code>get_guidelines</code></td><td>获取设计指南和样式模板</td></tr><tr><td><code>batch_get</code></td><td>批量查询节点</td></tr><tr><td><code>batch_design</code></td><td>批量执行设计操作</td></tr><tr><td><code>get_screenshot</code></td><td>获取节点截图</td></tr><tr><td><code>export_nodes</code></td><td>导出节点为图片</td></tr><tr><td><code>find<em>empty</em>space<em>on</em>canvas</code></td><td>在画布上查找空白区域</td></tr><tr><td><code>get_variables</code></td><td>获取变量和主题定义</td></tr><tr><td><code>set_variables</code></td><td>更新变量和主题</td></tr><tr><td><code>replace<em>all</em>matching_properties</code></td><td>全局替换匹配属性</td></tr><tr><td><code>search<em>all</em>unique_properties</code></td><td>搜索所有唯一属性值</td></tr><tr><td><code>snapshot_layout</code></td><td>检查布局结构</td></tr></tbody></table></p>
+<hr><h2 id="batchdesign-操作详解">batch_design 操作详解</h2></p><p>核心设计操作工具，支持在一次调用中执行多个插入/复制/更新/替换/移动/删除/图片生成操作。</p><h3 id="关键规则">关键规则</h3></p>
+<ul><li>每次调用最多 <strong>25 个操作</strong>，超出应拆分为多次调用</li></p>
+<li>如果任一操作失败，本次调用的所有操作会回滚</li></p>
+<li>每次 <code>I()</code>、<code>C()</code>、<code>R()</code> 操作<strong>必须</strong>有绑定名</li></p>
+<li>绑定名仅在<strong>同一次调用</strong>内有效</li></p>
+<li><code>document</code> 是预定义绑定，引用文档根节点，仅用于创建顶级屏幕/容器</li></p>
+<li><code>placeholder: true</code> 将 frame 标记为容器，用于接收子内容</li></p>
+</ul></p>
+<h3 id="insert-i-插入节点">Insert (I) — 插入节点</h3></p><pre><code>nodeId = I(parent, nodeData)</p>
+</code></pre></p>
+<ul><li>插入单个节点，<code>id</code> 自动生成，不要手动设置 <code>id</code></li></p>
+<li>要添加子节点，需在后续 <code>I()</code> 中使用绑定名引用</li></p>
+<li>组件（<code>reusable: true</code>）以 <code>ref</code> 方式插入实例</li></p>
+</ul></p>
+<pre><code>// 插入一个容器 Frame</p>
+<p>hero = I(document, {type:"frame", name:"Hero", width:1440, height:900, fill:"#0A0A0A"})</p><p>// 在 hero 中插入文本</p>
+<p>title = I(hero, {type:"text", content:"Ship faster.", fontSize:72, fill:"#FFFFFF"})</p><p>// 插入组件实例</p>
+<p>card = I(body, {type:"ref", ref:"CardComp"})</p>
+</code></pre></p><h3 id="copy-c-复制节点">Copy (C) — 复制节点</h3></p><pre><code>copiedId = C(path, parent, copyNodeData)</p>
+</code></pre></p>
+<ul><li>复制 <code>reusable</code> 节点会创建连接的实例（<code>ref</code> 节点）</li></p>
+<li>如需修改复制节点的后代，<strong>必须</strong>在 <code>C()</code> 的 <code>descendants</code> 属性中操作，不能用后续 <code>U()</code> 修改</li></p>
+</ul></p>
+<pre><code>// 复制并偏移定位</p>
+<p>dashboardV2 = C("Xk9f2", document, {name:"Dashboard V2", positionDirection:"right", positionPadding:100})</p><p>// 复制组件并修改后代属性</p>
+<p>label1 = C("NKYzH", container, {descendants:{"ZopUS/jEYMs":{content:"First Name"}}})</p>
+</code></pre></p><h3 id="update-u-更新节点">Update (U) — 更新节点</h3></p><pre><code>U(path, updateData)</p>
+</code></pre></p>
+<ul><li>更新现有节点属性，<strong>不能</strong>修改 <code>id</code>、<code>type</code>、<code>ref</code></li></p>
+<li><strong>不能</strong>更新 <code>children</code>（用 <code>R()</code> 替代）</li></p>
+<li>更新组件实例后代时使用 <code>instanceId/childId</code> 路径</li></p>
+</ul></p>
+<pre><code>// 更新普通节点</p>
+<p>U("MmNEt", {layout:"horizontal", gap:16})</p><p>// 更新组件实例的子节点</p>
+<p>U("submit-button/label", {content:"Submit"})</p>
+</code></pre></p><h3 id="replace-r-替换节点">Replace (R) — 替换节点</h3></p><pre><code>replacedId = R(path, nodeData)</p>
+</code></pre></p>
+<ul><li>用新节点完全替换指定路径的节点</li></p>
+<li>适合替换组件实例中的部分内容</li></p>
+</ul></p>
+<pre><code>// 替换组件实例中的子节点</p>
+<p>newTitle = R("cardInstance/headerSlot", {type:"text", content:"Custom Title"})</p>
+</code></pre></p><h3 id="move-m-移动节点">Move (M) — 移动节点</h3></p><pre><code>M(nodeId, parent, index?)</p>
+</code></pre></p>
+<ul><li><code>nodeId</code> 必须是有效节点 ID（不是路径或绑定名）</li></p>
+<li><code>parent</code> 可选，省略则移到文档根级</li></p>
+<li><code>index</code> 可选，省略则放到末尾</li></p>
+</ul></p>
+<h3 id="delete-d-删除节点">Delete (D) — 删除节点</h3></p><pre><code>D(nodeId)</p>
+</code></pre></p>
+<ul><li><code>nodeId</code> 必须是有效节点 ID（不是路径或绑定名）</li></p>
+</ul></p>
+<h3 id="generate-image-g-生成图片">Generate Image (G) — 生成图片</h3></p><pre><code>G(nodeId, type, prompt)</p>
+</code></pre></p>
+<ul><li><strong>没有</strong> <code>image</code> 节点类型，图片以 <strong>fill</strong> 方式应用到 frame/rectangle</li></p>
+<li><code>type</code>: <code>"ai"</code>（AI 生成）或 <code>"stock"</code>（Unsplash 素材）</li></p>
+<li>AI prompt: 详细描述性文本</li></p>
+<li>Stock prompt: 1-3 个关键词，简单具体</li></p>
+</ul></p>
+<pre><code>// 创建 frame 后应用 AI 图片</p>
+<p>heroImg = I("parentId", {type:"frame", name:"Hero Image", width:400, height:300})</p>
+<p>G(heroImg, "ai", "modern office workspace bright")</p><p>// 对已有节点应用图片</p>
+<p>G("logo-frame", "ai", "minimalist coffee shop logo, flat design")</p><p>// 使用素材图</p>
+<p>G("bg-frame", "stock", "mountain landscape")</p>
+</code></pre></p><hr><h2 id="batchget-查询详解">batch_get 查询详解</h2></p><p>批量查询节点，支持按模式搜索和按 ID 读取。</p><h3 id="参数">参数</h3></p><table><thead><tr><th>参数</th><th>类型</th><th>说明</th></tr></thead><tbody><tr><td><code>nodeIds</code></td><td><code>string[]</code></td><td>按节点 ID 读取，优先批量读取</td></tr><tr><td><code>patterns</code></td><td><code>object[]</code></td><td>搜索模式列表</td></tr><tr><td><code>parentId</code></td><td><code>string</code></td><td>限定搜索范围（省略则搜全文档）</td></tr><tr><td><code>readDepth</code></td><td><code>number</code></td><td>读取深度（默认 1，仅返回节点及直接子节点）</td></tr><tr><td><code>searchDepth</code></td><td><code>number</code></td><td>搜索深度（省略则无限制）</td></tr><tr><td><code>resolveInstances</code></td><td><code>boolean</code></td><td>为 <code>true</code> 时展开 <code>ref</code> 节点为完整结构</td></tr><tr><td><code>resolveVariables</code></td><td><code>boolean</code></td><td>为 <code>true</code> 时显示变量计算值</td></tr><tr><td><code>includePathGeometry</code></td><td><code>boolean</code></td><td>为 <code>true</code> 时返回完整 path 几何数据</td></tr></tbody></table></p>
+<h3 id="搜索模式-patterns">搜索模式 (patterns)</h3></p><pre><code>// 列出文档顶级节点</p>
+<p>batch_get()</p><p>// 查找所有可复用组件</p>
+<p>batch_get({ patterns: [{ reusable: true }], readDepth: 2, searchDepth: 3 })</p><p>// 按名称搜索</p>
+<p>batch_get({ patterns: [{ name: "Button" }] })</p><p>// 按类型搜索</p>
+<p>batch_get({ patterns: [{ type: "frame" }] })</p><p>// 读取特定节点</p>
+<p>batch_get({ nodeIds: ["frameId1", "frameId2"], readDepth: 3 })</p><p>// 组合搜索</p>
+<p>batch_get({</p>
+<p>  parentId: "designSystemId",</p>
+<p>  patterns: [{ reusable: true }],</p>
+<p>  readDepth: 2</p>
+<p>})</p>
+</code></pre></p><h3 id="遍历大型文档的策略">遍历大型文档的策略</h3></p><p>1. 先读取顶级节点了解整体结构</p>
+<p>2. 按需深入读取子节点 ID</p>
+<p>3. 注意 <code>readDepth > 3</code> 可能返回大量数据</p>
+<p>4. 优先批量读取，避免逐个查询</p><hr><h2 id="其他-mcp-工具">其他 MCP 工具</h2></p><h3 id="geteditorstate">get<em>editor</em>state</h3></p><pre><code>get<em>editor</em>state({ include_schema: true })</p>
+</code></pre></p><p>获取编辑器状态、用户选区和文档信息。<strong>首次操作必须调用并传入 <code>include_schema: true</code></strong> 加载 <code>.pen</code> 文件 schema。</p><h3 id="getguidelines">get_guidelines</h3></p><pre><code>// 列出所有指南和样式</p>
+<p>get_guidelines()</p><p>// 加载特定指南</p>
+<p>get_guidelines({ category: "guide", name: "Landing Page" })</p><p>// 加载特定样式</p>
+<p>get_guidelines({ category: "style", name: "Aerial Gravitas" })</p><p>// 带参数加载</p>
+<p>get<em>guidelines({ category: "guide", name: "guide</em>name", params: { key: "value" } })</p>
+</code></pre></p><code>category</code>: <code>"guide"</code>（任务指南）或 <code>"style"</code>（视觉风格）</p><h3 id="findemptyspaceoncanvas">find<em>empty</em>space<em>on</em>canvas</h3></p><pre><code>find<em>empty</em>space<em>on</em>canvas({ width: 1440, height: 900, padding: 100, direction: "right" })</p>
+<p>find<em>empty</em>space<em>on</em>canvas({ width: 400, height: 300, padding: 50, direction: "bottom", nodeId: "frameId" })</p>
+</code></pre></p><table><thead><tr><th>参数</th><th>说明</th></tr></thead><tbody><tr><td><code>width</code></td><td>需要的宽度</td></tr><tr><td><code>height</code></td><td>需要的高度</td></tr><tr><td><code>padding</code></td><td>与其他元素的最小间距</td></tr><tr><td><code>direction</code></td><td>方向：top/right/bottom/left</td></tr><tr><td><code>nodeId</code></td><td>可选，围绕指定节点查找空间</td></tr></tbody></table></p>
+<h3 id="getscreenshot">get_screenshot</h3></p><pre><code>get_screenshot({ nodeId: "hero" })</p>
+</code></pre></p><p>获取节点的截图，用于验证设计效果。</p><h3 id="exportnodes">export_nodes</h3></p><pre><code>export_nodes({ nodeIds: ["hero", "sidebar"], outputDir: "./exports", format: "png", scale: 2 })</p>
+</code></pre></p><table><thead><tr><th>参数</th><th>说明</th><th>默认值</th></tr></thead><tbody><tr><td><code>nodeIds</code></td><td>节点 ID 数组（必填）</td><td>—</td></tr><tr><td><code>outputDir</code></td><td>输出目录（必填）</td><td>—</td></tr><tr><td><code>format</code></td><td>格式：png/jpeg/webp/pdf</td><td>png</td></tr><tr><td><code>scale</code></td><td>缩放倍数</td><td>2</td></tr><tr><td><code>quality</code></td><td>JPEG/WEBP 质量（1-100）</td><td>JPEG: 95, WEBP: 100</td></tr></tbody></table></p>
+<h3 id="getvariables-setvariables">get<em>variables / set</em>variables</h3></p><pre><code>// 获取变量和主题</p>
+<p>get_variables()</p><p>// 更新变量（合并）</p>
+<p>set_variables({ variables: { primaryColor: "#FF5722", fontSize: { type: "dimension", value: 16, unit: "px" } } })</p><p>// 替换所有变量</p>
+<p>set_variables({ replace: true, variables: { ... } })</p>
+</code></pre></p><h3 id="replaceallmatchingproperties">replace<em>all</em>matching_properties</h3></p><pre><code>replace<em>all</em>matching_properties({</p>
+<p>  parents: ["frameId1", "frameId2"],</p>
+<p>  properties: {</p>
+<p>    fillColor: [{ from: "#000000", to: "#333333" }],</p>
+<p>    fontSize: [{ from: [14, 16], to: [16, 18] }]</p>
+<p>  }</p>
+<p>})</p>
+</code></pre></p><h3 id="searchalluniqueproperties">search<em>all</em>unique_properties</h3></p><pre><code>search<em>all</em>unique_properties({</p>
+<p>  parents: ["designSystemId"],</p>
+<p>  properties: ["fillColor", "textColor", "fontSize", "fontFamily", "gap", "padding"]</p>
+<p>})</p>
+</code></pre></p><h3 id="snapshotlayout">snapshot_layout</h3></p><pre><code>// 检查整体布局</p>
+<p>snapshot_layout({ maxDepth: 2 })</p><p>// 只查看有问题的布局（重叠、裁剪等）</p>
+<p>snapshot_layout({ problemsOnly: true })</p><p>// 查看特定节点的布局</p>
+<p>snapshot_layout({ parentId: "frameId", maxDepth: 3 })</p>
+</code></pre></p><hr><h2 id="模型选择">模型选择</h2></p><h3 id="可用模型">可用模型</h3></p><table><thead><tr><th>模型 ID</th><th>说明</th></tr></thead><tbody><tr><td><code>claude-opus-4-6</code></td><td>最强能力，成本较高（默认）</td></tr><tr><td><code>claude-sonnet-4-6</code></td><td>速度快，性能均衡</td></tr><tr><td><code>claude-haiku-4-5</code></td><td>最快速度，成本最低</td></tr></tbody></table></p>
+<h3 id="使用方式">使用方式</h3></p><pre><code><h1>单次命令模式</h1></p>
+<p>pencil -o design.pen -p "Create a dashboard" -m claude-sonnet-4-6</p><h1>查看所有可用模型</h1></p>
+<p>pencil --list-models</p>
+</code></pre></p><hr><h2 id="环境变量">环境变量</h2></p><table><thead><tr><th>变量</th><th>说明</th></tr></thead><tbody><tr><td><code>PENCIL<em>CLI</em>KEY</code></td><td>CLI API Key（CI/CD 使用，优先于本地会话）</td></tr><tr><td><code>ANTHROPIC<em>API</em>KEY</code></td><td>Anthropic API Key</td></tr><tr><td><code>PENCIL<em>API</em>BASE</code></td><td>后端 API 地址（默认 https://api.pencil.dev）</td></tr><tr><td><code>DEBUG</code></td><td>启用调试日志</td></tr></tbody></table></p>
+<hr><h2 id="批量任务">批量任务</h2></p><p>通过 JSON 文件定义批量设计任务。</p><pre><code>pencil --tasks tasks.json</p>
+</code></pre></p><p>任务文件格式参考 <code>--tasks</code> 参数说明，适合 CI/CD 中批量生成设计。</p><hr><h2 id="导出功能">导出功能</h2></p><h3 id="单次命令导出">单次命令导出</h3></p><pre><code><h1>生成设计并导出 PNG</h1></p>
+<p>pencil -o design.pen -p "Create a pricing page" -e ./exports/pricing.png</p><h1>指定格式和缩放</h1></p>
+<p>pencil -o design.pen -p "Create a card" -e ./exports/card.webp --export-type webp --export-scale 3</p><h1>导出为 PDF</h1></p>
+<p>pencil -o design.pen -p "Create a report" -e ./exports/report.pdf --export-type pdf</p>
+</code></pre></p><h3 id="交互式-shell-导出">交互式 Shell 导出</h3></p><pre><code>pencil > export_nodes({ nodeIds: ["hero", "features", "pricing"], outputDir: "./exports", format: "png", scale: 2 })</p>
+</code></pre></p><h3 id="预览">预览</h3></p><pre><code><h1>启用预览（每次变更后自动保存预览图）</h1></p>
+<p>pencil -o design.pen -p "Create a landing page" --enable-preview --preview-output ./previews/latest.png</p>
+</code></pre></p><hr><h2 id="常用命令示例">常用命令示例</h2></p><h3 id="单次命令">单次命令</h3></p><pre><code><h1>从零创建落地页</h1></p>
+<p>pencil -o landing.pen -p "Create a modern SaaS landing page with hero section, features, pricing, and footer"</p><h1>修改现有设计</h1></p>
+<p>pencil -i dashboard.pen -o dashboard-v2.pen -p "Change the color scheme to dark mode, update all text colors to white"</p><h1>快速原型</h1></p>
+<p>pencil -o prototype.pen -p "Create a mobile app login screen with email and social login options"</p><h1>使用低成本模型快速迭代</h1></p>
+<p>pencil -o wireframe.pen -p "Create a low-fidelity wireframe for an e-commerce checkout flow" -m claude-haiku-4-5</p>
+</code></pre></p><h3 id="交互式设计工作流">交互式设计工作流</h3></p><pre><code><h1>启动无头模式会话</h1></p>
+<p>pencil interactive -o design.pen</p><h1>会话内的典型操作流程</h1></p>
+<p>pencil > get<em>editor</em>state({ include_schema: true })</p>
+<p>pencil > get_guidelines()</p>
+<p>pencil > get_guidelines({ category: "style", name: "Aerial Gravitas" })</p>
+<p>pencil > find<em>empty</em>space<em>on</em>canvas({ width: 1440, height: 900, padding: 100, direction: "right" })</p><h1>创建页面结构</h1></p>
+<p>pencil > batch_design({ operations: 'hero=I(document,{type:"frame",name:"Hero",x:0,y:0,width:1440,height:900,fill:"#0A0A0A",layout:"vertical",clip:true})' })</p>
+<p>pencil > batch_design({ operations: 'heading=I("hero",{type:"text",content:"Ship faster.",fontSize:72,fontWeight:"bold",fill:"#FFFFFF"})\nsub=I("hero",{type:"text",content:"The best platform for your team.",fontSize:24,fill:"#AAAAAA"})' })</p><h1>验证效果</h1></p>
+<p>pencil > get_screenshot({ nodeId: "hero" })</p><h1>导出</h1></p>
+<p>pencil > export_nodes({ nodeIds: ["hero"], outputDir: "./exports" })</p><h1>保存</h1></p>
+<p>pencil > save()</p>
+<p>pencil > exit()</p>
+</code></pre></p><h3 id="编辑现有设计">编辑现有设计</h3></p><pre><code><h1>连接桌面应用编辑</h1></p>
+<p>pencil interactive -a desktop -i design.pen</p><h1>查看文档结构</h1></p>
+<p>pencil > batch_get()</p>
+<p>pencil > batch_get({ patterns: [{ reusable: true }], readDepth: 2 })</p><h1>修改组件实例</h1></p>
+<p>pencil > batch<em>design({ operations: 'btn=I("containerId",{type:"ref",ref:"ButtonComp",width:"fill</em>container"})\nU(btn+"/label",{content:"Get Started"})' })</p><h1>验证并保存</h1></p>
+<p>pencil > get_screenshot({ nodeId: "containerId" })</p>
+<p>pencil > save()</p>
+</code></pre></p><h3 id="cicd-集成">CI/CD 集成</h3></p><pre><code><h1>使用 API Key 批量生成</h1></p>
+<p>PENCIL<em>CLI</em>KEY=pencil<em>cli</em>xxx pencil -o icon.pen -p "Create an app icon for a fitness app"</p><h1>生成并导出到指定目录</h1></p>
+<p>pencil -o banner.pen -p "Create a social media banner 1200x630" -e ./assets/banner.png --export-scale 2 --export-type png</p>
+</code></pre></p>
+</main>
   </div>
-</header>
-
-<!-- Search Results -->
-<div class="search-results" id="searchResults"></div>
-
-<!-- Layout -->
-<div class="layout">
-  <!-- Sidebar -->
-  <nav class="sidebar" id="sidebar">
-    <div class="nav-group-title">快速开始</div>
-    <a class="nav-link active" data-section="overview" onclick="scrollToSection('overview')">
-      <span class="nav-icon">●</span> 概述
-    </a>
-    <a class="nav-link" data-section="install" onclick="scrollToSection('install')">
-      <span class="nav-icon">●</span> 安装与认证
-    </a>
-    <a class="nav-link" data-section="commands" onclick="scrollToSection('commands')">
-      <span class="nav-icon">●</span> 基础命令
-    </a>
-
-    <div class="nav-group-title">核心模式</div>
-    <a class="nav-link" data-section="onetime" onclick="scrollToSection('onetime')">
-      <span class="nav-icon">●</span> 单次命令模式
-    </a>
-    <a class="nav-link" data-section="shell" onclick="scrollToSection('shell')">
-      <span class="nav-icon">●</span> 交互式 Shell <code>interactive</code>
-    </a>
-
-    <div class="nav-group-title">设计操作</div>
-    <a class="nav-link" data-section="batch-design" onclick="scrollToSection('batch-design')">
-      <span class="nav-icon">●</span> batch_design 操作
-    </a>
-    <a class="nav-link" data-section="batch-get" onclick="scrollToSection('batch-get')">
-      <span class="nav-icon">●</span> batch_get 查询
-    </a>
-
-    <div class="nav-group-title">MCP 工具</div>
-    <a class="nav-link" data-section="mcp-tools" onclick="scrollToSection('mcp-tools')">
-      <span class="nav-icon">●</span> 其他 MCP 工具
-    </a>
-    <a class="nav-link" data-section="model" onclick="scrollToSection('model')">
-      <span class="nav-icon">●</span> 模型选择
-    </a>
-
-    <div class="nav-group-title">参考</div>
-    <a class="nav-link" data-section="env" onclick="scrollToSection('env')">
-      <span class="nav-icon">●</span> 环境变量
-    </a>
-    <a class="nav-link" data-section="export" onclick="scrollToSection('export')">
-      <span class="nav-icon">●</span> 导出功能
-    </a>
-    <a class="nav-link" data-section="examples" onclick="scrollToSection('examples')">
-      <span class="nav-icon">●</span> 常用示例
-    </a>
-  </nav>
-
-  <!-- Main Content -->
-  <main class="main" id="main">
-
-    <!-- Hero -->
-    <div class="hero" id="overview">
-      <h1>PENCIL CLI<br>参考手册</h1>
-      <p class="subtitle">
-        Pencil.dev 推出的 AI 驱动设计文件操作命令行工具。通过自然语言 Prompt 直接生成或修改 .pen 设计文件，支持交互式 Shell、批量任务、多模型选择和图片导出，适合将 AI 设计能力集成到开发工作流中。
-      </p>
-      <div class="hero-meta">
-        <div class="hero-meta-item"><strong>版本：</strong>0.2.4</div>
-        <div class="hero-meta-item"><strong>API：</strong><code class="inline">https://api.pencil.dev</code></div>
-        <div class="hero-meta-item"><strong>格式：</strong><code class="inline">.pen</code></div>
-      </div>
-      <div class="hero-install" onclick="copyText('npm install -g @pencil.dev/cli', this)">
-        <span>$ npm install -g @pencil.dev/cli</span>
-        <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-      </div>
-    </div>
-
-    <!-- 安装与认证 -->
-    <div class="section" id="sec-install">
-      <div class="section-header">
-        <div class="section-icon">📦</div>
-        <h2>安装与认证</h2>
-      </div>
-
-      <h3>安装</h3>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">bash</span>
-          <button class="code-copy" onclick="copyCode(this)">复制</button>
-        </div>
-        <div class="code-body"><pre><span class="cmd">npm</span> install -g @pencil.dev/cli</pre></div>
-      </div>
-
-      <h3>本机配置</h3>
-      <div class="table-wrapper">
-        <table>
-          <thead><tr><th>项目</th><th>值</th></tr></thead>
-          <tbody>
-            <tr><td><code>版本</code></td><td>0.2.4</td></tr>
-            <tr><td><code>可执行文件</code></td><td><code class="inline">~/.nvm/versions/node/v22.22.1/bin/pencil</code></td></tr>
-            <tr><td><code>配置目录</code></td><td><code class="inline">~/.pencil/</code></td></tr>
-            <tr><td><code>会话文件</code></td><td><code class="inline">~/.pencil/session-cli.json</code></td></tr>
-            <tr><td><code>后端 API</code></td><td><code class="inline">https://api.pencil.dev</code></td></tr>
-            <tr><td><code>设计文件格式</code></td><td><code class="inline">.pen</code></td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>登录</h3>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">bash</span>
-          <button class="code-copy" onclick="copyCode(this)">复制</button>
-        </div>
-        <div class="code-body"><pre><span class="comment"># 交互式登录（邮箱 + 密码/OTP）</span>
-<span class="cmd">pencil</span> login
-
-<span class="comment"># 查看认证状态</span>
-<span class="cmd">pencil</span> status
-
-<span class="comment"># CI/CD 使用（通过环境变量传入 CLI Key）</span>
-<span class="variable">PENCIL_CLI_KEY</span>=pencil_cli_... <span class="cmd">pencil</span> --out design.pen --prompt <span class="string">"Create a form"</span></pre></div>
-      </div>
-
-      <div class="info-card info">
-        <span class="info-emoji">📌</span>
-        <span>认证优先级：<code class="inline">PENCIL_CLI_KEY</code> &gt; <code class="inline">~/.pencil/session-cli.json</code></span>
-      </div>
-    </div>
-
-    <!-- 基础命令 -->
-    <div class="section" id="sec-commands">
-      <div class="section-header">
-        <div class="section-icon">⚡</div>
-        <h2>基础命令</h2>
-      </div>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">基本语法</span>
-          <button class="code-copy" onclick="copyCode(this)">复制</button>
-        </div>
-        <div class="code-body"><pre><span class="cmd">pencil</span> <span class="bracket">[command]</span> <span class="bracket">[options]</span></pre></div>
-      </div>
-      <div class="cmd-grid">
-        <div class="cmd-card"><div class="cmd-name">pencil login</div><div class="cmd-desc">交互式登录（邮箱 + 密码或 OTP）</div></div>
-        <div class="cmd-card"><div class="cmd-name">pencil status</div><div class="cmd-desc">查看认证状态</div></div>
-        <div class="cmd-card"><div class="cmd-name">pencil version</div><div class="cmd-desc">显示版本号</div></div>
-        <div class="cmd-card"><div class="cmd-name">pencil interactive</div><div class="cmd-desc">启动交互式 Shell（Agent 模式）</div></div>
-        <div class="cmd-card"><div class="cmd-name">pencil --out ... --prompt ...</div><div class="cmd-desc">单次 AI 生成</div></div>
-      </div>
-    </div>
-
-    <!-- 单次命令模式 -->
-    <div class="section" id="sec-onetime">
-      <div class="section-header">
-        <div class="section-icon">🎯</div>
-        <h2>单次命令模式</h2>
-      </div>
-      <p>通过 <code class="inline">--prompt</code> 参数一次性生成或修改设计文件。</p>
-
-      <h3>完整参数</h3>
-      <div class="table-wrapper">
-        <table>
-          <thead><tr><th>参数</th><th>短选项</th><th>说明</th></tr></thead>
-          <tbody>
-            <tr><td><code>--in &lt;path&gt;</code></td><td><code>-i</code></td><td>输入 .pen 文件（省略则为空白画布）</td></tr>
-            <tr><td><code>--out &lt;path&gt;</code></td><td><code>-o</code></td><td>输出 .pen 文件路径（必填）</td></tr>
-            <tr><td><code>--prompt &lt;text&gt;</code></td><td><code>-p</code></td><td>AI Agent Prompt（必填）</td></tr>
-            <tr><td><code>--model &lt;id&gt;</code></td><td><code>-m</code></td><td>指定模型（默认 Claude Opus）</td></tr>
-            <tr><td><code>--custom</code></td><td><code>-c</code></td><td>使用自定义 Claude 模型配置</td></tr>
-            <tr><td><code>--list-models</code></td><td></td><td>列出可用模型并退出</td></tr>
-            <tr><td><code>--tasks &lt;path&gt;</code></td><td><code>-t</code></td><td>JSON 批量任务文件</td></tr>
-            <tr><td><code>--workspace &lt;path&gt;</code></td><td><code>-w</code></td><td>Agent 运行的工作区目录</td></tr>
-            <tr><td><code>--export &lt;path&gt;</code></td><td><code>-e</code></td><td>导出最终结果图片</td></tr>
-            <tr><td><code>--export-scale &lt;n&gt;</code></td><td></td><td>导出缩放倍数（默认 1）</td></tr>
-            <tr><td><code>--export-type &lt;type&gt;</code></td><td></td><td>导出格式：png/jpeg/webp/pdf（默认 png）</td></tr>
-            <tr><td><code>--verbose-mcp</code></td><td></td><td>在响应中包含完整 MCP 工具错误详情</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>示例</h3>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">bash</span>
-          <button class="code-copy" onclick="copyCode(this)">复制</button>
-        </div>
-        <div class="code-body"><pre><span class="comment"># 从零创建设计</span>
-<span class="cmd">pencil</span> -o landing.pen -p <span class="string">"Create a landing page with hero section"</span>
-
-<span class="comment"># 基于现有文件修改</span>
-<span class="cmd">pencil</span> -i existing.pen -o modified.pen -p <span class="string">"Add a footer with social links"</span>
-
-<span class="comment"># 指定模型</span>
-<span class="cmd">pencil</span> -o form.pen -p <span class="string">"Create a login form"</span> -m claude-sonnet-4-6
-
-<span class="comment"># 生成并导出图片</span>
-<span class="cmd">pencil</span> -o design.pen -p <span class="string">"Create a pricing page"</span> -e ./exports/pricing.png --export-scale 2</pre></div>
-      </div>
-    </div>
-
-    <!-- 交互式 Shell -->
-    <div class="section" id="sec-shell">
-      <div class="section-header">
-        <div class="section-icon">🔧</div>
-        <h2>交互式 Shell <code>interactive</code></h2>
-      </div>
-      <p>交互式 Shell 是 Pencil CLI 的核心模式，通过 MCP 工具直接操作 .pen 文件，适合复杂设计任务。</p>
-
-      <h3>启动方式</h3>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">bash</span>
-          <button class="code-copy" onclick="copyCode(this)">复制</button>
-        </div>
-        <div class="code-body"><pre><span class="comment"># 连接桌面应用</span>
-<span class="cmd">pencil</span> interactive --app desktop -i design.pen
-
-<span class="comment"># 无头模式：新建文件</span>
-<span class="cmd">pencil</span> interactive -o output.pen
-
-<span class="comment"># 无头模式：编辑现有文件</span>
-<span class="cmd">pencil</span> interactive -i input.pen -o output.pen</pre></div>
-      </div>
-
-      <h3>Shell 内置命令</h3>
-      <div class="cmd-grid">
-        <div class="cmd-card"><div class="cmd-name">tool_name({ ... })</div><div class="cmd-desc">调用 MCP 工具（JS 对象参数）</div></div>
-        <div class="cmd-card"><div class="cmd-name">save()</div><div class="cmd-desc">保存文档到磁盘</div></div>
-        <div class="cmd-card"><div class="cmd-name">exit()</div><div class="cmd-desc">退出交互式 Shell</div></div>
-      </div>
-
-      <div class="info-card tip">
-        <span class="info-emoji">💡</span>
-        <span>文件路径自动注入，无需手动传递 <code class="inline">filePath</code> 参数。</span>
-      </div>
-
-      <h3>MCP 工具一览</h3>
-      <div class="table-wrapper">
-        <table>
-          <thead><tr><th>工具</th><th>说明</th></tr></thead>
-          <tbody>
-            <tr><td><code>get_editor_state</code></td><td>获取编辑器状态和文档信息</td></tr>
-            <tr><td><code>get_guidelines</code></td><td>获取设计指南和样式模板</td></tr>
-            <tr><td><code>batch_get</code></td><td>批量查询节点</td></tr>
-            <tr><td><code>batch_design</code></td><td>批量执行设计操作</td></tr>
-            <tr><td><code>get_screenshot</code></td><td>获取节点截图</td></tr>
-            <tr><td><code>export_nodes</code></td><td>导出节点为图片</td></tr>
-            <tr><td><code>find_empty_space_on_canvas</code></td><td>在画布上查找空白区域</td></tr>
-            <tr><td><code>get_variables</code></td><td>获取变量和主题定义</td></tr>
-            <tr><td><code>set_variables</code></td><td>更新变量和主题</td></tr>
-            <tr><td><code>snapshot_layout</code></td><td>检查布局结构</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- batch_design 操作 -->
-    <div class="section" id="sec-batch-design">
-      <div class="section-header">
-        <div class="section-icon">✏️</div>
-        <h2>batch_design 操作详解</h2>
-      </div>
-      <p>核心设计操作工具，支持在一次调用中执行多个插入/复制/更新/替换/移动/删除/图片生成操作。</p>
-
-      <div class="info-card warning">
-        <span class="info-emoji">⚠</span>
-        <span>每次调用最多 <strong>25 个操作</strong>，超出应拆分为多次调用。任一操作失败则全部回滚。</span>
-      </div>
-
-      <h3>Insert (I) — 插入节点</h3>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">javascript</span>
-          <button class="code-copy" onclick="copyCode(this)">复制</button>
-        </div>
-        <div class="code-body"><pre><span class="variable">nodeId</span> = I(parent, nodeData)
-
-<span class="comment">// 插入一个容器 Frame</span>
-hero = I(document, {type:<span class="string">"frame"</span>, name:<span class="string">"Hero"</span>, width:1440, height:900, fill:<span class="string">"#0A0A0A"</span>})
-
-<span class="comment">// 在 hero 中插入文本</span>
-title = I(hero, {type:<span class="string">"text"</span>, content:<span class="string">"Ship faster."</span>, fontSize:72, fill:<span class="string">"#FFFFFF"</span>})
-
-<span class="comment">// 插入组件实例</span>
-card = I(body, {type:<span class="string">"ref"</span>, ref:<span class="string">"CardComp"</span>})</pre></div>
-      </div>
-
-      <h3>Copy (C) — 复制节点</h3>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">javascript</span>
-          <button class="code-copy" onclick="copyCode(this)">复制</button>
-        </div>
-        <div class="code-body"><pre><span class="variable">copiedId</span> = C(path, parent, copyNodeData)
-
-<span class="comment">// 复制并偏移定位</span>
-dashboardV2 = C(<span class="string">"Xk9f2"</span>, document, {name:<span class="string">"Dashboard V2"</span>, positionDirection:<span class="string">"right"</span>, positionPadding:100})
-
-<span class="comment">// 复制组件并修改后代属性</span>
-label1 = C(<span class="string">"NKYzH"</span>, container, {descendants:{<span class="string">"ZopUS/jEYMs"</span>:{content:<span class="string">"First Name"</span>}}})</pre></div>
-      </div>
-
-      <h3>Update (U) — 更新节点</h3>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">javascript</span>
-          <button class="code-copy" onclick="copyCode(this)">复制</button>
-        </div>
-        <div class="code-body"><pre>U(path, updateData)
-
-<span class="comment">// 更新普通节点</span>
-U(<span class="string">"MmNEt"</span>, {layout:<span class="string">"horizontal"</span>, gap:16})
-
-<span class="comment">// 更新组件实例的子节点</span>
-U(<span class="string">"submit-button/label"</span>, {content:<span class="string">"Submit"</span>})</pre></div>
-      </div>
-
-      <h3>Replace (R) — 替换节点</h3>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">javascript</span>
-          <button class="code-copy" onclick="copyCode(this)">复制</button>
-        </div>
-        <div class="code-body"><pre><span class="variable">replacedId</span> = R(path, nodeData)
-
-newTitle = R(<span class="string">"cardInstance/headerSlot"</span>, {type:<span class="string">"text"</span>, content:<span class="string">"Custom Title"</span>})</pre></div>
-      </div>
-
-      <h3>Move (M) — 移动节点</h3>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">javascript</span>
-          <button class="code-copy" onclick="copyCode(this)">复制</button>
-        </div>
-        <div class="code-body"><pre>M(nodeId, parent, index?)
-
-<span class="comment">// 移到文档根级</span>
-M(<span class="string">"frameId"</span>)
-
-<span class="comment">// 移到指定父节点末尾</span>
-M(<span class="string">"frameId"</span>, <span class="string">"parentId"</span>)
-
-<span class="comment">// 移到指定位置</span>
-M(<span class="string">"frameId"</span>, <span class="string">"parentId"</span>, 0)</pre></div>
-      </div>
-
-      <h3>Delete (D) — 删除节点</h3>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">javascript</span>
-          <button class="code-copy" onclick="copyCode(this)">复制</button>
-        </div>
-        <div class="code-body"><pre>D(nodeId)
-
-<span class="comment">// 删除指定节点</span>
-D(<span class="string">"oldFrame"</span>)</pre></div>
-      </div>
-
-      <h3>Generate Image (G) — 生成图片</h3>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">javascript</span>
-          <button class="code-copy" onclick="copyCode(this)">复制</button>
-        </div>
-        <div class="code-body"><pre>G(nodeId, type, prompt)
-
-<span class="comment">// 创建 frame 后应用 AI 图片</span>
-heroImg = I(<span class="string">"parentId"</span>, {type:<span class="string">"frame"</span>, name:<span class="string">"Hero Image"</span>, width:400, height:300})
-G(heroImg, <span class="string">"ai"</span>, <span class="string">"modern office workspace bright"</span>)
-
-<span class="comment">// 使用素材图</span>
-G(<span class="string">"bg-frame"</span>, <span class="string">"stock"</span>, <span class="string">"mountain landscape"</span>)</pre></div>
-      </div>
-    </div>
-
-    <!-- batch_get 查询 -->
-    <div class="section" id="sec-batch-get">
-      <div class="section-header">
-        <div class="section-icon">🔍</div>
-        <h2>batch_get 查询详解</h2>
-      </div>
-
-      <h3>参数</h3>
-      <div class="table-wrapper">
-        <table>
-          <thead><tr><th>参数</th><th>类型</th><th>说明</th></tr></thead>
-          <tbody>
-            <tr><td><code>nodeIds</code></td><td><code>string[]</code></td><td>按节点 ID 读取</td></tr>
-            <tr><td><code>patterns</code></td><td><code>object[]</code></td><td>搜索模式列表</td></tr>
-            <tr><td><code>parentId</code></td><td><code>string</code></td><td>限定搜索范围</td></tr>
-            <tr><td><code>readDepth</code></td><td><code>number</code></td><td>读取深度（默认 1）</td></tr>
-            <tr><td><code>searchDepth</code></td><td><code>number</code></td><td>搜索深度（默认无限制）</td></tr>
-            <tr><td><code>resolveInstances</code></td><td><code>boolean</code></td><td>展开 ref 节点为完整结构</td></tr>
-            <tr><td><code>resolveVariables</code></td><td><code>boolean</code></td><td>显示变量计算值</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>搜索示例</h3>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">javascript</span>
-          <button class="code-copy" onclick="copyCode(this)">复制</button>
-        </div>
-        <div class="code-body"><pre><span class="comment">// 列出文档顶级节点</span>
-batch_get()
-
-<span class="comment">// 查找所有可复用组件</span>
-batch_get({ patterns: [{ reusable: true }], readDepth: 2, searchDepth: 3 })
-
-<span class="comment">// 按名称搜索</span>
-batch_get({ patterns: [{ name: <span class="string">"Button"</span> }] })
-
-<span class="comment">// 读取特定节点</span>
-batch_get({ nodeIds: [<span class="string">"frameId1"</span>, <span class="string">"frameId2"</span>], readDepth: 3 })</pre></div>
-      </div>
-    </div>
-
-    <!-- 其他 MCP 工具 -->
-    <div class="section" id="sec-mcp-tools">
-      <div class="section-header">
-        <div class="section-icon">🛠</div>
-        <h2>其他 MCP 工具</h2>
-      </div>
-
-      <h3>get_editor_state</h3>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">javascript</span>
-          <button class="code-copy" onclick="copyCode(this)">复制</button>
-        </div>
-        <div class="code-body"><pre>get_editor_state({ include_schema: true })</pre></div>
-      </div>
-      <p>首次操作必须调用并传入 <code class="inline">include_schema: true</code> 加载 .pen 文件 schema。</p>
-
-      <h3>get_guidelines</h3>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">javascript</span>
-          <button class="code-copy" onclick="copyCode(this)">复制</button>
-        </div>
-        <div class="code-body"><pre><span class="comment">// 列出所有指南和样式</span>
-get_guidelines()
-
-<span class="comment">// 加载特定指南</span>
-get_guidelines({ category: <span class="string">"guide"</span>, name: <span class="string">"Landing Page"</span> })
-
-<span class="comment">// 加载特定样式</span>
-get_guidelines({ category: <span class="string">"style"</span>, name: <span class="string">"Aerial Gravitas"</span> })</pre></div>
-      </div>
-
-      <h3>export_nodes</h3>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">javascript</span>
-          <button class="code-copy" onclick="copyCode(this)">复制</button>
-        </div>
-        <div class="code-body"><pre>export_nodes({
-  nodeIds: [<span class="string">"hero"</span>, <span class="string">"sidebar"</span>],
-  outputDir: <span class="string">"./exports"</span>,
-  format: <span class="string">"png"</span>,
-  scale: 2
-})</pre></div>
-      </div>
-
-      <h3>find_empty_space_on_canvas</h3>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">javascript</span>
-          <button class="code-copy" onclick="copyCode(this)">复制</button>
-        </div>
-        <div class="code-body"><pre>find_empty_space_on_canvas({ width: 1440, height: 900, padding: 100, direction: <span class="string">"right"</span> })
-find_empty_space_on_canvas({ width: 400, height: 300, padding: 50, direction: <span class="string">"bottom"</span>, nodeId: <span class="string">"frameId"</span> })</pre></div>
-      </div>
-
-      <h3>snapshot_layout</h3>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">javascript</span>
-          <button class="code-copy" onclick="copyCode(this)">复制</button>
-        </div>
-        <div class="code-body"><pre><span class="comment">// 检查整体布局</span>
-snapshot_layout({ maxDepth: 2 })
-
-<span class="comment">// 只查看有问题的布局</span>
-snapshot_layout({ problemsOnly: true })</pre></div>
-      </div>
-    </div>
-
-    <!-- 模型选择 -->
-    <div class="section" id="sec-model">
-      <div class="section-header">
-        <div class="section-icon">🤖</div>
-        <h2>模型选择</h2>
-      </div>
-      <div class="table-wrapper">
-        <table>
-          <thead><tr><th>模型 ID</th><th>说明</th></tr></thead>
-          <tbody>
-            <tr><td><code>claude-opus-4-6</code></td><td>最强能力，成本较高（默认）</td></tr>
-            <tr><td><code>claude-sonnet-4-6</code></td><td>速度快，性能均衡</td></tr>
-            <tr><td><code>claude-haiku-4-5</code></td><td>最快速度，成本最低</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">bash</span>
-          <button class="code-copy" onclick="copyCode(this)">复制</button>
-        </div>
-        <div class="code-body"><pre><span class="comment"># 指定模型</span>
-<span class="cmd">pencil</span> -o design.pen -p <span class="string">"Create a dashboard"</span> -m claude-sonnet-4-6
-
-<span class="comment"># 查看所有可用模型</span>
-<span class="cmd">pencil</span> --list-models</pre></div>
-      </div>
-    </div>
-
-    <!-- 环境变量 -->
-    <div class="section" id="sec-env">
-      <div class="section-header">
-        <div class="section-icon">⚙️</div>
-        <h2>环境变量</h2>
-      </div>
-      <div class="table-wrapper">
-        <table>
-          <thead><tr><th>变量</th><th>说明</th></tr></thead>
-          <tbody>
-            <tr><td><code>PENCIL_CLI_KEY</code></td><td>CLI API Key（CI/CD 使用，优先于本地会话）</td></tr>
-            <tr><td><code>ANTHROPIC_API_KEY</code></td><td>Anthropic API Key</td></tr>
-            <tr><td><code>PENCIL_API_BASE</code></td><td>后端 API 地址（默认 https://api.pencil.dev）</td></tr>
-            <tr><td><code>DEBUG</code></td><td>启用调试日志</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- 导出功能 -->
-    <div class="section" id="sec-export">
-      <div class="section-header">
-        <div class="section-icon">📸</div>
-        <h2>导出功能</h2>
-      </div>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">bash</span>
-          <button class="code-copy" onclick="copyCode(this)">复制</button>
-        </div>
-        <div class="code-body"><pre><span class="comment"># 生成设计并导出 PNG</span>
-<span class="cmd">pencil</span> -o design.pen -p <span class="string">"Create a pricing page"</span> -e ./exports/pricing.png
-
-<span class="comment"># 指定格式和缩放</span>
-<span class="cmd">pencil</span> -o design.pen -p <span class="string">"Create a card"</span> -e ./exports/card.webp --export-type webp --export-scale 3
-
-<span class="comment"># 导出为 PDF</span>
-<span class="cmd">pencil</span> -o design.pen -p <span class="string">"Create a report"</span> -e ./exports/report.pdf --export-type pdf
-
-<span class="comment"># 启用预览（每次变更后自动保存预览图）</span>
-<span class="cmd">pencil</span> -o design.pen -p <span class="string">"Create a landing page"</span> --enable-preview --preview-output ./previews/latest.png</pre></div>
-      </div>
-    </div>
-
-    <!-- 常用示例 -->
-    <div class="section" id="sec-examples">
-      <div class="section-header">
-        <div class="section-icon">💡</div>
-        <h2>常用命令示例</h2>
-      </div>
-
-      <h3>单次命令</h3>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">bash</span>
-          <button class="code-copy" onclick="copyCode(this)">复制</button>
-        </div>
-        <div class="code-body"><pre><span class="comment"># 从零创建落地页</span>
-<span class="cmd">pencil</span> -o landing.pen -p <span class="string">"Create a modern SaaS landing page with hero, features, pricing, footer"</span>
-
-<span class="comment"># 修改现有设计</span>
-<span class="cmd">pencil</span> -i dashboard.pen -o dashboard-v2.pen -p <span class="string">"Change to dark mode, update all text to white"</span>
-
-<span class="comment"># 使用低成本模型快速迭代</span>
-<span class="cmd">pencil</span> -o wireframe.pen -p <span class="string">"Create a low-fidelity wireframe for checkout"</span> -m claude-haiku-4-5</pre></div>
-      </div>
-
-      <h3>交互式设计工作流</h3>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">bash + shell</span>
-          <button class="code-copy" onclick="copyCode(this)">复制</button>
-        </div>
-        <div class="code-body"><pre><span class="cmd">pencil</span> interactive -o design.pen
-
-pencil &gt; get_editor_state({ include_schema: true })
-pencil &gt; get_guidelines()
-pencil &gt; find_empty_space_on_canvas({ width: 1440, height: 900, padding: 100, direction: <span class="string">"right"</span> })
-
-<span class="comment"># 创建页面结构</span>
-pencil &gt; batch_design({ operations: <span class="string">'hero=I(document,{type:"frame",name:"Hero",width:1440,height:900,fill:"#0A0A0A"})'</span> })
-pencil &gt; batch_design({ operations: <span class="string">'heading=I("hero",{type:"text",content:"Ship faster.",fontSize:72,fill:"#FFFFFF"})'</span> })
-
-<span class="comment"># 验证效果</span>
-pencil &gt; get_screenshot({ nodeId: <span class="string">"hero"</span> })
-
-<span class="comment"># 导出并保存</span>
-pencil &gt; export_nodes({ nodeIds: [<span class="string">"hero"</span>], outputDir: <span class="string">"./exports"</span> })
-pencil &gt; save()
-pencil &gt; exit()</pre></div>
-      </div>
-
-      <h3>CI/CD 集成</h3>
-      <div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">bash</span>
-          <button class="code-copy" onclick="copyCode(this)">复制</button>
-        </div>
-        <div class="code-body"><pre><span class="comment"># 使用 API Key 批量生成</span>
-<span class="variable">PENCIL_CLI_KEY</span>=pencil_cli_xxx <span class="cmd">pencil</span> -o icon.pen -p <span class="string">"Create an app icon for a fitness app"</span>
-
-<span class="comment"># 生成并导出到指定目录</span>
-<span class="cmd">pencil</span> -o banner.pen -p <span class="string">"Create a social media banner 1200x630"</span> -e ./assets/banner.png --export-scale 2</pre></div>
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="footer">
-      <div class="footer-links">
-        <a href="#">Pencil.dev</a>
-        <a href="#">API 文档</a>
-        <a href="#">CLI 工具索引</a>
-      </div>
-      <div class="footer-copy">Pencil CLI 参考手册 · v0.2.4</div>
-    </div>
-
-  </main>
-</div>
-
-<!-- Back to Top -->
-<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 15l-6-6-6 6"/></svg>
-</button>
-
-<script>
-const searchData = [
-  { title: '安装', section: 'install', preview: 'npm install -g @pencil.dev/cli' },
-  { title: '认证管理', section: 'install', preview: 'pencil login / pencil status' },
-  { title: '单次命令模式', section: 'onetime', preview: '--prompt --out --in --model --export' },
-  { title: '交互式 Shell', section: 'shell', preview: 'pencil interactive -o output.pen' },
-  { title: 'batch_design', section: 'batch-design', preview: 'Insert / Copy / Update / Replace / Move / Delete' },
-  { title: 'Insert (I)', section: 'batch-design', preview: 'I(parent, nodeData) 插入节点' },
-  { title: 'Copy (C)', section: 'batch-design', preview: 'C(path, parent, copyNodeData) 复制节点' },
-  { title: 'Update (U)', section: 'batch-design', preview: 'U(path, updateData) 更新节点' },
-  { title: 'Replace (R)', section: 'batch-design', preview: 'R(path, nodeData) 替换节点' },
-  { title: 'Move (M)', section: 'batch-design', preview: 'M(nodeId, parent, index?) 移动节点' },
-  { title: 'Delete (D)', section: 'batch-design', preview: 'D(nodeId) 删除节点' },
-  { title: 'Generate Image (G)', section: 'batch-design', preview: 'G(nodeId, type, prompt) 生成图片' },
-  { title: 'batch_get', section: 'batch-get', preview: '批量查询节点，支持按模式搜索和按 ID 读取' },
-  { title: 'get_editor_state', section: 'mcp-tools', preview: '获取编辑器状态和文档信息' },
-  { title: 'get_guidelines', section: 'mcp-tools', preview: '获取设计指南和样式模板' },
-  { title: 'export_nodes', section: 'mcp-tools', preview: '导出节点为图片' },
-  { title: 'find_empty_space_on_canvas', section: 'mcp-tools', preview: '在画布上查找空白区域' },
-  { title: 'snapshot_layout', section: 'mcp-tools', preview: '检查布局结构' },
-  { title: '模型选择', section: 'model', preview: 'claude-opus-4-6 / claude-sonnet-4-6 / claude-haiku-4-5' },
-  { title: '环境变量', section: 'env', preview: 'PENCIL_CLI_KEY / ANTHROPIC_API_KEY / DEBUG' },
-  { title: '导出功能', section: 'export', preview: '--export --export-scale --export-type png/jpeg/webp/pdf' },
-  { title: '常用示例', section: 'examples', preview: '单次命令 / 交互式工作流 / CI/CD 集成' },
-];
-
-const searchInput = document.getElementById('searchInput');
-const searchResults = document.getElementById('searchResults');
-
-searchInput.addEventListener('input', (e) => {
-  const q = e.target.value.toLowerCase().trim();
-  if (!q) { searchResults.classList.remove('active'); return; }
-  const matches = searchData.filter(i => i.title.toLowerCase().includes(q) || i.preview.toLowerCase().includes(q));
-  if (matches.length === 0) {
-    searchResults.innerHTML = '<div class="search-no-result">没有找到结果</div>';
-  } else {
-    searchResults.innerHTML = matches.map(m => {
-      const highlighted = m.title.replace(new RegExp(`(${q})`, 'gi'), '<mark>$1</mark>');
-      return `<a class="search-result-item" onclick="scrollToSection('${m.section}');searchInput.value='';searchResults.classList.remove('active');">
-        <div class="search-result-title">${highlighted}</div>
-        <div class="search-result-preview">${m.preview}</div>
-      </a>`;
-    }).join('');
-  }
-  searchResults.classList.add('active');
-});
-
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.search-box') && !e.target.closest('.search-results')) {
-    searchResults.classList.remove('active');
-  }
-});
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === '/' && document.activeElement !== searchInput) {
-    e.preventDefault();
-    searchInput.focus();
-  }
-  if (e.key === 'Escape') {
-    searchInput.blur();
-    searchResults.classList.remove('active');
-  }
-});
-
-function scrollToSection(id) {
-  const el = document.getElementById('sec-' + id) || document.getElementById(id);
-  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function copyCode(btn) {
-  const code = btn.closest('.code-block').querySelector('pre').textContent;
-  navigator.clipboard.writeText(code);
-  btn.textContent = '已复制';
-  btn.classList.add('copied');
-  setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); }, 2000);
-}
-
-function copyText(text, btn) {
-  navigator.clipboard.writeText(text);
-  const span = btn.querySelector('span');
-  const original = span.textContent;
-  span.textContent = '已复制';
-  setTimeout(() => { span.textContent = original; }, 2000);
-}
-
-const backTop = document.getElementById('backTop');
-window.addEventListener('scroll', () => {
-  backTop.classList.toggle('visible', window.scrollY > 400);
-});
-
-const sections = document.querySelectorAll('.section');
-const navLinks = document.querySelectorAll('.nav-link');
-
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      const id = entry.target.id.replace('sec-', '');
-      navLinks.forEach(l => l.classList.toggle('active', l.dataset.section === id));
+  
+  <button class="drawer-toggle" id="drawerToggle" onclick="toggleDrawer()" title="打开目录">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <div class="overlay" id="overlay" onclick="toggleDrawer()"></div>
+  <script>
+    function toggleDrawer() {
+      var s = document.querySelector('.sidebar');
+      var o = document.getElementById('overlay');
+      var t = document.getElementById('drawerToggle');
+      s.classList.toggle('open');
+      o.classList.toggle('active');
+      t.classList.toggle('active');
     }
-  });
-}, { rootMargin: '-100px 0px -60% 0px' });
-
-sections.forEach(s => observer.observe(s));
-</script>
-
+    // 点击侧边栏链接后自动关闭抽屉
+    document.querySelectorAll('.sidebar nav a').forEach(function(a) {
+      a.addEventListener('click', function() {
+        if (document.querySelector('.sidebar').classList.contains('open')) toggleDrawer();
+      });
+    });
+    // 粘性标题
+    (function() {
+      var h1el = document.querySelector('.main > h1');
+      if (!h1el) return;
+      var title = h1el.textContent;
+      var header = document.createElement('div');
+      header.className = 'sticky-header';
+      header.innerHTML = '<h1>' + title + '</h1>';
+      h1el.parentNode.insertBefore(header, h1el.nextSibling);
+      window.addEventListener('scroll', function() {
+        var rect = h1el.getBoundingClientRect();
+        header.classList.toggle('visible', rect.bottom < 0);
+      }, { passive: true });
+    })();
+  </script>
 </body>
 </html>
