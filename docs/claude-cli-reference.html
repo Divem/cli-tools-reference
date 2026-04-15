@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Code CLI 参考手册 - Claude Style</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect rx=%2212%22 width=%22100%22 height=%22100%22 fill=%22%231a1a2e%22/><text x=%2250%22 y=%2268%22 font-size=%2255%22 font-family=%22monospace%22 font-weight=%22bold%22 text-anchor=%22middle%22 fill=%22%2300d4aa%22>&gt;_</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-bg: #faf9f7;
+      --color-text: #1a1a1a;
+      --color-accent: #d97757;
+      --color-accent-light: #f5e9e4;
+      --color-border: rgba(0,0,0,0.08);
+      --color-code-bg: #f5f5f0;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.6;
+      font-size: 16px;
+    }
+    .container { display: flex; max-width: 1400px; margin: 0 auto; }
+    .sidebar {
+      width: 280px;
+      padding: 2rem 1.5rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      border-right: 1px solid var(--color-border);
+      background: #fff;
+    }
+    .sidebar h2 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+    }
+    .sidebar a {
+      display: block;
+      padding: 0.5rem 0;
+      color: #666;
+      text-decoration: none;
+      font-size: 0.9rem;
+      border-left: 2px solid transparent;
+      padding-left: 0.75rem;
+      margin-left: -0.75rem;
+      transition: all 0.2s;
+    }
+    .sidebar a:hover {
+      color: var(--color-accent);
+      border-left-color: var(--color-accent);
+    }
+    .main {
+      flex: 1;
+      padding: 3rem 4rem;
+      max-width: 900px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: var(--color-text);
+      letter-spacing: -0.02em;
+    }
+    h2 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--color-text);
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--color-accent);
+    }
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+      color: var(--color-text);
+    }
+    p { margin-bottom: 1rem; }
+    code {
+      font-family: 'SF Mono', Monaco, monospace;
+      background: var(--color-code-bg);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.9em;
+      color: var(--color-accent);
+    }
+    pre {
+      background: var(--color-code-bg);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-left: 4px solid var(--color-accent);
+    }
+    pre code {
+      background: none;
+      padding: 0;
+      color: var(--color-text);
+      font-size: 0.875rem;
+      line-height: 1.7;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+    }
+    th, td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--color-border);
+    }
+    th {
+      font-weight: 600;
+      background: var(--color-accent-light);
+      color: var(--color-accent);
+    }
+    blockquote {
+      border-left: 4px solid var(--color-accent);
+      padding-left: 1rem;
+      margin: 1.5rem 0;
+      color: #666;
+      font-style: italic;
+    }
+    ul { margin: 1rem 0; padding-left: 1.5rem; }
+    li { margin: 0.5rem 0; }
+    hr { border: none; border-top: 1px solid var(--color-border); margin: 2rem 0; }
+    a { color: var(--color-accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <h2>目录</h2>
+      <nav><a href="#目录" >目录</a>
+<a href="#快速入门" >快速入门</a>
+<a href="#基础用法" >基础用法</a>
+<a href="#选项参数" >选项参数</a>
+<a href="#会话控制" style="padding-left: 1rem;">会话控制</a>
+<a href="#非交互模式-p" style="padding-left: 1rem;">非交互模式（-p）</a>
+<a href="#模型与推理" style="padding-left: 1rem;">模型与推理</a>
+<a href="#工具与权限" style="padding-left: 1rem;">工具与权限</a>
+<a href="#agent-与自定义-agent" style="padding-left: 1rem;">Agent 与自定义 Agent</a>
+<a href="#系统提示词" style="padding-left: 1rem;">系统提示词</a>
+<a href="#mcp-服务器" style="padding-left: 1rem;">MCP 服务器</a>
+<a href="#插件与目录" style="padding-left: 1rem;">插件与目录</a>
+<a href="#chrome-集成" style="padding-left: 1rem;">Chrome 集成</a>
+<a href="#其他" style="padding-left: 1rem;">其他</a>
+<a href="#子命令详解" >子命令详解</a>
+<a href="#auth-认证管理" style="padding-left: 1rem;">auth — 认证管理</a>
+<a href="#mcp-mcp-服务器管理" style="padding-left: 1rem;">mcp — MCP 服务器管理</a>
+<a href="#plugin-插件管理" style="padding-left: 1rem;">plugin — 插件管理</a>
+<a href="#agents-查看配置的-agent" style="padding-left: 1rem;">agents — 查看配置的 Agent</a>
+<a href="#install-安装指定版本" style="padding-left: 1rem;">install — 安装指定版本</a>
+<a href="#doctor-健康检查" style="padding-left: 1rem;">doctor — 健康检查</a>
+<a href="#setup-token-设置长期令牌" style="padding-left: 1rem;">setup-token — 设置长期令牌</a>
+<a href="#auto-mode-自动模式配置" style="padding-left: 1rem;">auto-mode — 自动模式配置</a>
+<a href="#update-upgrade-更新" style="padding-left: 1rem;">update / upgrade — 更新</a>
+<a href="#权限模式" >权限模式</a>
+<a href="#输出格式" >输出格式</a>
+<a href="#模型选择" >模型选择</a>
+<a href="#会话管理" >会话管理</a>
+<a href="#git-worktree-集成" >Git Worktree 集成</a>
+<a href="#配置与设置" >配置与设置</a>
+<a href="#配置范围" style="padding-left: 1rem;">配置范围</a>
+<a href="#加载配置来源" style="padding-left: 1rem;">加载配置来源</a>
+<a href="#额外设置文件" style="padding-left: 1rem;">额外设置文件</a>
+<a href="#常见用例" >常见用例</a>
+<a href="#脚本集成" style="padding-left: 1rem;">脚本集成</a>
+<a href="#cicd-集成" style="padding-left: 1rem;">CI/CD 集成</a>
+<a href="#结构化输出" style="padding-left: 1rem;">结构化输出</a>
+<a href="#多-agent-协作" style="padding-left: 1rem;">多 Agent 协作</a>
+<a href="#mcp-服务器工作流" style="padding-left: 1rem;">MCP 服务器工作流</a>
+<a href="#极简模式" style="padding-left: 1rem;">极简模式</a>
+<a href="#chrome-集成" style="padding-left: 1rem;">Chrome 集成</a></nav>
+    </aside>
+    <main class="main"><h1>Claude Code CLI 参考手册</h1></p><blockquote>版本：2.1.89  </blockquote></p>
+<blockquote>安装路径：<code>~/.nvm/versions/node/v22.22.1/bin/claude</code></blockquote></p><p>Claude Code 是 Anthropic 推出的 AI 编程助手命令行工具，默认启动交互式会话，也可通过 <code>-p</code> 参数进行非交互式输出。</p><hr><h2 id="目录">目录</h2></p>
+<ul><li><a href="#快速入门">快速入门</a></li></p>
+<li><a href="#基础用法">基础用法</a></li></p>
+<li><a href="#选项参数">选项参数</a></li></p>
+<li><a href="#子命令详解">子命令详解</a></li></p>
+<li><a href="#auth--认证管理">auth — 认证管理</a></li></p>
+<li><a href="#mcp--mcp-服务器管理">mcp — MCP 服务器管理</a></li></p>
+<li><a href="#plugin--插件管理">plugin — 插件管理</a></li></p>
+<li><a href="#agents--查看配置的-agent">agents — 查看配置的 Agent</a></li></p>
+<li><a href="#install--安装指定版本">install — 安装指定版本</a></li></p>
+<li><a href="#doctor--健康检查">doctor — 健康检查</a></li></p>
+<li><a href="#setup-token--设置长期令牌">setup-token — 设置长期令牌</a></li></p>
+<li><a href="#auto-mode--自动模式配置">auto-mode — 自动模式配置</a></li></p>
+<li><a href="#update--upgrade--更新">update / upgrade — 更新</a></li></p>
+<li><a href="#权限模式">权限模式</a></li></p>
+<li><a href="#输出格式">输出格式</a></li></p>
+<li><a href="#模型选择">模型选择</a></li></p>
+<li><a href="#会话管理">会话管理</a></li></p>
+<li><a href="#git-worktree-集成">Git Worktree 集成</a></li></p>
+<li><a href="#配置与设置">配置与设置</a></li></p>
+<li><a href="#常见用例">常见用例</a></li></p>
+</ul></p>
+<hr><h2 id="快速入门">快速入门</h2></p><pre><code><h1>启动交互式会话</h1></p>
+<p>claude</p><h1>非交互式执行（适合管道和脚本）</h1></p>
+<p>claude -p "解释这个项目的结构"</p><h1>指定模型</h1></p>
+<p>claude --model sonnet -p "帮我写一个 Python 函数"</p><h1>继续上次对话</h1></p>
+<p>claude -c</p>
+</code></pre></p><hr><h2 id="基础用法">基础用法</h2></p><pre><code>claude [选项] [命令] [prompt]</p>
+</code></pre></p>
+<ul><li>直接运行 <code>claude</code> 启动交互式终端会话</li></p>
+<li>附加 prompt 参数可直接提问</li></p>
+<li>使用 <code>claude -p "prompt"</code> 进入非交互模式，输出结果后退出</li></p>
+</ul></p>
+<hr><h2 id="选项参数">选项参数</h2></p><h3 id="会话控制">会话控制</h3></p><table><thead><tr><th>参数</th><th>说明</th></tr></thead><tbody><tr><td><code>-c</code>, <code>--continue</code></td><td>继续当前目录下最近的一次对话</td></tr><tr><td><code>-r</code>, <code>--resume [value]</code></td><td>通过会话 ID 恢复对话，或打开交互式选择器（可附加搜索词）</td></tr><tr><td><code>--session-id <uuid></code></td><td>为当前会话指定一个 UUID</td></tr><tr><td><code>-n</code>, <code>--name <name></code></td><td>设置会话显示名称（显示在 /resume 和终端标题中）</td></tr><tr><td><code>--fork-session</code></td><td>恢复时创建新会话 ID（与 --resume 或 --continue 配合使用）</td></tr><tr><td><code>--from-pr [value]</code></td><td>通过 PR 编号/URL 恢复关联会话，或打开交互式选择器</td></tr><tr><td><code>--no-session-persistence</code></td><td>禁用会话持久化（仅 -p 模式可用）</td></tr></tbody></table></p>
+<h3 id="非交互模式-p">非交互模式（-p）</h3></p><table><thead><tr><th>参数</th><th>说明</th></tr></thead><tbody><tr><td><code>-p</code>, <code>--print</code></td><td>打印响应后退出（适合管道/脚本）</td></tr><tr><td><code>--output-format <format></code></td><td>输出格式：<code>text</code>（默认）、<code>json</code>、<code>stream-json</code></td></tr><tr><td><code>--input-format <format></code></td><td>输入格式：<code>text</code>（默认）、<code>stream-json</code></td></tr><tr><td><code>--max-budget-usd <amount></code></td><td>API 调用的最大花费限额（美元）</td></tr><tr><td><code>--fallback-model <model></code></td><td>默认模型过载时的回退模型</td></tr><tr><td><code>--json-schema <schema></code></td><td>结构化输出的 JSON Schema 验证</td></tr></tbody></table></p>
+<h3 id="模型与推理">模型与推理</h3></p><table><thead><tr><th>参数</th><th>说明</th></tr></thead><tbody><tr><td><code>--model <model></code></td><td>指定模型（别名如 <code>sonnet</code>、<code>opus</code>，或全名如 <code>claude-sonnet-4-6</code>）</td></tr><tr><td><code>--effort <level></code></td><td>推理投入等级：<code>low</code>、<code>medium</code>、<code>high</code>、<code>max</code></td></tr><tr><td><code>--fallback-model <model></code></td><td>模型过载时自动切换的回退模型</td></tr></tbody></table></p>
+<h3 id="工具与权限">工具与权限</h3></p><table><thead><tr><th>参数</th><th>说明</th></tr></thead><tbody><tr><td><code>--allowedTools, --allowed-tools <tools...></code></td><td>允许的工具列表（如 <code>Bash(git:*) Edit</code>）</td></tr><tr><td><code>--disallowedTools, --disallowed-tools <tools...></code></td><td>禁止的工具列表</td></tr><tr><td><code>--tools <tools...></code></td><td>指定可用工具集：<code>""</code> 禁用全部、<code>"default"</code> 使用全部、或指定工具名</td></tr><tr><td><code>--permission-mode <mode></code></td><td>权限模式（见<a href="#权限模式">权限模式</a>章节）</td></tr><tr><td><code>--dangerously-skip-permissions</code></td><td>跳过所有权限检查（仅限无网络沙箱）</td></tr><tr><td><code>--allow-dangerously-skip-permissions</code></td><td>启用跳过权限选项但不默认开启</td></tr></tbody></table></p>
+<h3 id="agent-与自定义-agent">Agent 与自定义 Agent</h3></p><table><thead><tr><th>参数</th><th>说明</th></tr></thead><tbody><tr><td><code>--agent <agent></code></td><td>当前会话使用的 Agent（覆盖配置中的 <code>agent</code> 设置）</td></tr><tr><td><code>--agents <json></code></td><td>JSON 格式定义自定义 Agent</td></tr></tbody></table></p>
+<p>示例：</p><pre><code><h1>使用自定义 Agent</h1></p>
+<p>claude --agents '{"reviewer": {"description": "Reviews code", "prompt": "You are a code reviewer"}}'</p>
+</code></pre></p><h3 id="系统提示词">系统提示词</h3></p><table><thead><tr><th>参数</th><th>说明</th></tr></thead><tbody><tr><td><code>--system-prompt <prompt></code></td><td>替换默认系统提示词</td></tr><tr><td><code>--append-system-prompt <prompt></code></td><td>在默认系统提示词后追加内容</td></tr></tbody></table></p>
+<h3 id="mcp-服务器">MCP 服务器</h3></p><table><thead><tr><th>参数</th><th>说明</th></tr></thead><tbody><tr><td><code>--mcp-config <configs...></code></td><td>从 JSON 文件或字符串加载 MCP 服务器（空格分隔）</td></tr><tr><td><code>--strict-mcp-config</code></td><td>仅使用 --mcp-config 指定的 MCP 服务器，忽略其他配置</td></tr></tbody></table></p>
+<h3 id="插件与目录">插件与目录</h3></p><table><thead><tr><th>参数</th><th>说明</th></tr></thead><tbody><tr><td><code>--add-dir <directories...></code></td><td>添加允许工具访问的额外目录</td></tr><tr><td><code>--plugin-dir <path></code></td><td>加载指定目录中的插件（可重复使用）</td></tr><tr><td><code>--setting-sources <sources></code></td><td>加载的配置来源：<code>user</code>、<code>project</code>、<code>local</code>（逗号分隔）</td></tr><tr><td><code>--settings <file-or-json></code></td><td>额外的设置 JSON 文件或 JSON 字符串</td></tr></tbody></table></p>
+<h3 id="chrome-集成">Chrome 集成</h3></p><table><thead><tr><th>参数</th><th>说明</th></tr></thead><tbody><tr><td><code>--chrome</code></td><td>启用 Chrome 集成</td></tr><tr><td><code>--no-chrome</code></td><td>禁用 Chrome 集成</td></tr></tbody></table></p>
+<h3 id="其他">其他</h3></p><table><thead><tr><th>参数</th><th>说明</th></tr></thead><tbody><tr><td><code>--bare</code></td><td>极简模式：跳过 hooks、LSP、插件同步、自动记忆等</td></tr><tr><td><code>--brief</code></td><td>启用 SendUserMessage 工具用于 Agent 到用户的通信</td></tr><tr><td><code>--file <specs...></code></td><td>启动时下载的文件资源（格式：<code>file<em>id:relative</em>path</code>）</td></tr><tr><td><code>--ide</code></td><td>启动时自动连接 IDE（如果只有一个可用）</td></tr><tr><td><code>--disable-slash-commands</code></td><td>禁用所有技能（Skills）</td></tr><tr><td><code>--betas <betas...></code></td><td>API 请求中包含的 Beta 头（仅 API Key 用户）</td></tr><tr><td><code>-v</code>, <code>--version</code></td><td>输出版本号</td></tr><tr><td><code>-h</code>, <code>--help</code></td><td>显示帮助</td></tr><tr><td><code>-d</code>, <code>--debug [filter]</code></td><td>启用调试模式，可按类别过滤（如 <code>api,hooks</code> 或 <code>!1p,!file</code>）</td></tr><tr><td><code>--debug-file <path></code></td><td>调试日志写入指定文件（隐式启用调试模式）</td></tr><tr><td><code>--verbose</code></td><td>覆盖配置中的 verbose 设置</td></tr><tr><td><code>--include-hook-events</code></td><td>在输出流中包含所有 hook 生命周期事件</td></tr><tr><td><code>--include-partial-messages</code></td><td>包含部分消息块（仅 -p + stream-json）</td></tr><tr><td><code>--replay-user-messages</code></td><td>回放 stdin 的用户消息到 stdout</td></tr></tbody></table></p>
+<hr><h2 id="子命令详解">子命令详解</h2></p><h3 id="auth-认证管理">auth — 认证管理</h3></p><p>管理 Claude Code 的 Anthropic 账户认证。</p><p>#### auth login — 登录</p><pre><code><h1>使用 Claude 订阅登录（默认）</h1></p>
+<p>claude auth login</p><h1>使用 Anthropic Console（API 计费）登录</h1></p>
+<p>claude auth login --console</p><h1>使用 SSO 登录</h1></p>
+<p>claude auth login --sso</p><h1>预填邮箱地址</h1></p>
+<p>claude auth login --email user@example.com</p>
+</code></pre></p><table><thead><tr><th>参数</th><th>说明</th></tr></thead><tbody><tr><td><code>--claudeai</code></td><td>使用 Claude 订阅（默认）</td></tr><tr><td><code>--console</code></td><td>使用 Anthropic Console（API 计费）</td></tr><tr><td><code>--sso</code></td><td>强制 SSO 登录流程</td></tr><tr><td><code>--email <email></code></td><td>预填邮箱地址</td></tr></tbody></table></p>
+<p>#### auth logout — 登出</p><pre><code>claude auth logout</p>
+</code></pre></p><p>#### auth status — 查看认证状态</p><pre><code><h1>JSON 格式输出（默认）</h1></p>
+<p>claude auth status</p><h1>人类可读文本输出</h1></p>
+<p>claude auth status --text</p><h1>JSON 格式输出</h1></p>
+<p>claude auth status --json</p>
+</code></pre></p><hr><h3 id="mcp-mcp-服务器管理">mcp — MCP 服务器管理</h3></p><p>管理 Model Context Protocol (MCP) 服务器配置。</p><p>#### mcp add — 添加 MCP 服务器</p><pre><code><h1>添加 HTTP 服务器</h1></p>
+<p>claude mcp add --transport http sentry https://mcp.sentry.dev/mcp</p><h1>添加带请求头的 HTTP 服务器</h1></p>
+<p>claude mcp add --transport http corridor https://app.corridor.dev/api/mcp --header "Authorization: Bearer ..."</p><h1>添加带环境变量的 stdio 服务器</h1></p>
+<p>claude mcp add -e API_KEY=xxx my-server -- npx my-mcp-server</p><h1>添加带子进程参数的 stdio 服务器</h1></p>
+<p>claude mcp add my-server -- my-command --some-flag arg1</p>
+</code></pre></p><table><thead><tr><th>参数</th><th>说明</th></tr></thead><tbody><tr><td><code>-t</code>, <code>--transport <transport></code></td><td>传输类型：<code>stdio</code>、<code>sse</code>、<code>http</code>（默认 <code>stdio</code>）</td></tr><tr><td><code>-s</code>, <code>--scope <scope></code></td><td>配置范围：<code>local</code>、<code>user</code>、<code>project</code>（默认 <code>local</code>）</td></tr><tr><td><code>-e</code>, <code>--env <env...></code></td><td>环境变量（如 <code>-e KEY=value</code>）</td></tr><tr><td><code>-H</code>, <code>--header <header...></code></td><td>WebSocket 请求头</td></tr><tr><td><code>--client-id <clientId></code></td><td>OAuth 客户端 ID（HTTP/SSE 服务器）</td></tr><tr><td><code>--client-secret</code></td><td>提示输入 OAuth 客户端密钥</td></tr><tr><td><code>--callback-port <port></code></td><td>OAuth 回调的固定端口</td></tr></tbody></table></p>
+<p>#### mcp add-json — 通过 JSON 添加 MCP 服务器</p><pre><code>claude mcp add-json my-server '{"command":"npx","args":["my-mcp-server"]}'</p>
+</code></pre></p><table><thead><tr><th>参数</th><th>说明</th></tr></thead><tbody><tr><td><code>-s</code>, <code>--scope <scope></code></td><td>配置范围（默认 <code>local</code>）</td></tr><tr><td><code>--client-secret</code></td><td>提示输入 OAuth 客户端密钥</td></tr></tbody></table></p>
+<p>#### mcp add-from-claude-desktop — 从 Claude Desktop 导入</p><pre><code>claude mcp add-from-claude-desktop</p><h1>指定配置范围</h1></p>
+<p>claude mcp add-from-claude-desktop -s user</p>
+</code></pre></p><p>仅支持 Mac 和 WSL。</p><p>#### mcp list — 列出 MCP 服务器</p><pre><code>claude mcp list</p>
+</code></pre></p><p>#### mcp get — 查看 MCP 服务器详情</p><pre><code>claude mcp get <name></p>
+</code></pre></p><p>#### mcp remove — 移除 MCP 服务器</p><pre><code>claude mcp remove my-server</p><h1>指定范围移除</h1></p>
+<p>claude mcp remove -s project my-server</p>
+</code></pre></p><p>#### mcp reset-project-choices — 重置项目 MCP 选择</p><pre><code>claude mcp reset-project-choices</p>
+</code></pre></p><p>重置当前项目中所有已批准和已拒绝的项目级 (.mcp.json) 服务器。</p><p>#### mcp serve — 启动 MCP 服务器</p><pre><code>claude mcp serve</p>
+<p>claude mcp serve --debug</p>
+<p>claude mcp serve --verbose</p>
+</code></pre></p><hr><h3 id="plugin-插件管理">plugin — 插件管理</h3></p><p>管理 Claude Code 插件和 marketplace。</p><p>#### plugin install — 安装插件</p><pre><code><h1>安装插件</h1></p>
+<p>claude plugin install <plugin></p><h1>从指定 marketplace 安装</h1></p>
+<p>claude plugin install plugin@marketplace</p><h1>指定安装范围</h1></p>
+<p>claude plugin install -s project <plugin></p>
+</code></pre></p><table><thead><tr><th>参数</th><th>说明</th></tr></thead><tbody><tr><td><code>-s</code>, <code>--scope <scope></code></td><td>安装范围：<code>user</code>、<code>project</code>、<code>local</code>（默认 <code>user</code>）</td></tr></tbody></table></p>
+<p>#### plugin uninstall / remove — 卸载插件</p><pre><code>claude plugin uninstall <plugin></p>
+</code></pre></p><p>#### plugin enable — 启用插件</p><pre><code>claude plugin enable <plugin></p>
+</code></pre></p><p>#### plugin disable — 禁用插件</p><pre><code>claude plugin disable [plugin]</p>
+</code></pre></p><p>#### plugin update — 更新插件</p><pre><code>claude plugin update <plugin></p>
+</code></pre></p><p>#### plugin list — 列出已安装插件</p><pre><code>claude plugin list</p>
+</code></pre></p><p>#### plugin validate — 验证插件</p><pre><code>claude plugin validate <path></p>
+</code></pre></p><p>#### plugin marketplace — Marketplace 管理</p><pre><code><h1>列出所有 marketplace</h1></p>
+<p>claude plugin marketplace list</p><h1>添加 marketplace</h1></p>
+<p>claude plugin marketplace add <source></p><h1>移除 marketplace</h1></p>
+<p>claude plugin marketplace remove <name></p><h1>更新 marketplace</h1></p>
+<p>claude plugin marketplace update [name]</p>
+</code></pre></p><hr><h3 id="agents-查看配置的-agent">agents — 查看配置的 Agent</h3></p><pre><code>claude agents</p><h1>指定配置来源</h1></p>
+<p>claude agents --setting-sources user,project</p>
+</code></pre></p><hr><h3 id="install-安装指定版本">install — 安装指定版本</h3></p><pre><code><h1>安装稳定版</h1></p>
+<p>claude install stable</p><h1>安装最新版</h1></p>
+<p>claude install latest</p><h1>安装指定版本</h1></p>
+<p>claude install 2.1.0</p><h1>强制安装</h1></p>
+<p>claude install --force stable</p>
+</code></pre></p><hr><h3 id="doctor-健康检查">doctor — 健康检查</h3></p><pre><code>claude doctor</p>
+</code></pre></p><p>检查 Claude Code 自动更新器的健康状态。</p><hr><h3 id="setup-token-设置长期令牌">setup-token — 设置长期令牌</h3></p><pre><code>claude setup-token</p>
+</code></pre></p><p>设置长期认证令牌（需要 Claude 订阅）。</p><hr><h3 id="auto-mode-自动模式配置">auto-mode — 自动模式配置</h3></p><p>查看和管理自动模式分类器配置。</p><pre><code><h1>查看生效的自动模式配置</h1></p>
+<p>claude auto-mode config</p><h1>查看默认规则</h1></p>
+<p>claude auto-mode defaults</p><h1>获取 AI 对自定义规则的建议</h1></p>
+<p>claude auto-mode critique</p>
+</code></pre></p><hr><h3 id="update-upgrade-更新">update / upgrade — 更新</h3></p><pre><code>claude update</p>
+</code></pre></p><p>检查更新并安装可用更新。</p><hr><h2 id="权限模式">权限模式</h2></p><p>通过 <code>--permission-mode</code> 参数设置：</p><table><thead><tr><th>模式</th><th>说明</th></tr></thead><tbody><tr><td><code>default</code></td><td>默认模式，每次操作需确认</td></tr><tr><td><code>plan</code></td><td>计划模式，先制定计划再执行</td></tr><tr><td><code>auto</code></td><td>自动模式，根据规则自动决定是否需要确认</td></tr><tr><td><code>acceptEdits</code></td><td>自动接受编辑，但其他操作仍需确认</td></tr><tr><td><code>dontAsk</code></td><td>不询问，直接执行</td></tr><tr><td><code>bypassPermissions</code></td><td>绕过所有权限检查</td></tr></tbody></table></p>
+<hr><h2 id="输出格式">输出格式</h2></p><p>在 <code>-p</code>（print）模式下，通过 <code>--output-format</code> 控制：</p><table><thead><tr><th>格式</th><th>说明</th></tr></thead><tbody><tr><td><code>text</code></td><td>纯文本输出（默认）</td></tr><tr><td><code>json</code></td><td>单个 JSON 结果</td></tr><tr><td><code>stream-json</code></td><td>实时流式 JSON 输出</td></tr></tbody></table></p>
+<p>示例：</p><pre><code><h1>JSON 输出</h1></p>
+<p>claude -p --output-format json "列出当前目录的文件"</p><h1>流式 JSON（适合程序解析）</h1></p>
+<p>claude -p --output-format stream-json "解释这段代码"</p>
+</code></pre></p><hr><h2 id="模型选择">模型选择</h2></p><p>使用 <code>--model</code> 参数选择模型：</p><pre><code><h1>使用模型别名</h1></p>
+<p>claude --model sonnet</p>
+<p>claude --model opus</p><h1>使用完整模型名称</h1></p>
+<p>claude --model claude-sonnet-4-6</p><h1>设置推理投入等级</h1></p>
+<p>claude --effort high -p "深入分析这段代码的性能"</p>
+</code></pre></p><p>可用别名会随版本更新变化，建议使用 <code>--model</code> 配合最新别名。</p><hr><h2 id="会话管理">会话管理</h2></p><p>Claude Code 支持会话持久化和恢复：</p><pre><code><h1>继续上次对话</h1></p>
+<p>claude -c</p><h1>通过会话 ID 恢复</h1></p>
+<p>claude -r <session-id></p><h1>交互式选择会话恢复</h1></p>
+<p>claude -r</p><h1>搜索特定会话</h1></p>
+<p>claude -r "搜索关键词"</p><h1>恢复 PR 关联会话</h1></p>
+<p>claude --from-pr 123</p>
+<p>claude --from-pr https://github.com/org/repo/pull/123</p><h1>恢复时创建新分支（不覆盖原会话）</h1></p>
+<p>claude -c --fork-session</p><h1>为会话命名</h1></p>
+<p>claude -n "bugfix-session"</p>
+</code></pre></p><hr><h2 id="git-worktree-集成">Git Worktree 集成</h2></p><p>Claude Code 支持在 Git Worktree 中工作：</p><pre><code><h1>创建新 worktree 会话</h1></p>
+<p>claude -w</p><h1>创建命名 worktree</h1></p>
+<p>claude -w feature-branch</p><h1>使用 tmux（推荐）</h1></p>
+<p>claude -w --tmux</p><h1>使用传统 tmux</h1></p>
+<p>claude -w --tmux=classic</p>
+</code></pre></p><hr><h2 id="配置与设置">配置与设置</h2></p><h3 id="配置范围">配置范围</h3></p><table><thead><tr><th>范围</th><th>说明</th><th>存储位置</th></tr></thead><tbody><tr><td><code>local</code></td><td>本地（仅当前项目）</td><td><code>.claude/</code></td></tr><tr><td><code>user</code></td><td>用户级（所有项目）</td><td><code>~/.claude/</code></td></tr><tr><td><code>project</code></td><td>项目级（团队共享）</td><td>项目根目录配置</td></tr></tbody></table></p>
+<h3 id="加载配置来源">加载配置来源</h3></p><pre><code><h1>仅加载用户级配置</h1></p>
+<p>claude --setting-sources user</p><h1>加载用户和项目级</h1></p>
+<p>claude --setting-sources user,project</p><h1>加载全部</h1></p>
+<p>claude --setting-sources user,project,local</p>
+</code></pre></p><h3 id="额外设置文件">额外设置文件</h3></p><pre><code><h1>从 JSON 文件加载</h1></p>
+<p>claude --settings ./my-settings.json</p><h1>从 JSON 字符串加载</h1></p>
+<p>claude --settings '{"allowedTools": ["Bash", "Edit"]}'</p>
+</code></pre></p><hr><h2 id="常见用例">常见用例</h2></p><h3 id="脚本集成">脚本集成</h3></p><pre><code><h1>获取 JSON 输出用于脚本处理</h1></p>
+<p>claude -p --output-format json "分析 package.json 中的依赖"</p><h1>设置花费上限</h1></p>
+<p>claude -p --max-budget-usd 0.5 "重构这段代码"</p><h1>使用管道</h1></p>
+<p>cat error.log | claude -p "分析这些错误日志"</p>
+</code></pre></p><h3 id="cicd-集成">CI/CD 集成</h3></p><pre><code><h1>非交互模式，跳过权限</h1></p>
+<p>claude -p --dangerously-skip-permissions "运行测试并修复失败的用例"</p><h1>指定工具集</h1></p>
+<p>claude -p --tools "Bash,Read,Write" "只使用基础工具完成任务"</p>
+</code></pre></p><h3 id="结构化输出">结构化输出</h3></p><pre><code><h1>使用 JSON Schema 约束输出</h1></p>
+<p>claude -p --json-schema '{"type":"object","properties":{"files":{"type":"array"}}}' "列出需要修改的文件"</p>
+</code></pre></p><h3 id="多-agent-协作">多 Agent 协作</h3></p><pre><code><h1>定义并使用自定义 Agent</h1></p>
+<p>claude --agent reviewer -p "审查 src/ 目录下的所有代码变更"</p>
+</code></pre></p><h3 id="mcp-服务器工作流">MCP 服务器工作流</h3></p><pre><code><h1>添加多个 MCP 服务器</h1></p>
+<p>claude mcp add -s project -e API_KEY=$KEY github-mcp -- npx @anthropic/github-mcp</p>
+<p>claude mcp add -s project -t http sentry https://mcp.sentry.dev/mcp</p><h1>查看已配置的服务器</h1></p>
+<p>claude mcp list</p><h1>启动 MCP 服务器模式</h1></p>
+<p>claude mcp serve</p>
+</code></pre></p><h3 id="极简模式">极简模式</h3></p><pre><code><h1>极简模式（跳过 hooks、LSP、插件同步等，适合 CI）</h1></p>
+<p>claude --bare -p "完成任务"</p>
+</code></pre></p><h3 id="chrome-集成">Chrome 集成</h3></p><pre><code><h1>启用 Chrome 集成</h1></p>
+<p>claude --chrome</p><h1>显式禁用</h1></p>
+<p>claude --no-chrome</p>
+</code></pre></p>
+</main>
+  </div>
+</body>
+</html>

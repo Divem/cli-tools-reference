@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FFmpeg CLI 参考手册 - SpaceX Style</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect rx=%2212%22 width=%22100%22 height=%22100%22 fill=%22%231a1a2e%22/><text x=%2250%22 y=%2268%22 font-size=%2255%22 font-family=%22monospace%22 font-weight=%22bold%22 text-anchor=%22middle%22 fill=%22%2300d4aa%22>&gt;_</text></svg>">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap');
+    :root {
+      --color-bg: #000000;
+      --color-text: #f0f0fa;
+      --color-accent: #fff;
+      --color-border: rgba(240,240,250,0.2);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.4;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .container { display: flex; max-width: 1400px; margin: 0 auto; }
+    .sidebar {
+      width: 300px;
+      padding: 2rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      background: linear-gradient(180deg, rgba(20,20,30,0.9) 0%, rgba(0,0,0,1) 100%);
+      border-right: 1px solid var(--color-border);
+    }
+    .sidebar h2 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-text);
+      letter-spacing: 0.1em;
+      margin-bottom: 1.5rem;
+      opacity: 0.7;
+    }
+    .sidebar a {
+      display: block;
+      padding: 0.75rem 0;
+      color: rgba(240,240,250,0.6);
+      text-decoration: none;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      transition: color 0.3s;
+      border-bottom: 1px solid rgba(240,240,250,0.1);
+    }
+    .sidebar a:hover { color: var(--color-text); }
+    .main {
+      flex: 1;
+      padding: 4rem;
+      max-width: 1000px;
+      background: radial-gradient(ellipse at top, rgba(30,30,50,0.5) 0%, transparent 50%);
+    }
+    h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-top: 3rem;
+      margin-bottom: 1rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: rgba(240,240,250,0.9);
+    }
+    h3 {
+      font-size: 1.125rem;
+      font-weight: 500;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: rgba(240,240,250,0.8);
+    }
+    p {
+      margin-bottom: 1.25rem;
+      text-transform: none;
+      letter-spacing: normal;
+      line-height: 1.6;
+      color: rgba(240,240,250,0.8);
+    }
+    code {
+      font-family: 'SF Mono', monospace;
+      background: rgba(240,240,250,0.1);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.85em;
+      text-transform: none;
+      letter-spacing: normal;
+      color: var(--color-text);
+    }
+    pre {
+      background: rgba(240,240,250,0.05);
+      border: 1px solid var(--color-border);
+      padding: 1.5rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+    pre code {
+      background: none;
+      font-size: 0.85rem;
+      line-height: 1.7;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.875rem;
+      text-transform: none;
+      letter-spacing: normal;
+    }
+    th, td {
+      padding: 0.875rem;
+      text-align: left;
+      border-bottom: 1px solid var(--color-border);
+    }
+    th {
+      font-weight: 600;
+      color: var(--color-text);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    td { color: rgba(240,240,250,0.7); }
+    blockquote {
+      border-left: 2px solid var(--color-text);
+      padding-left: 1.5rem;
+      margin: 1.5rem 0;
+      font-style: italic;
+      text-transform: none;
+      letter-spacing: normal;
+      color: rgba(240,240,250,0.6);
+    }
+    ul { margin: 1rem 0; padding-left: 1.5rem; text-transform: none; letter-spacing: normal; }
+    li { margin: 0.5rem 0; color: rgba(240,240,250,0.8); }
+    hr { border: none; border-top: 1px solid var(--color-border); margin: 2.5rem 0; }
+    a { color: var(--color-text); text-decoration: none; border-bottom: 1px solid rgba(240,240,250,0.3); }
+    a:hover { border-bottom-color: var(--color-text); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <h2>Navigation</h2>
+      <nav><a href="#目录" >目录</a>
+<a href="#安装信息" >安装信息</a>
+<a href="#编译配置" style="padding-left: 1rem;">编译配置</a>
+<a href="#库版本" style="padding-left: 1rem;">库版本</a>
+<a href="#基础语法" >基础语法</a>
+<a href="#通用模式" style="padding-left: 1rem;">通用模式</a>
+<a href="#全局选项" >全局选项</a>
+<a href="#帮助与信息" style="padding-left: 1rem;">帮助与信息</a>
+<a href="#输入输出选项" >输入/输出选项</a>
+<a href="#输入与输出通用选项" style="padding-left: 1rem;">输入与输出通用选项</a>
+<a href="#仅输入选项" style="padding-left: 1rem;">仅输入选项</a>
+<a href="#仅输出选项" style="padding-left: 1rem;">仅输出选项</a>
+<a href="#视频选项" >视频选项</a>
+<a href="#音频选项" >音频选项</a>
+<a href="#字幕选项" >字幕选项</a>
+<a href="#流控制选项" >流控制选项</a>
+<a href="#流选择器语法" style="padding-left: 1rem;">流选择器语法</a>
+<a href="#滤镜系统" >滤镜系统</a>
+<a href="#基本语法" style="padding-left: 1rem;">基本语法</a>
+<a href="#常用视频滤镜" style="padding-left: 1rem;">常用视频滤镜</a>
+<a href="#常用音频滤镜" style="padding-left: 1rem;">常用音频滤镜</a>
+<a href="#复杂滤镜图" style="padding-left: 1rem;">复杂滤镜图</a>
+<a href="#高级选项" >高级选项</a>
+<a href="#码率控制" style="padding-left: 1rem;">码率控制</a>
+<a href="#编码预设x264x265" style="padding-left: 1rem;">编码预设（x264/x265）</a>
+<a href="#编码调优x264" style="padding-left: 1rem;">编码调优（x264）</a>
+<a href="#时间戳选项" style="padding-left: 1rem;">时间戳选项</a>
+<a href="#常用编码器" >常用编码器</a>
+<a href="#视频编码器" style="padding-left: 1rem;">视频编码器</a>
+<a href="#音频编码器" style="padding-left: 1rem;">音频编码器</a>
+<a href="#字幕编码器" style="padding-left: 1rem;">字幕编码器</a>
+<a href="#支持格式" >支持格式</a>
+<a href="#常用容器格式" style="padding-left: 1rem;">常用容器格式</a>
+<a href="#硬件加速" >硬件加速</a>
+<a href="#ffprobe-工具" >ffprobe 工具</a>
+<a href="#常用命令示例" >常用命令示例</a>
+<a href="#格式转换" style="padding-left: 1rem;">格式转换</a>
+<a href="#视频处理" style="padding-left: 1rem;">视频处理</a>
+<a href="#音频处理" style="padding-left: 1rem;">音频处理</a>
+<a href="#字幕处理" style="padding-left: 1rem;">字幕处理</a>
+<a href="#多文件操作" style="padding-left: 1rem;">多文件操作</a>
+<a href="#高级编码" style="padding-left: 1rem;">高级编码</a>
+<a href="#参考资源" >参考资源</a></nav>
+    </aside>
+    <main class="main"><h1>FFmpeg CLI 参考手册</h1></p><blockquote>本机版本：<strong>ffmpeg 8.0.1</strong> | 安装路径：<code>/opt/homebrew/bin/ffmpeg</code></blockquote></p>
+<blockquote>编译器：Apple clang 17.0.0 | 架构：ARM64 (Apple Silicon)</blockquote></p><p>FFmpeg 是开源的跨平台音视频处理工具集，支持几乎所有音视频格式的录制、转换、流化处理。核心由 <code>ffmpeg</code>（转码）、<code>ffprobe</code>（分析）、<code>ffplay</code>（播放）三个命令组成。</p><h2 id="目录">目录</h2></p>
+<ul><li><a href="#安装信息">安装信息</a></li></p>
+<li><a href="#基础语法">基础语法</a></li></p>
+<li><a href="#全局选项">全局选项</a></li></p>
+<li><a href="#输入输出选项">输入/输出选项</a></li></p>
+<li><a href="#视频选项">视频选项</a></li></p>
+<li><a href="#音频选项">音频选项</a></li></p>
+<li><a href="#字幕选项">字幕选项</a></li></p>
+<li><a href="#流控制选项">流控制选项</a></li></p>
+<li><a href="#滤镜系统">滤镜系统</a></li></p>
+<li><a href="#高级选项">高级选项</a></li></p>
+<li><a href="#常用编码器">常用编码器</a></li></p>
+<li><a href="#支持格式">支持格式</a></li></p>
+<li><a href="#硬件加速">硬件加速</a></li></p>
+<li><a href="#ffprobe-工具">ffprobe 工具</a></li></p>
+<li><a href="#常用命令示例">常用命令示例</a></li></p>
+</ul></p>
+<hr><h2 id="安装信息">安装信息</h2></p><h3 id="编译配置">编译配置</h3></p><pre><code>--prefix=/opt/homebrew/Cellar/ffmpeg/8.0.1_4</p>
+<p>--enable-shared</p>
+<p>--enable-pthreads</p>
+<p>--enable-version3</p>
+<p>--enable-ffplay</p>
+<p>--enable-gpl</p>
+<p>--enable-libsvtav1        # AV1 编码 (SVT-AV1)</p>
+<p>--enable-libopus          # Opus 音频编解码</p>
+<p>--enable-libx264          # H.264 编码</p>
+<p>--enable-libmp3lame       # MP3 编码</p>
+<p>--enable-libdav1d         # AV1 解码 (dav1d)</p>
+<p>--enable-libvpx           # VP8/VP9 编解码</p>
+<p>--enable-libx265          # H.265/HEVC 编码</p>
+<p>--enable-openssl          # HTTPS/加密协议</p>
+<p>--enable-videotoolbox     # macOS 硬件加速</p>
+<p>--enable-audiotoolbox     # macOS 音频硬件</p>
+<p>--enable-neon             # ARM NEON 指令集</p>
+</code></pre></p><h3 id="库版本">库版本</h3></p><table><thead><tr><th>库</th><th>版本</th></tr></thead><tbody><tr><td>libavutil</td><td>60.8.100</td></tr><tr><td>libavcodec</td><td>62.11.100</td></tr><tr><td>libavformat</td><td>62.3.100</td></tr><tr><td>libavdevice</td><td>62.1.100</td></tr><tr><td>libavfilter</td><td>11.4.100</td></tr><tr><td>libswscale</td><td>9.1.100</td></tr><tr><td>libswresample</td><td>6.1.100</td></tr></tbody></table></p>
+<hr><h2 id="基础语法">基础语法</h2></p><pre><code>ffmpeg [全局选项] {[输入文件选项] -i 输入文件}... {[输出文件选项] 输出文件}...</p>
+</code></pre></p><h3 id="通用模式">通用模式</h3></p><pre><code>ffmpeg -i input.mp4 output.mkv                        # 基础转换</p>
+<p>ffmpeg -i input1.mp4 -i input2.mp3 output.mp4         # 多输入</p>
+<p>ffmpeg -y -i input.mp4 output.mp4                     # 覆盖输出</p>
+<p>ffmpeg -n -i input.mp4 output.mp4                     # 不覆盖已存在文件</p>
+</code></pre></p><hr><h2 id="全局选项">全局选项</h2></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>-y</code></td><td>覆盖输出文件（不提示确认）</td></tr><tr><td><code>-n</code></td><td>永不覆盖输出文件，文件已存在则退出</td></tr><tr><td><code>-v <loglevel></code></td><td>设置日志级别：<code>quiet</code> <code>panic</code> <code>fatal</code> <code>error</code> <code>warning</code> <code>info</code> <code>verbose</code> <code>debug</code> <code>trace</code></td></tr><tr><td><code>-stats</code></td><td>打印编码进度报告</td></tr><tr><td><code>-hide_banner</code></td><td>隐藏版本/版权信息</td></tr><tr><td><code>-benchmark</code></td><td>添加基准测试计时</td></tr><tr><td><code>-benchmark_all</code></td><td>为每个任务添加计时</td></tr><tr><td><code>-progress <url></code></td><td>将进度信息写入 URL/文件</td></tr><tr><td><code>-timelimit <seconds></code></td><td>设置最大运行时间（CPU 用户时间）</td></tr></tbody></table></p>
+<h3 id="帮助与信息">帮助与信息</h3></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>-h</code></td><td>打印基本选项帮助</td></tr><tr><td><code>-h long</code></td><td>打印更多选项</td></tr><tr><td><code>-h full</code></td><td>打印所有选项（含编解码器细节，非常长）</td></tr><tr><td><code>-h type=name</code></td><td>打印指定类型的帮助（decoder/encoder/demuxer/muxer/filter/bsf/protocol）</td></tr><tr><td><code>-version</code></td><td>显示版本信息</td></tr><tr><td><code>-L</code></td><td>显示许可证</td></tr><tr><td><code>-buildconf</code></td><td>显示编译配置</td></tr><tr><td><code>-encoders</code></td><td>列出可用编码器</td></tr><tr><td><code>-decoders</code></td><td>列出可用解码器</td></tr><tr><td><code>-muxers</code></td><td>列出可用复用器（封装格式）</td></tr><tr><td><code>-demuxers</code></td><td>列出可用解复用器</td></tr><tr><td><code>-filters</code></td><td>列出可用滤镜</td></tr><tr><td><code>-pix_fmts</code></td><td>列出可用像素格式</td></tr><tr><td><code>-layouts</code></td><td>列出标准声道布局</td></tr><tr><td><code>-sample_fmts</code></td><td>列出音频采样格式</td></tr><tr><td><code>-formats</code></td><td>列出可用格式</td></tr><tr><td><code>-codecs</code></td><td>列出可用编解码器</td></tr><tr><td><code>-bsfs</code></td><td>列出比特流滤镜</td></tr><tr><td><code>-protocols</code></td><td>列出支持的协议</td></tr><tr><td><code>-devices</code></td><td>列出可用设备</td></tr><tr><td><code>-hwaccels</code></td><td>列出硬件加速方法</td></tr><tr><td><code>-colors</code></td><td>列出可用颜色名</td></tr></tbody></table></p>
+<hr><h2 id="输入输出选项">输入/输出选项</h2></p><h3 id="输入与输出通用选项">输入与输出通用选项</h3></p><table><thead><tr><th>选项</th><th>说明</th><th>适用范围</th></tr></thead><tbody><tr><td><code>-f <fmt></code></td><td>强制指定容器格式（默认自动检测）</td><td>输入/输出</td></tr><tr><td><code>-t <duration></code></td><td>设置处理时长（秒或 <code>HH:MM:SS.ms</code>）</td><td>输入/输出</td></tr><tr><td><code>-to <time_stop></code></td><td>在指定时间点停止处理</td><td>输入/输出</td></tr><tr><td><code>-ss <time_off></code></td><td>设置起始时间（快进到指定位置）</td><td>输入/输出</td></tr><tr><td><code>-fs <limit_size></code></td><td>限制输出文件大小（字节）</td><td>仅输出</td></tr></tbody></table></p>
+<h3 id="仅输入选项">仅输入选项</h3></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>-sseof <time_off></code></td><td>从文件末尾偏移处开始</td></tr><tr><td><code>-seek_timestamp</code></td><td>启用按时间戳定位</td></tr><tr><td><code>-accurate_seek</code></td><td>启用精确定位（默认）</td></tr><tr><td><code>-itsoffset <time_off></code></td><td>设置输入时间戳偏移</td></tr><tr><td><code>-re</code></td><td>以原生帧率读取输入（用于推流）</td></tr><tr><td><code>-readrate <speed></code></td><td>以指定速率读取输入</td></tr><tr><td><code>-stream_loop <count></code></td><td>设置输入流循环次数</td></tr><tr><td><code>-find<em>stream</em>info</code></td><td>分析流信息（默认开启）</td></tr></tbody></table></p>
+<h3 id="仅输出选项">仅输出选项</h3></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>-metadata[:spec] key=value</code></td><td>添加/修改元数据</td></tr><tr><td><code>-map [-]input<em>id[:stream</em>spec]</code></td><td>指定输入流映射</td></tr><tr><td><code>-map_metadata outfile:infile</code></td><td>设置元数据映射</td></tr><tr><td><code>-map<em>chapters <input</em>index></code></td><td>设置章节映射</td></tr><tr><td><code>-shortest</code></td><td>在最短输入结束时停止编码</td></tr><tr><td><code>-target <type></code></td><td>指定目标类型（<code>vcd</code> <code>svcd</code> <code>dvd</code> <code>dv</code> <code>dv50</code>，可加 <code>pal-</code>/<code>ntsc-</code>/<code>film-</code> 前缀）</td></tr></tbody></table></p>
+<hr><h2 id="视频选项">视频选项</h2></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>-r[:stream_spec] <rate></code></td><td>设置帧率（Hz 值、分数或缩写，如 <code>30</code> <code>30000/1001</code> <code>ntsc</code>）</td></tr><tr><td><code>-aspect[:stream_spec] <ratio></code></td><td>设置宽高比（<code>4:3</code> <code>16:9</code> 或 <code>1.3333</code> <code>1.7777</code>）</td></tr><tr><td><code>-vn</code></td><td>禁用视频</td></tr><tr><td><code>-vcodec <codec></code></td><td>设置视频编解码器（等同于 <code>-c:v</code>）</td></tr><tr><td><code>-vf <filter_graph></code></td><td>设置视频滤镜链（等同于 <code>-filter:v</code>）</td></tr><tr><td><code>-b <bitrate></code></td><td>设置视频比特率（推荐用 <code>-b:v</code>，如 <code>-b:v 5M</code>）</td></tr><tr><td><code>-pix<em>fmt[:stream</em>spec] <format></code></td><td>设置像素格式（<code>yuv420p</code> <code>nv12</code> <code>rgb24</code> 等）</td></tr><tr><td><code>-vframes <number></code></td><td>设置输出视频帧数</td></tr><tr><td><code>-fps<em>mode[:stream</em>spec]</code></td><td>设置帧率匹配模式（替代已弃用的 <code>-vsync</code>）</td></tr><tr><td><code>-fpsmax[:stream_spec] <rate></code></td><td>设置最大帧率</td></tr><tr><td><code>-pass[:stream_spec] <n></code></td><td>设置多遍编码的遍数（1-3）</td></tr><tr><td><code>-passlogfile[:stream_spec] <prefix></code></td><td>设置两遍编码日志文件前缀</td></tr><tr><td><code>-force<em>key</em>frames[:stream_spec] <timestamps></code></td><td>在指定时间戳强制插入关键帧</td></tr><tr><td><code>-hwaccel[:stream_spec] <name></code></td><td>启用硬件加速解码</td></tr><tr><td><code>-hwaccel<em>device[:stream</em>spec] <name></code></td><td>选择硬件加速设备</td></tr><tr><td><code>-hwaccel<em>output</em>format[:stream_spec]</code></td><td>选择硬件加速输出格式</td></tr><tr><td><code>-autorotate[:stream_spec]</code></td><td>自动插入旋转滤镜（默认开启）</td></tr><tr><td><code>-autoscale[:stream_spec]</code></td><td>自动在滤镜链末尾插入缩放滤镜</td></tr><tr><td><code>-timecode <hh:mm:ss[:;.]ff></code></td><td>设置初始时间码</td></tr></tbody></table></p>
+<hr><h2 id="音频选项">音频选项</h2></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>-aq <quality></code></td><td>设置音频质量（编解码器相关）</td></tr><tr><td><code>-ar[:stream_spec] <rate></code></td><td>设置音频采样率（Hz），常用 <code>44100</code> <code>48000</code></td></tr><tr><td><code>-ac[:stream_spec] <channels></code></td><td>设置声道数（<code>1</code>=单声道 <code>2</code>=立体声 <code>6</code>=5.1）</td></tr><tr><td><code>-an</code></td><td>禁用音频</td></tr><tr><td><code>-acodec <codec></code></td><td>设置音频编解码器（等同于 <code>-c:a</code>）</td></tr><tr><td><code>-ab <bitrate></code></td><td>设置音频比特率（等同于 <code>-b:a</code>，如 <code>-b:a 128k</code>）</td></tr><tr><td><code>-af <filter_graph></code></td><td>设置音频滤镜链（等同于 <code>-filter:a</code>）</td></tr><tr><td><code>-aframes <number></code></td><td>设置输出音频帧数</td></tr><tr><td><code>-sample<em>fmt[:stream</em>spec] <format></code></td><td>设置采样格式</td></tr><tr><td><code>-ch<em>layout[:stream</em>spec] <layout></code></td><td>设置声道布局（<code>mono</code> <code>stereo</code> <code>5.1</code> <code>7.1</code> 等）</td></tr></tbody></table></p>
+<hr><h2 id="字幕选项">字幕选项</h2></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>-sn</code></td><td>禁用字幕</td></tr><tr><td><code>-scodec <codec></code></td><td>设置字幕编解码器（等同于 <code>-c:s</code>）</td></tr><tr><td><code>-stag <fourcc></code></td><td>强制字幕 FourCC 标签</td></tr><tr><td><code>-fix<em>sub</em>duration[:stream_spec]</code></td><td>修复字幕时长</td></tr><tr><td><code>-canvas<em>size[:stream</em>spec] <WxH></code></td><td>设置字幕画布大小</td></tr></tbody></table></p>
+<hr><h2 id="流控制选项">流控制选项</h2></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>-c[:stream_spec] <codec></code></td><td>选择编解码器，<code>copy</code> 表示直接复制流不重新编码</td></tr><tr><td><code>-codec[:stream_spec] <codec></code></td><td><code>-c</code> 的别名</td></tr><tr><td><code>-pre[:stream_spec] <preset></code></td><td>预设名称</td></tr><tr><td><code>-frames[:stream_spec] <number></code></td><td>设置输出帧数</td></tr><tr><td><code>-tag[:stream_spec] <fourcc></code></td><td>强制编解码器 FourCC 标签</td></tr><tr><td><code>-q[:stream_spec] <q></code></td><td>使用固定质量（VBR 模式）</td></tr><tr><td><code>-disposition[:stream_spec]</code></td><td>设置流 disposition</td></tr><tr><td><code>-bsf[:stream_spec] <filters></code></td><td>设置比特流滤镜（逗号分隔）</td></tr><tr><td><code>-discard[:stream_spec]</code></td><td>设置丢弃策略</td></tr></tbody></table></p>
+<h3 id="流选择器语法">流选择器语法</h3></p><p>流选择器 <code>[:stream_spec]</code> 可以是：</p>
+<ul><li>流索引号（如 <code>:0</code> <code>:1</code>）</li></p>
+<li><code>v</code> 视频 / <code>a</code> 音频 / <code>s</code> 字幕</li></p>
+<li>省略时对所有流生效</li></p>
+</ul></p>
+<pre><code>-c:v libx264        # 设置视频编码器</p>
+<p>-c:a copy           # 音频直接复制</p>
+<p>-c:s mov_text       # 字幕编码器</p>
+</code></pre></p><hr><h2 id="滤镜系统">滤镜系统</h2></p><h3 id="基本语法">基本语法</h3></p><pre><code>-vf "filter1,filter2,filter3"       # 视频滤镜链</p>
+<p>-af "filter1,filter2"                # 音频滤镜链</p>
+<p>-filter<em>complex "complex</em>graph"      # 复杂滤镜图</p>
+</code></pre></p><h3 id="常用视频滤镜">常用视频滤镜</h3></p><table><thead><tr><th>滤镜</th><th>说明</th><th>示例</th></tr></thead><tbody><tr><td><code>scale</code></td><td>缩放</td><td><code>scale=1920:1080</code> <code>scale=-1:720</code>（等比缩放）</td></tr><tr><td><code>crop</code></td><td>裁剪</td><td><code>crop=1280:720:0:0</code>（宽:高:x:y）</td></tr><tr><td><code>trim</code></td><td>截取片段</td><td><code>trim=start=10:end=30</code></td></tr><tr><td><code>setpts</code></td><td>设置 PTS</td><td><code>setpts=0.5<em>PTS</code>（加速） <code>setpts=2</em>PTS</code>（减速）</td></tr><tr><td><code>fps</code></td><td>设置帧率</td><td><code>fps=30</code></td></tr><tr><td><code>reverse</code></td><td>反转视频</td><td><code>reverse</code></td></tr><tr><td><code>rotate</code></td><td>旋转</td><td><code>rotate=PI/2</code>（顺时针90度）</td></tr><tr><td><code>transpose</code></td><td>翻转/转置</td><td><code>transpose=1</code>（顺时针90度） <code>transpose=2</code>（逆时针90度）</td></tr><tr><td><code>fade</code></td><td>淡入淡出</td><td><code>fade=in:0:30,fade=out:st=60:d=30</code></td></tr><tr><td><code>overlay</code></td><td>叠加（需复杂滤镜图）</td><td>复杂滤镜图中使用</td></tr><tr><td><code>drawtext</code></td><td>绘制文字</td><td><code>drawtext=text='Hello':fontfile=/path/font.ttf:fontsize=24:fontcolor=white:x=10:y=10</code></td></tr><tr><td><code>ass</code></td><td>渲染 ASS 字幕</td><td><code>ass=subtitle.ass</code></td></tr><tr><td><code>subtitles</code></td><td>烧录字幕</td><td><code>subtitles=sub.srt</code></td></tr><tr><td><code>eq</code></td><td>亮度/对比度/饱和度</td><td><code>eq=brightness=0.1:contrast=1.2:saturation=1.5</code></td></tr><tr><td><code>hue</code></td><td>色调/饱和度</td><td><code>hue=s=1.5:h=30</code></td></tr><tr><td><code>unsharp</code></td><td>锐化</td><td><code>unsharp=5:5:1.0:5:5:0.0</code></td></tr><tr><td><code>hflip</code></td><td>水平翻转</td><td><code>hflip</code></td></tr><tr><td><code>vflip</code></td><td>垂直翻转</td><td><code>vflip</code></td></tr><tr><td><code>pad</code></td><td>填充/加边</td><td><code>pad=1920:1080:0:0:black</code></td></tr><tr><td><code>setdar</code></td><td>设置显示宽高比</td><td><code>setdar=16:9</code></td></tr><tr><td><code>setsar</code></td><td>设置采样宽高比</td><td><code>setsar=1:1</code></td></tr><tr><td><code>split</code></td><td>分割流（复杂滤镜图）</td><td>复杂滤镜图中使用</td></tr><tr><td><code>concat</code></td><td>拼接流</td><td>复杂滤镜图中使用</td></tr><tr><td><code>zoompan</code></td><td>缩放平移（Ken Burns 效果）</td><td><code>zoompan=z='min(zoom+0.0015,1.5)':d=200</code></td></tr></tbody></table></p>
+<h3 id="常用音频滤镜">常用音频滤镜</h3></p><table><thead><tr><th>滤镜</th><th>说明</th><th>示例</th></tr></thead><tbody><tr><td><code>atempo</code></td><td>调整速度</td><td><code>atempo=2.0</code>（2倍速） <code>atempo=0.5</code>（0.5倍速）</td></tr><tr><td><code>afade</code></td><td>淡入淡出</td><td><code>afade=in:st=0:d=5,afade=out:st=50:d=5</code></td></tr><tr><td><code>volume</code></td><td>调整音量</td><td><code>volume=0.5</code>（减半） <code>volume=2.0</code>（翻倍） <code>volume=3dB</code></td></tr><tr><td><code>aresample</code></td><td>重采样</td><td><code>aresample=48000</code></td></tr><tr><td><code>aformat</code></td><td>格式转换</td><td><code>aformat=sample<em>fmts=fltp:channel</em>layouts=stereo</code></td></tr><tr><td><code>lowpass</code></td><td>低通滤波</td><td><code>lowpass=f=1000</code></td></tr><tr><td><code>highpass</code></td><td>高通滤波</td><td><code>highpass=f=200</code></td></tr><tr><td><code>bandpass</code></td><td>带通滤波</td><td><code>bandpass=f=1000:width_type=h:width=500</code></td></tr><tr><td><code>equalizer</code></td><td>均衡器</td><td><code>equalizer=f=1000:t=h:w=200:g=3</code></td></tr><tr><td><code>anull</code></td><td>空操作（透传）</td><td><code>anull</code></td></tr><tr><td><code>amix</code></td><td>混音</td><td>复杂滤镜图中使用</td></tr><tr><td><code>asplit</code></td><td>分割流</td><td>复杂滤镜图中使用</td></tr><tr><td><code>adelay</code></td><td>延迟</td><td><code>adelay=1000</td><td>1000</code>（左右各延迟1秒）</td></tr><tr><td><code>aecho</code></td><td>回声</td><td><code>aecho=0.8:0.88:60:0.4</code></td></tr><tr><td><code>compand</code></td><td>压缩/扩展动态范围</td><td><code>compand=.3</td><td>.3:1</td><td>1:-1/-60</td><td>-60/-40</td><td>-40/-30</td><td>-20/-20:6:0:-90:0.2</code></td></tr><tr><td><code>loudnorm</code></td><td>响度归一化 (EBU R128)</td><td><code>loudnorm=I=-16:TP=-1.5:LRA=11</code></td></tr><tr><td><code>dynaudnorm</code></td><td>动态音频归一化</td><td><code>dynaudnorm</code></td></tr><tr><td><code>adeclip</code></td><td>去除削波</td><td><code>adeclip</code></td></tr><tr><td><code>afftdn</code></td><td>FFT 降噪</td><td><code>afftdn</code></td></tr></tbody></table></p>
+<h3 id="复杂滤镜图">复杂滤镜图</h3></p><pre><code><h1>两路输入的叠加</h1></p>
+<p>ffmpeg -i background.mp4 -i overlay.png \</p>
+<p>  -filter_complex "[0:v][1:v]overlay=W-w-10:H-h-10" output.mp4</p><h1>多视频拼接</h1></p>
+<p>ffmpeg -i part1.mp4 -i part2.mp4 -i part3.mp4 \</p>
+<p>  -filter_complex "[0:v][1:v][2:v]concat=n=3:v=1:a=0" output.mp4</p><h1>画中画</h1></p>
+<p>ffmpeg -i main.mp4 -i pip.mp4 \</p>
+<p>  -filter_complex "[0:v]setpts=PTS-STARTPTS[main];[1:v]setpts=PTS-STARTPTS[scaled];[scaled]scale=iw/4:ih/4[pip];[main][pip]overlay=W-w-20:H-h-20" output.mp4</p><h1>双输出（同时录制和预览）</h1></p>
+<p>ffmpeg -i input.mp4 \</p>
+<p>  -filter_complex "split[v1][v2]" \</p>
+<p>  -map "[v1]" -c:v libx264 -preset fast output.mp4 \</p>
+<p>  -map "[v2]" -c:v libx264 -preset ultrafast preview.mp4</p>
+</code></pre></p><hr><h2 id="高级选项">高级选项</h2></p><h3 id="码率控制">码率控制</h3></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>-b:v <bitrate></code></td><td>视频比特率（如 <code>5M</code> <code>8000k</code>）</td></tr><tr><td><code>-b:a <bitrate></code></td><td>音频比特率（如 <code>128k</code> <code>320k</code>）</td></tr><tr><td><code>-maxrate <bitrate></code></td><td>最大比特率</td></tr><tr><td><code>-minrate <bitrate></code></td><td>最小比特率</td></tr><tr><td><code>-bufsize <size></code></td><td>码率控制缓冲区大小</td></tr><tr><td><code>-g <number></code></td><td>GOP 大小（关键帧间隔）</td></tr><tr><td><code>-keyint_min <number></code></td><td>最小关键帧间隔</td></tr><tr><td><code>-bf <number></code></td><td>最大连续 B 帧数</td></tr><tr><td><code>-qmin <int></code></td><td>最小量化参数</td></tr><tr><td><code>-qmax <int></code></td><td>最大量化参数</td></tr><tr><td><code>-crf <float></code></td><td>恒定质量因子（x264/x265，0-51，越低质量越高）</td></tr><tr><td><code>-qp <int></code></td><td>恒定量化参数</td></tr><tr><td><code>-preset <name></code></td><td>编码预设（影响速度/压缩比权衡）</td></tr><tr><td><code>-tune <name></code></td><td>编码调优目标</td></tr><tr><td><code>-profile <name></code></td><td>编码配置文件</td></tr><tr><td><code>-level <name></code></td><td>编码级别</td></tr><tr><td><code>-pass 1</code> / <code>-pass 2</code></td><td>两遍编码</td></tr><tr><td><code>-x265-params</code></td><td>x265 编码器专用参数</td></tr><tr><td><code>-x264-params</code></td><td>x264 编码器专用参数</td></tr></tbody></table></p>
+<h3 id="编码预设x264x265">编码预设（x264/x265）</h3></p><table><thead><tr><th>预设</th><th>说明</th></tr></thead><tbody><tr><td><code>ultrafast</code></td><td>最快编码，最大文件</td></tr><tr><td><code>superfast</code></td><td>很快</td></tr><tr><td><code>veryfast</code></td><td>较快</td></tr><tr><td><code>faster</code></td><td>快</td></tr><tr><td><code>fast</code></td><td>较快（推荐）</td></tr><tr><td><code>medium</code></td><td>默认，速度与质量平衡</td></tr><tr><td><code>slow</code></td><td>较慢，更好质量</td></tr><tr><td><code>slower</code></td><td>慢，更好质量</td></tr><tr><td><code>veryslow</code></td><td>很慢，最佳质量</td></tr></tbody></table></p>
+<h3 id="编码调优x264">编码调优（x264）</h3></p><table><thead><tr><th>调优</th><th>说明</th></tr></thead><tbody><tr><td><code>film</code></td><td>电影（真实拍摄）</td></tr><tr><td><code>animation</code></td><td>动画</td></tr><tr><td><code>grain</code></td><td>保留胶片颗粒</td></tr><tr><td><code>stillimage</code></td><td>静态图像</td></tr><tr><td><code>fastdecode</code></td><td>快速解码</td></tr><tr><td><code>zerolatency</code></td><td>零延迟（直播推流）</td></tr><tr><td><code>psnr</code></td><td>优化 PSNR</td></tr><tr><td><code>ssim</code></td><td>优化 SSIM</td></tr></tbody></table></p>
+<h3 id="时间戳选项">时间戳选项</h3></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>-copyts</code></td><td>复制时间戳</td></tr><tr><td><code>-start<em>at</em>zero</code></td><td>输入时间戳从 0 开始</td></tr><tr><td><code>-copytb <mode></code></td><td>复制输入流时间基</td></tr><tr><td><code>-enc<em>time</em>base <ratio></code></td><td>设置编码器时间基</td></tr></tbody></table></p>
+<hr><h2 id="常用编码器">常用编码器</h2></p><h3 id="视频编码器">视频编码器</h3></p><table><thead><tr><th>编码器</th><th>编解码格式</th><th>特点</th></tr></thead><tbody><tr><td><code>libx264</code></td><td>H.264/AVC</td><td>最广泛兼容，质量/速度优秀</td></tr><tr><td><code>libx264rgb</code></td><td>H.264 RGB</td><td>无损 RGB 编码</td></tr><tr><td><code>libx265</code></td><td>H.265/HEVC</td><td>更高压缩率，4K 推荐</td></tr><tr><td><code>libsvtav1</code></td><td>AV1</td><td>新一代编解码器，开源高效</td></tr><tr><td><code>h264_videotoolbox</code></td><td>H.264</td><td>macOS 硬件编码</td></tr><tr><td><code>hevc_videotoolbox</code></td><td>H.265/HEVC</td><td>macOS 硬件编码</td></tr><tr><td><code>libvpx-vp9</code></td><td>VP9</td><td>Google WebM 格式</td></tr><tr><td><code>libvpx</code></td><td>VP8</td><td>WebM 格式（较旧）</td></tr><tr><td><code>mpeg4</code></td><td>MPEG-4 Part 2</td><td>旧格式兼容</td></tr><tr><td><code>mpeg2video</code></td><td>MPEG-2</td><td>DVD/广播标准</td></tr><tr><td><code>mjpeg</code></td><td>Motion JPEG</td><td>高质量逐帧压缩</td></tr><tr><td><code>prores</code></td><td>Apple ProRes</td><td>专业后期制作</td></tr><tr><td><code>gif</code></td><td>GIF</td><td>动图（256色）</td></tr><tr><td><code>apng</code></td><td>APNG</td><td>动态 PNG</td></tr><tr><td><code>png</code></td><td>PNG</td><td>静态图片序列</td></tr><tr><td><code>copy</code></td><td>-</td><td>直接复制流，不重新编码（最快）</td></tr></tbody></table></p>
+<h3 id="音频编码器">音频编码器</h3></p><table><thead><tr><th>编码器</th><th>格式</th><th>特点</th></tr></thead><tbody><tr><td><code>libmp3lame</code></td><td>MP3</td><td>最广泛兼容</td></tr><tr><td><code>libopus</code></td><td>Opus</td><td>现代低延迟，语音/音乐均优</td></tr><tr><td><code>aac</code></td><td>AAC</td><td>Apple 原生 AAC</td></tr><tr><td><code>pcm_s16le</code></td><td>PCM 16-bit</td><td>无损 PCM</td></tr><tr><td><code>pcm_s24le</code></td><td>PCM 24-bit</td><td>高精度无损 PCM</td></tr><tr><td><code>flac</code></td><td>FLAC</td><td>无损压缩</td></tr><tr><td><code>vorbis</code></td><td>Vorbis</td><td>开源（OGG 容器）</td></tr><tr><td><code>alac</code></td><td>ALAC</td><td>Apple 无损</td></tr><tr><td><code>copy</code></td><td>-</td><td>直接复制流</td></tr></tbody></table></p>
+<h3 id="字幕编码器">字幕编码器</h3></p><table><thead><tr><th>编码器</th><th>格式</th></tr></thead><tbody><tr><td><code>mov_text</code></td><td>3GPP Timed Text（MP4 内嵌）</td></tr><tr><td><code>srt</code> / <code>subrip</code></td><td>SubRip（.srt）</td></tr><tr><td><code>ass</code> / <code>ssa</code></td><td>ASS/SSA（高级样式）</td></tr><tr><td><code>webvtt</code></td><td>WebVTT（Web 字幕）</td></tr><tr><td><code>ttml</code></td><td>TTML</td></tr><tr><td><code>dvdsub</code></td><td>DVD 字幕</td></tr><tr><td><code>dvbsub</code></td><td>DVB 字幕</td></tr></tbody></table></p>
+<hr><h2 id="支持格式">支持格式</h2></p><h3 id="常用容器格式">常用容器格式</h3></p><table><thead><tr><th>格式</th><th>说明</th><th>扩展名</th></tr></thead><tbody><tr><td>MP4</td><td>最广泛兼容的视频格式</td><td><code>.mp4</code> <code>.m4v</code></td></tr><tr><td>MKV / Matroska</td><td>灵活的多媒体容器</td><td><code>.mkv</code></td></tr><tr><td>WebM</td><td>Web 优化的开放格式</td><td><code>.webm</code></td></tr><tr><td>AVI</td><td>传统 Windows 格式</td><td><code>.avi</code></td></tr><tr><td>MOV</td><td>Apple QuickTime</td><td><code>.mov</code></td></tr><tr><td>FLV</td><td>Flash 视频</td><td><code>.flv</code></td></tr><tr><td>TS / MPEG-TS</td><td>传输流（直播常用）</td><td><code>.ts</code></td></tr><tr><td>MP3</td><td>音频</td><td><code>.mp3</code></td></tr><tr><td>FLAC</td><td>无损音频</td><td><code>.flac</code></td></tr><tr><td>OGG</td><td>开源音频容器</td><td><code>.ogg</code></td></tr><tr><td>WAV</td><td>无损 PCM 音频</td><td><code>.wav</code></td></tr><tr><td>AAC</td><td>原始 AAC 音频</td><td><code>.aac</code></td></tr><tr><td>GIF</td><td>动图</td><td><code>.gif</code></td></tr><tr><td>APNG</td><td>动态 PNG</td><td><code>.apng</code></td></tr><tr><td>PNG / JPEG / BMP</td><td>图片序列</td><td><code>.png</code> <code>.jpg</code> <code>.bmp</code></td></tr><tr><td>DASH</td><td>MPEG-DASH 自适应流</td><td><code>.mpd</code></td></tr><tr><td>HLS</td><td>HTTP 直播流</td><td><code>.m3u8</code></td></tr><tr><td>3GP</td><td>3G 移动设备</td><td><code>.3gp</code></td></tr><tr><td>ProRes</td><td>Apple 专业视频</td><td><code>.mov</code></td></tr></tbody></table></p>
+<hr><h2 id="硬件加速">硬件加速</h2></p><p>本机支持：<strong>VideoToolbox</strong>（Apple Silicon / macOS 原生）</p><pre><code><h1>使用 VideoToolbox 硬件解码</h1></p>
+<p>-hwaccel videotoolbox -i input.mp4</p><h1>使用 VideoToolbox 硬件编码 H.264</h1></p>
+<p>-c:v h264_videotoolbox -b:v 5M</p><h1>使用 VideoToolbox 硬件编码 H.265</h1></p>
+<p>-c:v hevc_videotoolbox -b:v 10M -q:v 50</p><h1>完整硬件加速管道</h1></p>
+<p>-hwaccel videotoolbox -hwaccel<em>output</em>format videotoolbox<em>vld -i input.mp4 -c:v hevc</em>videotoolbox output.mp4</p>
+</code></pre></p><hr><h2 id="ffprobe-工具">ffprobe 工具</h2></p><p>ffprobe 是 ffmpeg 套件中的媒体分析工具。</p><pre><code><h1>查看文件信息</h1></p>
+<p>ffprobe input.mp4</p><h1>JSON 格式输出</h1></p>
+<p>ffprobe -v quiet -print<em>format json -show</em>format -show_streams input.mp4</p><h1>查看流信息（紧凑格式）</h1></p>
+<p>ffprobe -v error -show<em>entries stream=codec</em>name,codec<em>type,width,height,duration,sample</em>rate,channels -of default=noprint_wrappers=1 input.mp4</p><h1>查看格式信息</h1></p>
+<p>ffprobe -v error -show<em>entries format=duration,size,bit</em>rate -of default=noprint_wrappers=1 input.mp4</p><h1>获取视频帧数</h1></p>
+<p>ffprobe -v error -select<em>streams v:0 -count</em>frames -show<em>entries stream=nb</em>read_frames -of csv=p=0 input.mp4</p><h1>获取视频分辨率</h1></p>
+<p>ffprobe -v error -select<em>streams v:0 -show</em>entries stream=width,height -of csv=s=x:p=0 input.mp4</p><h1>获取音频采样率</h1></p>
+<p>ffprobe -v error -select<em>streams a:0 -show</em>entries stream=sample_rate -of csv=p=0 input.mp4</p><h1>获取视频帧率</h1></p>
+<p>ffprobe -v error -select<em>streams v:0 -show</em>entries stream=r<em>frame</em>rate -of csv=p=0 input.mp4</p>
+</code></pre></p><hr><h2 id="常用命令示例">常用命令示例</h2></p><h3 id="格式转换">格式转换</h3></p><pre><code><h1>MP4 转 MKV</h1></p>
+<p>ffmpeg -i input.mp4 -c copy output.mkv</p><h1>MKV 转 MP4（重新编码）</h1></p>
+<p>ffmpeg -i input.mkv -c:v libx264 -c:a aac output.mp4</p><h1>视频转 GIF</h1></p>
+<p>ffmpeg -i input.mp4 -vf "fps=15,scale=480:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" output.gif</p><h1>视频转 WebM</h1></p>
+<p>ffmpeg -i input.mp4 -c:v libvpx-vp9 -crf 30 -b:v 0 -c:a libopus output.webm</p><h1>生成 HLS 流</h1></p>
+<p>ffmpeg -i input.mp4 -c:v libx264 -c:a aac -f hls -hls<em>time 10 -hls</em>list_size 0 output.m3u8</p>
+</code></pre></p><h3 id="视频处理">视频处理</h3></p><pre><code><h1>压缩视频（CRF 模式）</h1></p>
+<p>ffmpeg -i input.mp4 -c:v libx264 -crf 23 -preset medium -c:a copy output.mp4</p><h1>指定码率压缩</h1></p>
+<p>ffmpeg -i input.mp4 -c:v libx264 -b:v 2M -c:a copy output.mp4</p><h1>缩放分辨率</h1></p>
+<p>ffmpeg -i input.mp4 -vf "scale=1280:720" -c:a copy output.mp4</p><h1>等比缩放（宽度 720，高度自动）</h1></p>
+<p>ffmpeg -i input.mp4 -vf "scale=720:-2" -c:a copy output.mp4</p><h1>裁剪视频（从 00:01:30 开始，持续 30 秒）</h1></p>
+<p>ffmpeg -i input.mp4 -ss 00:01:30 -t 30 -c copy output.mp4</p><h1>精确裁剪（重新编码）</h1></p>
+<p>ffmpeg -i input.mp4 -ss 00:01:30 -t 30 -c:v libx264 -c:a copy output.mp4</p><h1>裁剪画面（去除上下黑边）</h1></p>
+<p>ffmpeg -i input.mp4 -vf "crop=1920:800:0:140" -c:a copy output.mp4</p><h1>提取视频中的某一帧</h1></p>
+<p>ffmpeg -i input.mp4 -ss 00:01:00 -frames:v 1 frame.png</p><h1>提取图片序列</h1></p>
+<p>ffmpeg -i input.mp4 -vf "fps=24" frames/frame_%04d.png</p><h1>调整播放速度（2倍速）</h1></p>
+<p>ffmpeg -i input.mp4 -filter_complex "[0:v]setpts=0.5*PTS[v];[0:a]atempo=2.0[a]" -map "[v]" -map "[a]" output.mp4</p><h1>调整播放速度（0.5倍速）</h1></p>
+<p>ffmpeg -i input.mp4 -filter_complex "[0:v]setpts=2*PTS[v];[0:a]atempo=0.5[a]" -map "[v]" -map "[a]" output.mp4</p><h1>旋转视频 90 度</h1></p>
+<p>ffmpeg -i input.mp4 -vf "transpose=1" -c:a copy output.mp4</p><h1>水平镜像翻转</h1></p>
+<p>ffmpeg -i input.mp4 -vf "hflip" -c:a copy output.mp4</p><h1>垂直翻转</h1></p>
+<p>ffmpeg -i input.mp4 -vf "vflip" -c:a copy output.mp4</p><h1>添加水印</h1></p>
+<p>ffmpeg -i input.mp4 -i watermark.png -filter_complex "overlay=W-w-10:H-h-10" -c:a copy output.mp4</p>
+</code></pre></p><h3 id="音频处理">音频处理</h3></p><pre><code><h1>提取音频</h1></p>
+<p>ffmpeg -i input.mp4 -vn -c:a libmp3lame -q:a 2 output.mp3</p><h1>提取无损音频</h1></p>
+<p>ffmpeg -i input.mp4 -vn -c:a flac output.flac</p><h1>WAV 转 MP3</h1></p>
+<p>ffmpeg -i input.wav -c:a libmp3lame -q:a 2 output.mp3</p><h1>调整音量（增加 10dB）</h1></p>
+<p>ffmpeg -i input.mp3 -af "volume=10dB" output.mp3</p><h1>音频归一化（EBU R128）</h1></p>
+<p>ffmpeg -i input.mp3 -af loudnorm output.mp3</p><h1>音频淡入淡出</h1></p>
+<p>ffmpeg -i input.mp3 -af "afade=in:st=0:d=5,afade=out:st=55:d=5" output.mp3</p><h1>合并多个音频</h1></p>
+<p>ffmpeg -i audio1.mp3 -i audio2.mp3 -filter_complex "[0:a][1:a]concat=n=2:v=0:a=1" output.mp3</p><h1>混音（两路叠加）</h1></p>
+<p>ffmpeg -i audio1.mp3 -i audio2.mp3 -filter_complex "[0:a][1:a]amix=inputs=2:duration=longest" output.mp3</p>
+</code></pre></p><h3 id="字幕处理">字幕处理</h3></p><pre><code><h1>烧录 SRT 字幕</h1></p>
+<p>ffmpeg -i input.mp4 -vf "subtitles=sub.srt" -c:a copy output.mp4</p><h1>烧录 ASS 字幕</h1></p>
+<p>ffmpeg -i input.mp4 -vf "ass=style.ass" -c:a copy output.mp4</p><h1>提取字幕</h1></p>
+<p>ffmpeg -i input.mkv -map 0:s:0 subs.srt</p><h1>添加外挂字幕（不烧录）</h1></p>
+<p>ffmpeg -i input.mp4 -i subs.srt -c copy -c:s mov_text output.mp4</p><h1>字幕格式转换（SRT 转 ASS）</h1></p>
+<p>ffmpeg -i input.srt output.ass</p>
+</code></pre></p><h3 id="多文件操作">多文件操作</h3></p><pre><code><h1>拼接视频（相同编码格式）</h1></p>
+<h1>先创建 filelist.txt：</h1></p>
+<h1>  file 'part1.mp4'</h1></p>
+<h1>  file 'part2.mp4'</h1></p>
+<h1>  file 'part3.mp4'</h1></p>
+<p>ffmpeg -f concat -safe 0 -i filelist.txt -c copy output.mp4</p><h1>拼接视频（不同编码格式）</h1></p>
+<p>ffmpeg -i part1.mp4 -i part2.mp4 -filter_complex "[0:v][0:a][1:v][1:a]concat=n=2:v=1:a=1" output.mp4</p><h1>图片序列转视频</h1></p>
+<p>ffmpeg -framerate 30 -i frames/frame<em>%04d.png -c:v libx264 -pix</em>fmt yuv420p output.mp4</p><h1>音频 + 图片生成视频</h1></p>
+<p>ffmpeg -loop 1 -i image.jpg -i audio.mp3 -c:v libx264 -tune stillimage -c:a aac -shortest output.mp4</p><h1>替换视频中的音频</h1></p>
+<p>ffmpeg -i video.mp4 -i new_audio.mp3 -c:v copy -map 0:v:0 -map 1:a:0 output.mp4</p><h1>提取视频（无音频）</h1></p>
+<p>ffmpeg -i input.mp4 -an -c:v copy output.mp4</p>
+</code></pre></p><h3 id="高级编码">高级编码</h3></p><pre><code><h1>H.264 两遍编码（最佳质量/文件大小比）</h1></p>
+<p>ffmpeg -i input.mp4 -c:v libx264 -pass 1 -an -f null /dev/null</p>
+<p>ffmpeg -i input.mp4 -c:v libx264 -pass 2 -c:a libmp3lame -b:a 128k output.mp4</p><h1>AV1 编码（SVT-AV1）</h1></p>
+<p>ffmpeg -i input.mp4 -c:v libsvtav1 -crf 30 -preset 8 -c:a libopus output.mp4</p><h1>H.265/HEVC 编码</h1></p>
+<p>ffmpeg -i input.mp4 -c:v libx265 -crf 28 -preset medium -c:a aac output.mp4</p><h1>硬件加速编码（VideoToolbox H.264）</h1></p>
+<p>ffmpeg -i input.mp4 -c:v h264_videotoolbox -b:v 5M -c:a aac output.mp4</p><h1>苹果 ProRes 编码</h1></p>
+<p>ffmpeg -i input.mp4 -c:v prores -profile:v 3 -c:a pcm_s24le output.mov</p><h1>推流到 RTMP 服务器</h1></p>
+<p>ffmpeg -re -i input.mp4 -c:v libx264 -preset veryfast -c:a aac -f flv rtmp://server/live/stream_key</p><h1>从摄像头/屏幕录制（macOS）</h1></p>
+<p>ffmpeg -f avfoundation -i "0:0" -c:v libx264 -preset ultrafast output.mp4</p><h1>屏幕录制</h1></p>
+<p>ffmpeg -f avfoundation -i "1:none" -c:v libx264 -preset ultrafast output.mp4</p>
+</code></pre></p><hr><h2 id="参考资源">参考资源</h2></p>
+<ul><li>官方文档：https://ffmpeg.org/documentation.html</li></p>
+<li>FFmpeg Wiki：https://trac.ffmpeg.org/wiki</li></p>
+<li>在线查询编解码器详情：<code>ffmpeg -h encoder=libx264</code></li></p>
+<li>在线查询滤镜详情：<code>ffmpeg -h filter=scale</code></li></p>
+<li>查看完整帮助：<code>ffmpeg -h full</code></li></p>
+</ul></p></main>
+  </div>
+</body>
+</html>

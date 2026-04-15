@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pandoc CLI 参考手册 - Notion Style</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect rx=%2212%22 width=%22100%22 height=%22100%22 fill=%22%231a1a2e%22/><text x=%2250%22 y=%2268%22 font-size=%2255%22 font-family=%22monospace%22 font-weight=%22bold%22 text-anchor=%22middle%22 fill=%22%2300d4aa%22>&gt;_</text></svg>">
+  <style>
+    :root {
+      --color-bg: #ffffff;
+      --color-text: rgba(0,0,0,0.95);
+      --color-gray: #615d59;
+      --color-accent: #0075de;
+      --color-border: rgba(0,0,0,0.1);
+      --color-code-bg: #f6f5f4;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.5;
+      font-size: 16px;
+    }
+    .container { display: flex; max-width: 1400px; margin: 0 auto; }
+    .sidebar {
+      width: 280px;
+      padding: 2rem 1.5rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      background: #fff;
+      border-right: 1px solid var(--color-border);
+    }
+    .sidebar h2 {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--color-gray);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+    }
+    .sidebar a {
+      display: block;
+      padding: 0.5rem 0;
+      color: var(--color-gray);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.15s;
+    }
+    .sidebar a:hover { color: var(--color-text); }
+    .main {
+      flex: 1;
+      padding: 3rem 4rem;
+      max-width: 900px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: var(--color-text);
+    }
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--color-text);
+    }
+    h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      color: var(--color-text);
+    }
+    p { margin-bottom: 1rem; color: var(--color-gray); }
+    code {
+      font-family: 'SF Mono', Monaco, monospace;
+      background: var(--color-code-bg);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.875em;
+      color: #eb5757;
+    }
+    pre {
+      background: var(--color-code-bg);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border: 1px solid var(--color-border);
+    }
+    pre code {
+      background: none;
+      padding: 0;
+      color: var(--color-text);
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--color-border);
+    }
+    th { font-weight: 600; background: var(--color-code-bg); }
+    blockquote {
+      border-left: 4px solid var(--color-accent);
+      padding-left: 1rem;
+      margin: 1.5rem 0;
+      color: var(--color-gray);
+      font-style: italic;
+    }
+    ul { margin: 1rem 0; padding-left: 1.5rem; }
+    li { margin: 0.5rem 0; color: var(--color-gray); }
+    hr { border: none; border-top: 1px solid var(--color-border); margin: 2rem 0; }
+    a { color: var(--color-accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <h2>Contents</h2>
+      <nav><a href="#目录" >目录</a>
+<a href="#安装信息" >安装信息</a>
+<a href="#版本信息" style="padding-left: 1rem;">版本信息</a>
+<a href="#安装方式" style="padding-left: 1rem;">安装方式</a>
+<a href="#更新" style="padding-left: 1rem;">更新</a>
+<a href="#基础语法" >基础语法</a>
+<a href="#最简用法" style="padding-left: 1rem;">最简用法</a>
+<a href="#常用选项速查" style="padding-left: 1rem;">常用选项速查</a>
+<a href="#输入格式" >输入格式</a>
+<a href="#附加扩展语法" style="padding-left: 1rem;">附加扩展语法</a>
+<a href="#输出格式" >输出格式</a>
+<a href="#文档类" style="padding-left: 1rem;">文档类</a>
+<a href="#标记语言类" style="padding-left: 1rem;">标记语言类</a>
+<a href="#演示文稿类" style="padding-left: 1rem;">演示文稿类</a>
+<a href="#数据类" style="padding-left: 1rem;">数据类</a>
+<a href="#查看所有格式" style="padding-left: 1rem;">查看所有格式</a>
+<a href="#输入输出选项" >输入输出选项</a>
+<a href="#基本选项" style="padding-left: 1rem;">基本选项</a>
+<a href="#元数据" style="padding-left: 1rem;">元数据</a>
+<a href="#元数据优先级" style="padding-left: 1rem;">元数据优先级</a>
+<a href="#defaults-文件示例-defaultsyaml" style="padding-left: 1rem;">Defaults 文件示例 (defaults.yaml)</a>
+<a href="#通用转换选项" >通用转换选项</a>
+<a href="#独立文档" style="padding-left: 1rem;">独立文档</a>
+<a href="#文本处理" style="padding-left: 1rem;">文本处理</a>
+<a href="#文件嵌入" style="padding-left: 1rem;">文件嵌入</a>
+<a href="#模板与变量" >模板与变量</a>
+<a href="#变量设置" style="padding-left: 1rem;">变量设置</a>
+<a href="#常用变量" style="padding-left: 1rem;">常用变量</a>
+<a href="#查看默认模板" style="padding-left: 1rem;">查看默认模板</a>
+<a href="#目录与章节编号" >目录与章节编号</a>
+<a href="#示例" style="padding-left: 1rem;">示例</a>
+<a href="#内容提取与资源管理" >内容提取与资源管理</a>
+<a href="#提取-word-文档中的图片" style="padding-left: 1rem;">提取 Word 文档中的图片</a>
+<a href="#代码高亮" >代码高亮</a>
+<a href="#使用-lua-过滤器控制" style="padding-left: 1rem;">使用 Lua 过滤器控制</a>
+<a href="#pdf-生成" >PDF 生成</a>
+<a href="#引擎选择" style="padding-left: 1rem;">引擎选择</a>
+<a href="#可用引擎" style="padding-left: 1rem;">可用引擎</a>
+<a href="#基础示例" style="padding-left: 1rem;">基础示例</a>
+<a href="#pdf-常用变量" style="padding-left: 1rem;">PDF 常用变量</a>
+<a href="#html-输出" >HTML 输出</a>
+<a href="#示例" style="padding-left: 1rem;">示例</a>
+<a href="#epub-输出" >EPUB 输出</a>
+<a href="#示例" style="padding-left: 1rem;">示例</a>
+<a href="#markdown-输出" >Markdown 输出</a>
+<a href="#示例" style="padding-left: 1rem;">示例</a>
+<a href="#幻灯片输出" >幻灯片输出</a>
+<a href="#revealjs-示例" style="padding-left: 1rem;">reveal.js 示例</a>
+<a href="#beamer-示例" style="padding-left: 1rem;">Beamer 示例</a>
+<a href="#latex-输出" >LaTeX 输出</a>
+<a href="#常用变量" style="padding-left: 1rem;">常用变量</a>
+<a href="#示例" style="padding-left: 1rem;">示例</a>
+<a href="#引用与参考文献" >引用与参考文献</a>
+<a href="#示例" style="padding-left: 1rem;">示例</a>
+<a href="#在-markdown-中引用" style="padding-left: 1rem;">在 Markdown 中引用</a>
+<a href="#参考文献" >参考文献</a>
+<a href="#数学公式渲染" >数学公式渲染</a>
+<a href="#示例" style="padding-left: 1rem;">示例</a>
+<a href="#过滤器系统" >过滤器系统</a>
+<a href="#pandoc-过滤器" style="padding-left: 1rem;">Pandoc 过滤器</a>
+<a href="#过滤器类型" style="padding-left: 1rem;">过滤器类型</a>
+<a href="#lua-过滤器示例" style="padding-left: 1rem;">Lua 过滤器示例</a>
+<a href="#常用-lua-过滤器操作" style="padding-left: 1rem;">常用 Lua 过滤器操作</a>
+<a href="#扩展控制" >扩展控制</a>
+<a href="#markdown-扩展" style="padding-left: 1rem;">Markdown 扩展</a>
+<a href="#常用扩展" style="padding-left: 1rem;">常用扩展</a>
+<a href="#查看格式扩展" style="padding-left: 1rem;">查看格式扩展</a>
+<a href="#使用示例" style="padding-left: 1rem;">使用示例</a>
+<a href="#epub-专用选项" >EPUB 专用选项</a>
+<a href="#调试与诊断" >调试与诊断</a>
+<a href="#信息查询" style="padding-left: 1rem;">信息查询</a>
+<a href="#支持的语言高亮" >支持的语言高亮</a>
+<a href="#通用语言" style="padding-left: 1rem;">通用语言</a>
+<a href="#web-前端" style="padding-left: 1rem;">Web 前端</a>
+<a href="#数据与配置" style="padding-left: 1rem;">数据与配置</a>
+<a href="#函数式与学术" style="padding-left: 1rem;">函数式与学术</a>
+<a href="#查看完整列表" style="padding-left: 1rem;">查看完整列表</a>
+<a href="#高亮主题" >高亮主题</a>
+<a href="#使用示例" style="padding-left: 1rem;">使用示例</a>
+<a href="#查看主题定义" style="padding-left: 1rem;">查看主题定义</a>
+<a href="#常用命令示例" >常用命令示例</a>
+<a href="#格式转换" style="padding-left: 1rem;">格式转换</a>
+<a href="#高级用法" style="padding-left: 1rem;">高级用法</a>
+<a href="#参考文献处理" style="padding-left: 1rem;">参考文献处理</a></nav>
+    </aside>
+    <main class="main"><h1>Pandoc CLI 参考手册</h1></p><blockquote>本机版本：<strong>pandoc 3.9.0.2</strong> | 安装路径：<code>/opt/homebrew/bin/pandoc</code></blockquote></p>
+<blockquote>特性：Lua 脚本引擎 + Pandoc Server | 运行环境：macOS ARM64</blockquote></p><p>Pandoc 是通用文档格式转换工具，被称为"文档界的瑞士军刀"。支持 Markdown、HTML、Word、PDF、EPUB、LaTeX、reveal.js 等 60+ 种格式互转，内置引用管理、代码高亮、数学公式渲染、Lua 过滤器等高级功能。</p><h2 id="目录">目录</h2></p>
+<ul><li><a href="#安装信息">安装信息</a></li></p>
+<li><a href="#基础语法">基础语法</a></li></p>
+<li><a href="#输入格式">输入格式</a></li></p>
+<li><a href="#输出格式">输出格式</a></li></p>
+<li><a href="#输入输出选项">输入输出选项</a></li></p>
+<li><a href="#通用转换选项">通用转换选项</a></li></p>
+<li><a href="#模板与变量">模板与变量</a></li></p>
+<li><a href="#目录与章节编号">目录与章节编号</a></li></p>
+<li><a href="#内容提取与资源管理">内容提取与资源管理</a></li></p>
+<li><a href="#代码高亮">代码高亮</a></li></p>
+<li><a href="#pdf-生成">PDF 生成</a></li></p>
+<li><a href="#html-输出">HTML 输出</a></li></p>
+<li><a href="#epub-输出">EPUB 输出</a></li></p>
+<li><a href="#markdown-输出">Markdown 输出</a></li></p>
+<li><a href="#幻灯片输出">幻灯片输出</a></li></p>
+<li><a href="#latex-输出">LaTeX 输出</a></li></p>
+<li><a href="#引用与参考文献">引用与参考文献</a></li></p>
+<li><a href="#数学公式渲染">数学公式渲染</a></li></p>
+<li><a href="#过滤器系统">过滤器系统</a></li></p>
+<li><a href="#扩展控制">扩展控制</a></li></p>
+<li><a href="#epub-专用选项">EPUB 专用选项</a></li></p>
+<li><a href="#调试与诊断">调试与诊断</a></li></p>
+<li><a href="#支持的语言高亮">支持的语言高亮</a></li></p>
+<li><a href="#高亮主题">高亮主题</a></li></p>
+<li><a href="#常用命令示例">常用命令示例</a></li></p>
+</ul></p>
+<hr><h2 id="安装信息">安装信息</h2></p><h3 id="版本信息">版本信息</h3></p><pre><code>pandoc 3.9.0.2</p>
+<p>Features: +server +lua</p>
+<p>Scripting engine: Lua 5.4</p>
+<p>User data directory: ~/.local/share/pandoc</p>
+</code></pre></p><h3 id="安装方式">安装方式</h3></p><pre><code>brew install pandoc</p>
+</code></pre></p><h3 id="更新">更新</h3></p><pre><code>brew upgrade pandoc</p>
+</code></pre></p><hr><h2 id="基础语法">基础语法</h2></p><pre><code>pandoc [OPTIONS] [FILES]</p>
+</code></pre></p><h3 id="最简用法">最简用法</h3></p><pre><code><h1>从标准输入读取</h1></p>
+<p>echo '# Hello' | pandoc</p><h1>转换文件</h1></p>
+<p>pandoc input.md -o output.html</p><h1>多文件合并</h1></p>
+<p>pandoc ch1.md ch2.md ch3.md -o book.html</p>
+</code></pre></p><h3 id="常用选项速查">常用选项速查</h3></p><table><thead><tr><th>短选项</th><th>长选项</th><th>说明</th></tr></thead><tbody><tr><td><code>-f</code></td><td><code>--from</code></td><td>输入格式</td></tr><tr><td><code>-t</code></td><td><code>--to</code></td><td>输出格式</td></tr><tr><td><code>-o</code></td><td><code>--output</code></td><td>输出文件</td></tr><tr><td><code>-s</code></td><td><code>--standalone</code></td><td>生成完整文档（含头部）</td></tr><tr><td><code>-M</code></td><td><code>--metadata</code></td><td>设置元数据</td></tr><tr><td><code>-V</code></td><td><code>--variable</code></td><td>设置模板变量</td></tr><tr><td><code>-N</code></td><td><code>--number-sections</code></td><td>章节编号</td></tr><tr><td><code>-C</code></td><td><code>--citeproc</code></td><td>启用引用处理</td></tr><tr><td><code>-h</code></td><td><code>--help</code></td><td>显示帮助</td></tr><tr><td><code>-v</code></td><td><code>--version</code></td><td>显示版本</td></tr></tbody></table></p>
+<hr><h2 id="输入格式">输入格式</h2></p><p>使用 <code>-f</code> 或 <code>--from</code> 指定，默认自动检测。</p><table><thead><tr><th>格式</th><th>标识</th><th>说明</th></tr></thead><tbody><tr><td><strong>Markdown</strong></td><td><code>markdown</code></td><td>Pandoc 扩展 Markdown（默认）</td></tr><tr><td><strong>GitHub Flavored</strong></td><td><code>gfm</code></td><td>GitHub 风格 Markdown</td></tr><tr><td><strong>CommonMark</strong></td><td><code>commonmark</code></td><td>严格 CommonMark 规范</td></tr><tr><td><strong>reStructuredText</strong></td><td><code>rst</code></td><td>reStructuredText</td></tr><tr><td><strong>HTML</strong></td><td><code>html</code></td><td>HTML 文档</td></tr><tr><td><strong>LaTeX</strong></td><td><code>latex</code></td><td>LaTeX 文档</td></tr><tr><td><strong>Word</strong></td><td><code>docx</code></td><td>Word 文档</td></tr><tr><td><strong>EPUB</strong></td><td><code>epub</code></td><td>EPUB 电子书</td></tr><tr><td><strong>ODT</strong></td><td><code>odt</code></td><td>OpenDocument 文本</td></tr><tr><td><strong>Org Mode</strong></td><td><code>org</code></td><td>Emacs Org Mode</td></tr><tr><td><strong>Textile</strong></td><td><code>textile</code></td><td>Textile 标记语言</td></tr><tr><td><strong>AsciiDoc</strong></td><td><code>asciidoc</code></td><td>AsciiDoc 文档</td></tr><tr><td><strong>DocBook</strong></td><td><code>docbook</code></td><td>DocBook XML</td></tr><tr><td><strong>MediaWiki</strong></td><td><code>mediawiki</code></td><td>MediaWiki 标记</td></tr><tr><td><strong>Jira</strong></td><td><code>jira</code></td><td>Jira Wiki 标记</td></tr><tr><td><strong>DokuWiki</strong></td><td><code>dokuwiki</code></td><td>DokuWiki 标记</td></tr><tr><td><strong>Jupyter</strong></td><td><code>ipynb</code></td><td>Jupyter Notebook</td></tr><tr><td><strong>CSV</strong></td><td><code>csv</code></td><td>逗号分隔值</td></tr><tr><td><strong>TSV</strong></td><td><code>tsv</code></td><td>制表符分隔值</td></tr><tr><td><strong>JSON</strong></td><td><code>json</code></td><td>Pandoc JSON AST</td></tr><tr><td><strong>BibTeX</strong></td><td><code>bibtex</code></td><td>参考文献数据库</td></tr><tr><td><strong>OPML</strong></td><td><code>opml</code></td><td>大纲处理标记语言</td></tr><tr><td><strong>Typst</strong></td><td><code>typst</code></td><td>Typst 文档</td></tr></tbody></table></p>
+<h3 id="附加扩展语法">附加扩展语法</h3></p><p>使用 <code>+</code> 添加扩展，<code>-</code> 移除扩展：</p><pre><code><h1>使用 GFM 并启用数学公式</h1></p>
+<p>pandoc -f gfm+tex<em>math</em>dollars input.md -o output.html</p><h1>严格 Markdown（移除所有扩展）</h1></p>
+<p>pandoc -f markdown_strict input.md -o output.html</p>
+</code></pre></p><hr><h2 id="输出格式">输出格式</h2></p><p>使用 <code>-t</code> 或 <code>--to</code> 指定。</p><h3 id="文档类">文档类</h3></p><table><thead><tr><th>格式</th><th>标识</th><th>说明</th></tr></thead><tbody><tr><td><strong>HTML</strong></td><td><code>html</code> / <code>html5</code></td><td>HTML5 文档</td></tr><tr><td><strong>HTML4</strong></td><td><code>html4</code></td><td>HTML4 兼容</td></tr><tr><td><strong>Word</strong></td><td><code>docx</code></td><td>Word (.docx)</td></tr><tr><td><strong>PDF</strong></td><td><code>pdf</code></td><td>PDF（需 LaTeX 引擎）</td></tr><tr><td><strong>LaTeX</strong></td><td><code>latex</code></td><td>LaTeX 源码</td></tr><tr><td><strong>EPUB</strong></td><td><code>epub</code> / <code>epub3</code></td><td>EPUB 电子书</td></tr><tr><td><strong>EPUB2</strong></td><td><code>epub2</code></td><td>EPUB 2.0</td></tr><tr><td><strong>ODT</strong></td><td><code>odt</code></td><td>OpenDocument</td></tr><tr><td><strong>RTF</strong></td><td><code>rtf</code></td><td>富文本格式</td></tr><tr><td><strong>Plain</strong></td><td><code>plain</code></td><td>纯文本</td></tr><tr><td><strong>Man</strong></td><td><code>man</code></td><td>Unix man 手册页</td></tr><tr><td><strong>Typst</strong></td><td><code>typst</code></td><td>Typst 文档</td></tr><tr><td><strong>ConTeXt</strong></td><td><code>context</code></td><td>ConTeXt 文档</td></tr></tbody></table></p>
+<h3 id="标记语言类">标记语言类</h3></p><table><thead><tr><th>格式</th><th>标识</th><th>说明</th></tr></thead><tbody><tr><td><strong>Markdown</strong></td><td><code>markdown</code> / <code>gfm</code> / <code>commonmark</code></td><td>各种 Markdown 风格</td></tr><tr><td><strong>reStructuredText</strong></td><td><code>rst</code></td><td>reStructuredText</td></tr><tr><td><strong>AsciiDoc</strong></td><td><code>asciidoc</code></td><td>AsciiDoc</td></tr><tr><td><strong>MediaWiki</strong></td><td><code>mediawiki</code></td><td>MediaWiki</td></tr><tr><td><strong>Jira</strong></td><td><code>jira</code></td><td>Jira Wiki</td></tr><tr><td><strong>DokuWiki</strong></td><td><code>dokuwiki</code></td><td>DokuWiki</td></tr><tr><td><strong>Textile</strong></td><td><code>textile</code></td><td>Textile</td></tr><tr><td><strong>Org Mode</strong></td><td><code>org</code></td><td>Org Mode</td></tr><tr><td><strong>JATS</strong></td><td><code>jats</code></td><td>Journal Article Tag Suite</td></tr><tr><td><strong>TEI</strong></td><td><code>tei</code></td><td>Text Encoding Initiative</td></tr><tr><td><strong>DocBook</strong></td><td><code>docbook</code> / <code>docbook5</code></td><td>DocBook XML</td></tr><tr><td><strong>XWiki</strong></td><td><code>xwiki</code></td><td>XWiki 标记</td></tr><tr><td><strong>ZimWiki</strong></td><td><code>zimwiki</code></td><td>Zim Wiki</td></tr></tbody></table></p>
+<h3 id="演示文稿类">演示文稿类</h3></p><table><thead><tr><th>格式</th><th>标识</th><th>说明</th></tr></thead><tbody><tr><td><strong>reveal.js</strong></td><td><code>revealjs</code></td><td>reveal.js 幻灯片</td></tr><tr><td><strong>Beamer</strong></td><td><code>beamer</code></td><td>LaTeX Beamer 幻灯片</td></tr><tr><td><strong>Slidy</strong></td><td><code>slidy</code></td><td>Slidy HTML 幻灯片</td></tr><tr><td><strong>S5</strong></td><td><code>s5</code></td><td>S5 幻灯片</td></tr><tr><td><strong>DZSlides</strong></td><td><code>dzslides</code></td><td>DZSlides 幻灯片</td></tr><tr><td><strong>Slideous</strong></td><td><code>slideous</code></td><td>Slideous 幻灯片</td></tr></tbody></table></p>
+<h3 id="数据类">数据类</h3></p><table><thead><tr><th>格式</th><th>标识</th><th>说明</th></tr></thead><tbody><tr><td><strong>JSON</strong></td><td><code>json</code></td><td>Pandoc JSON AST</td></tr><tr><td><strong>CSV</strong></td><td><code>csv</code></td><td>逗号分隔值（表格）</td></tr><tr><td><strong>TSV</strong></td><td><code>tsv</code></td><td>制表符分隔值</td></tr><tr><td><strong>PPTX</strong></td><td><code>pptx</code></td><td>PowerPoint</td></tr><tr><td><strong>XLSX</strong></td><td><code>xlsx</code></td><td>Excel 电子书</td></tr></tbody></table></p>
+<h3 id="查看所有格式">查看所有格式</h3></p><pre><code>pandoc --list-input-formats</p>
+<p>pandoc --list-output-formats</p>
+</code></pre></p><hr><h2 id="输入输出选项">输入输出选项</h2></p><h3 id="基本选项">基本选项</h3></p><pre><code>-f FORMAT, --from=FORMAT          # 输入格式</p>
+<p>-t FORMAT, --to=FORMAT            # 输出格式</p>
+<p>-o FILE, --output=FILE            # 输出文件（不指定则输出到 stdout）</p>
+<p>--data-dir=DIRECTORY              # 自定义数据目录（模板等）</p>
+<p>--file-scope                      # 每个文件单独解析（不合并）</p>
+<p>--sandbox                         # 沙箱模式（安全限制）</p>
+</code></pre></p><h3 id="元数据">元数据</h3></p><pre><code>-M KEY[:VALUE], --metadata=KEY[:VALUE]     # 设置元数据</p>
+<p>--metadata-file=FILE                        # 从文件读取元数据</p>
+<p>-d FILE, --defaults=FILE                    # 从 YAML 文件读取默认选项</p>
+</code></pre></p><h3 id="元数据优先级">元数据优先级</h3></p><code>--metadata-file</code> > YAML front matter > <code>--metadata</code></p><h3 id="defaults-文件示例-defaultsyaml">Defaults 文件示例 (defaults.yaml)</h3></p><pre><code>from: markdown</p>
+<p>to: html5</p>
+<p>standalone: true</p>
+<p>toc: true</p>
+<p>toc-depth: 3</p>
+<p>metadata:</p>
+<p>  title: "文档标题"</p>
+<p>  author: "作者名"</p>
+<p>  date: "2025-01-01"</p>
+<p>variables:</p>
+<p>  css: style.css</p>
+</code></pre></p><p>使用：</p><pre><code>pandoc -d defaults.yaml input.md -o output.html</p>
+</code></pre></p><hr><h2 id="通用转换选项">通用转换选项</h2></p><h3 id="独立文档">独立文档</h3></p><pre><code>-s, --standalone              # 生成完整文档（含 DOCTYPE、head 等）</p>
+<p>--template=FILE               # 指定自定义模板</p>
+<p>--embed-resources             # 嵌入所有资源（图片、CSS 等为 base64）</p>
+<p>--self-contained              # 同 --embed-resources（旧名）</p>
+</code></pre></p><h3 id="文本处理">文本处理</h3></p><pre><code>--wrap=auto|none|preserve     # 自动换行 / 不换行 / 保持原文换行</p>
+<p>--ascii                       # 只使用 ASCII 字符</p>
+<p>--columns=NUMBER              # 文本列宽（默认 72）</p>
+<p>--tab-stop=NUMBER             # Tab 宽度（默认 4）</p>
+<p>-p, --preserve-tabs           # 保留 Tab 字符</p>
+<p>--eol=crlf|lf|native          # 行尾符格式</p>
+</code></pre></p><h3 id="文件嵌入">文件嵌入</h3></p><pre><code>-H FILE, --include-in-header=FILE       # 在文档 head 中包含文件</p>
+<p>-B FILE, --include-before-body=FILE     # 在 body 开始处包含文件</p>
+<p>-A FILE, --include-after-body=FILE      # 在 body 结尾处包含文件</p>
+</code></pre></p><hr><h2 id="模板与变量">模板与变量</h2></p><h3 id="变量设置">变量设置</h3></p><pre><code>-V KEY[:VALUE], --variable=KEY[:VALUE]       # 设置模板变量</p>
+<p>--variable-json=KEY:JSON                     # 设置 JSON 格式变量</p>
+</code></pre></p><h3 id="常用变量">常用变量</h3></p><table><thead><tr><th>变量</th><th>说明</th><th>示例</th></tr></thead><tbody><tr><td><code>title</code></td><td>文档标题</td><td><code>-V title="My Doc"</code></td></tr><tr><td><code>author</code></td><td>作者</td><td><code>-V author="达尔文"</code></td></tr><tr><td><code>date</code></td><td>日期</td><td><code>-V date="2025-01-01"</code></td></tr><tr><td><code>lang</code></td><td>语言</td><td><code>-V lang=zh-CN</code></td></tr><tr><td><code>mainfont</code></td><td>主字体 (LaTeX)</td><td><code>-V mainfont="Noto Sans"</code></td></tr><tr><td><code>monofont</code></td><td>等宽字体 (LaTeX)</td><td><code>-V monofont="Noto Sans Mono"</code></td></tr><tr><td><code>fontsize</code></td><td>字号 (LaTeX)</td><td><code>-V fontsize=12pt</code></td></tr><tr><td><code>geometry</code></td><td>页面边距 (LaTeX)</td><td><code>-V geometry:margin=1in</code></td></tr><tr><td><code>documentclass</code></td><td>文档类 (LaTeX)</td><td><code>-V documentclass=article</code></td></tr><tr><td><code>colorlinks</code></td><td>彩色链接 (LaTeX)</td><td><code>-V colorlinks=true</code></td></tr><tr><td><code>toc-title</code></td><td>目录标题</td><td><code>-V toc-title="目录"</code></td></tr><tr><td><code>header-includes</code></td><td>额外头部内容</td><td><code>-V header-includes='<script ...>'</code></td></tr><tr><td><code>include-before</code></td><td>body 前内容</td><td><code>-V include-before='<div>'</code></td></tr><tr><td><code>include-after</code></td><td>body 后内容</td><td><code>-V include-after='</div>'</code></td></tr></tbody></table></p>
+<h3 id="查看默认模板">查看默认模板</h3></p><pre><code>pandoc -D html              # 查看 HTML 模板</p>
+<p>pandoc -D latex             # 查看 LaTeX 模板</p>
+<p>pandoc -D beamer            # 查看 Beamer 模板</p>
+<p>pandoc -D epub3             # 查看 EPUB3 模板</p>
+</code></pre></p><hr><h2 id="目录与章节编号">目录与章节编号</h2></p><pre><code>--toc, --table-of-contents              # 生成目录</p>
+<p>--toc-depth=NUMBER                      # 目录深度（默认 3）</p>
+<p>--toc-title=STRING                      # 目录标题</p>
+<p>-N, --number-sections                   # 章节自动编号</p>
+<p>--number-offset=NUMBERS                 # 编号偏移（如 1,1,1）</p>
+<p>--top-level-division=section|chapter|part  # 顶层分割方式</p>
+<p>--shift-heading-level-by=NUMBER         # 标题级别偏移</p>
+<p>--base-header-level=NUMBER              # 基础标题级别</p>
+<p>--section-divs                          # 用 <div> 包裹章节</p>
+</code></pre></p><h3 id="示例">示例</h3></p><pre><code><h1>生成带目录的 HTML，深度 2 级</h1></p>
+<p>pandoc input.md -o output.html --toc --toc-depth=2 -s</p><h1>章节编号，标题整体降低一级</h1></p>
+<p>pandoc input.md -o output.html -N --shift-heading-level-by=-1 -s</p>
+</code></pre></p><hr><h2 id="内容提取与资源管理">内容提取与资源管理</h2></p><pre><code>--extract-media=PATH           # 提取嵌入媒体到指定目录</p>
+<p>--resource-path=SEARCHPATH     # 资源搜索路径</p>
+<p>--link-images[=true|false]     # 将远程图片链接转为内嵌</p>
+<p>--default-image-extension=ext  # 默认图片扩展名</p>
+</code></pre></p><h3 id="提取-word-文档中的图片">提取 Word 文档中的图片</h3></p><pre><code>pandoc input.docx --extract-media=./media -o output.md</p>
+</code></pre></p><hr><h2 id="代码高亮">代码高亮</h2></p><pre><code>--syntax-highlighting=STYLE     # 高亮样式（默认 default）</p>
+<p>--highlight-style=STYLE|FILE    # 高亮主题（同上）</p>
+<p>--syntax-definition=FILE        # 自定义语法定义 (.xml)</p>
+<p>--no-highlight                  # 禁用代码高亮</p>
+<p>--listings                      # 使用 LaTeX listings 包</p>
+</code></pre></p><h3 id="使用-lua-过滤器控制">使用 Lua 过滤器控制</h3></p><pre><code>--indented-code-classes=STRING  # 缩进代码块的类名</p>
+</code></pre></p><hr><h2 id="pdf-生成">PDF 生成</h2></p><h3 id="引擎选择">引擎选择</h3></p><pre><code>--pdf-engine=PROGRAM              # PDF 引擎</p>
+<p>--pdf-engine-opt=STRING           # 传递给引擎的额外选项</p>
+<p>--reference-doc=FILE              # 参考文档（继承样式）</p>
+</code></pre></p><h3 id="可用引擎">可用引擎</h3></p><table><thead><tr><th>引擎</th><th>安装</th><th>特点</th></tr></thead><tbody><tr><td><code>pdflatex</code></td><td><code>brew install basictex</code></td><td>最常用</td></tr><tr><td><code>xelatex</code></td><td><code>brew install basictex</code></td><td>支持系统字体</td></tr><tr><td><code>lualatex</code></td><td><code>brew install basictex</code></td><td>Lua 脚本支持</td></tr><tr><td><code>wkhtmltopdf</code></td><td><code>brew install wkhtmltopdf</code></td><td>HTML 转 PDF</td></tr><tr><td><code>weasyprint</code></td><td><code>pip install weasyprint</code></td><td>CSS 打印支持</td></tr><tr><td><code>prince</code></td><td>商业软件</td><td>高质量排版</td></tr><tr><td><code>context</code></td><td><code>brew install context</code></td><td>ConTeXt 引擎</td></tr></tbody></table></p>
+<h3 id="基础示例">基础示例</h3></p><pre><code><h1>Markdown 转 PDF（使用 xelatex，支持中文）</h1></p>
+<p>pandoc input.md -o output.pdf \</p>
+<p>  --pdf-engine=xelatex \</p>
+<p>  -V CJKmainfont="PingFang SC"</p><h1>使用参考文档样式</h1></p>
+<p>pandoc input.md -o output.pdf \</p>
+<p>  --reference-doc=template.docx</p>
+</code></pre></p><h3 id="pdf-常用变量">PDF 常用变量</h3></p><pre><code>-V geometry:margin=1in            # 页边距</p>
+<p>-V fontsize=11pt                  # 字号</p>
+<p>-V documentclass=report           # 文档类</p>
+<p>-V linestretch=1.5                # 行距</p>
+<p>-V mainfont="SimSun"              # 主字体</p>
+<p>-V CJKmainfont="PingFang SC"      # 中文主字体</p>
+<p>-V monofont="Source Code Pro"     # 等宽字体</p>
+<p>-V colorlinks=true                # 彩色链接</p>
+<p>-V linkcolor=blue                 # 链接颜色</p>
+<p>-V urlcolor=blue                  # URL 颜色</p>
+<p>-V toccolor=black                 # 目录链接颜色</p>
+<p>-V geometry:a4paper               # 纸张大小</p>
+</code></pre></p><hr><h2 id="html-输出">HTML 输出</h2></p><pre><code>-c URL, --css=URL                 # 引入 CSS 样式表（可多次使用）</p>
+<p>-T STRING, --title-prefix=STRING  # HTML <title> 前缀</p>
+<p>--html-q-tags                     # 使用 <q> 标签</p>
+<p>--email-obfuscation=none|javascript|references  # 邮箱混淆</p>
+<p>--id-prefix=STRING                # ID 前缀</p>
+</code></pre></p><h3 id="示例">示例</h3></p><pre><code><h1>生成带样式和目录的独立 HTML</h1></p>
+<p>pandoc input.md -o output.html \</p>
+<p>  -s --toc \</p>
+<p>  -c style.css \</p>
+<p>  -V lang=zh-CN \</p>
+<p>  --metadata title="文档标题"</p><h1>自包含 HTML（所有资源内嵌）</h1></p>
+<p>pandoc input.md -o output.html \</p>
+<p>  -s --embed-resources --toc</p>
+</code></pre></p><hr><h2 id="epub-输出">EPUB 输出</h2></p><pre><code>--epub-chapter-level=NUMBER       # 章节级别（默认 1）</p>
+<p>--epub-cover-image=FILE           # 封面图片</p>
+<p>--epub-title-page                 # 生成标题页</p>
+<p>--epub-metadata=FILE              # EPUB 元数据 XML</p>
+<p>--epub-embed-font=FILE            # 嵌入字体（可多次使用）</p>
+<p>--epub-subdirectory=DIRNAME       # EPUB 内子目录名</p>
+</code></pre></p><h3 id="示例">示例</h3></p><pre><code>pandoc ch1.md ch2.md ch3.md -o book.epub \</p>
+<p>  --toc \</p>
+<p>  --epub-cover-image=cover.jpg \</p>
+<p>  --epub-title-page \</p>
+<p>  -V lang=zh-CN \</p>
+<p>  -M title="书籍标题" \</p>
+<p>  -M author="作者名"</p>
+</code></pre></p><hr><h2 id="markdown-输出">Markdown 输出</h2></p><pre><code>--markdown-headings=setext|atx           # 标题风格</p>
+<p>--reference-links[=true|false]           # 使用引用式链接</p>
+<p>--reference-location=block|section|document  # 引用链接位置</p>
+<p>--list-tables[=true|false]               # 表格使用列表格式</p>
+</code></pre></p><h3 id="示例">示例</h3></p><pre><code><h1>Word 转 GFM Markdown</h1></p>
+<p>pandoc input.docx -t gfm -o output.md</p><h1>HTML 转 CommonMark</h1></p>
+<p>pandoc input.html -t commonmark -o output.md</p>
+</code></pre></p><hr><h2 id="幻灯片输出">幻灯片输出</h2></p><pre><code>-i, --incremental                   # 逐步显示（incremental）</p>
+<p>--slide-level=NUMBER                # 幻灯片分割级别（默认 1）</p>
+</code></pre></p><h3 id="revealjs-示例">reveal.js 示例</h3></p><pre><code>pandoc presentation.md -o slides.html \</p>
+<p>  -t revealjs \</p>
+<p>  -V theme=moon \</p>
+<p>  -V transition=zoom \</p>
+<p>  --slide-level=2 \</p>
+<p>  -i</p>
+</code></pre></p><h3 id="beamer-示例">Beamer 示例</h3></p><pre><code>pandoc presentation.md -o slides.pdf \</p>
+<p>  -t beamer \</p>
+<p>  --pdf-engine=xelatex \</p>
+<p>  -V CJKmainfont="PingFang SC" \</p>
+<p>  -V theme=metropolis \</p>
+<p>  -i</p>
+</code></pre></p><hr><h2 id="latex-输出">LaTeX 输出</h2></p><h3 id="常用变量">常用变量</h3></p><pre><code>-V documentclass=article|report|book|memoir  # 文档类</p>
+<p>-V classoption=onecolumn|twocolumn           # 文档类选项</p>
+<p>-V geometry:margin=1in                       # 页边距</p>
+<p>-V fontsize=11pt|12pt                        # 字号</p>
+<p>-V linestretch=1.5                           # 行距</p>
+<p>-V mainfont="字体名"                         # 主字体</p>
+<p>-V monofont="字体名"                         # 等宽字体</p>
+<p>-V colorlinks=true                           # 彩色链接</p>
+<p>-V linkcolor=blue                            # 链接颜色</p>
+</code></pre></p><h3 id="示例">示例</h3></p><pre><code>pandoc input.md -o output.tex \</p>
+<p>  -V documentclass=article \</p>
+<p>  -V geometry:margin=2.5cm \</p>
+<p>  -V CJKmainfont="PingFang SC" \</p>
+<p>  -N --toc</p>
+</code></pre></p><hr><h2 id="引用与参考文献">引用与参考文献</h2></p><pre><code>-C, --citeproc                            # 启用引用处理</p>
+<p>--bibliography=FILE                       # 参考文献文件 (.bib)</p>
+<p>--csl=FILE                                # 引用样式 (.csl)</p>
+<p>--citation-abbreviations=FILE             # 引用缩写</p>
+<p>--natbib                                  # 使用 natbib 兼容模式</p>
+<p>--biblatex                                # 使用 biblatex 兼容模式</p>
+</code></pre></p><h3 id="示例">示例</h3></p><pre><code>pandoc paper.md -o output.pdf \</p>
+<p>  --citeproc \</p>
+<p>  --bibliography=refs.bib \</p>
+<p>  --csl=apa.csl \</p>
+<p>  --pdf-engine=xelatex</p>
+</code></pre></p><h3 id="在-markdown-中引用">在 Markdown 中引用</h3></p><pre><code>详见 @Smith2020 的研究，@Jones2021 也得出了类似结论。</p><h2 id="参考文献">参考文献</h2></p>
+</code></pre></p><hr><h2 id="数学公式渲染">数学公式渲染</h2></p><pre><code>--mathml                   # 输出 MathML</p>
+<p>--webtex[=URL]             # 使用 WebTeX 图片（默认 https://latex.codecogs.com/svg.latex?）</p>
+<p>--mathjax[=URL]            # 使用 MathJax</p>
+<p>--katex[=URL]              # 使用 KaTeX</p>
+<p>--gladtex                  # 使用 GladTeX</p>
+</code></pre></p><h3 id="示例">示例</h3></p><pre><code><h1>HTML + KaTeX 数学公式</h1></p>
+<p>pandoc input.md -o output.html -s --katex</p><h1>HTML + MathJax</h1></p>
+<p>pandoc input.md -o output.html -s --mathjax</p>
+</code></pre></p><hr><h2 id="过滤器系统">过滤器系统</h2></p><h3 id="pandoc-过滤器">Pandoc 过滤器</h3></p><pre><code>-F PROGRAM, --filter=PROGRAM           # JSON 过滤器（管道方式）</p>
+<p>-L SCRIPTPATH, --lua-filter=SCRIPTPATH # Lua 过滤器</p>
+</code></pre></p><h3 id="过滤器类型">过滤器类型</h3></p><table><thead><tr><th>类型</th><th>说明</th><th>优势</th></tr></thead><tbody><tr><td>Lua 过滤器</td><td><code>.lua</code> 脚本</td><td>无需外部依赖，性能好</td></tr><tr><td>JSON 过滤器</td><td>任何可执行程序</td><td>语言无关</td></tr><tr><td>Pandoc Server</td><td>HTTP API</td><td>3.9 新特性，长驻进程</td></tr></tbody></table></p>
+<h3 id="lua-过滤器示例">Lua 过滤器示例</h3></p><pre><code>-- capitalize-headings.lua：将所有标题大写</p>
+<p>function Header(el)</p>
+<p>  el.content = pandoc.Str(string.upper(pandoc.utils.stringify(el.content)))</p>
+<p>  return el</p>
+<p>end</p>
+</code></pre></p><pre><code>pandoc input.md --lua-filter=capitalize-headings.lua -o output.html</p>
+</code></pre></p><h3 id="常用-lua-过滤器操作">常用 Lua 过滤器操作</h3></p><pre><code>-- 替换文本</p>
+<p>function Str(el)</p>
+<p>  if el.text == "foo" then</p>
+<p>    return pandoc.Str("bar")</p>
+<p>  end</p>
+<p>end</p><p>-- 添加属性</p>
+<p>function Image(el)</p>
+<p>  el.attributes["loading"] = "lazy"</p>
+<p>  return el</p>
+<p>end</p><p>-- 处理代码块</p>
+<p>function CodeBlock(el)</p>
+<p>  el.classes:insert("language-" .. el.classes[1])</p>
+<p>  return el</p>
+<p>end</p><p>-- 处理链接</p>
+<p>function Link(el)</p>
+<p>  el.target = string.gsub(el.target, "^http:", "https:")</p>
+<p>  return el</p>
+<p>end</p>
+</code></pre></p><hr><h2 id="扩展控制">扩展控制</h2></p><h3 id="markdown-扩展">Markdown 扩展</h3></p><p>使用 <code>+EXTENSION</code> 启用，<code>-EXTENSION</code> 禁用。</p><h3 id="常用扩展">常用扩展</h3></p><table><thead><tr><th>扩展</th><th>默认</th><th>说明</th></tr></thead><tbody><tr><td><code>pipe_tables</code></td><td>+</td><td>管道表格</td></tr><tr><td><code>table_attributes</code></td><td>+</td><td>表格属性</td></tr><tr><td><code>fenced<em>code</em>blocks</code></td><td>+</td><td>围栏代码块</td></tr><tr><td><code>fenced<em>code</em>attributes</code></td><td>+</td><td>代码块属性</td></tr><tr><td><code>fenced_divs</code></td><td>+</td><td>围栏 Div</td></tr><tr><td><code>backtick<em>code</em>blocks</code></td><td>+</td><td>反引号代码块</td></tr><tr><td><code>footnotes</code></td><td>+</td><td>脚注</td></tr><tr><td><code>inline_notes</code></td><td>+</td><td>行内脚注</td></tr><tr><td><code>citations</code></td><td>+</td><td>引用语法</td></tr><tr><td><code>definition_lists</code></td><td>+</td><td>定义列表</td></tr><tr><td><code>example_lists</code></td><td>+</td><td>示例列表</td></tr><tr><td><code>fancy_lists</code></td><td>+</td><td>有序列表类型</td></tr><tr><td><code>task_lists</code></td><td>+</td><td>任务列表</td></tr><tr><td><code>smart</code></td><td>+</td><td>智能标点</td></tr><tr><td><code>tex<em>math</em>dollars</code></td><td>+</td><td><code>$...$</code> 数学公式</td></tr><tr><td><code>raw_html</code></td><td>+</td><td>原始 HTML</td></tr><tr><td><code>raw_tex</code></td><td>+</td><td>原始 LaTeX</td></tr><tr><td><code>yaml<em>metadata</em>block</code></td><td>+</td><td>YAML 元数据块</td></tr><tr><td><code>auto_identifiers</code></td><td>+</td><td>自动生成标题 ID</td></tr><tr><td><code>implicit_figures</code></td><td>+</td><td>独立图片自动视为 figure</td></tr><tr><td><code>strikeout</code></td><td>+</td><td>删除线 <code>~~text~~</code></td></tr><tr><td><code>superscript</code></td><td>+</td><td>上标 <code>^sup^</code></td></tr><tr><td><code>subscript</code></td><td>+</td><td>下标 <code>~sub~</code></td></tr><tr><td><code>hard<em>line</em>breaks</code></td><td>-</td><td>硬换行</td></tr><tr><td><code>emoji</code></td><td>-</td><td>Emoji 短代码</td></tr><tr><td><code>wikilinks</code></td><td>-</td><td>Wiki 链接 <code>[[link]]</code></td></tr></tbody></table></p>
+<h3 id="查看格式扩展">查看格式扩展</h3></p><pre><code>pandoc --list-extensions=markdown       # Markdown 扩展</p>
+<p>pandoc --list-extensions=gfm            # GFM 扩展</p>
+<p>pandoc --list-extensions=commonmark     # CommonMark 扩展</p>
+</code></pre></p><h3 id="使用示例">使用示例</h3></p><pre><code><h1>严格 CommonMark + 任务列表</h1></p>
+<p>pandoc -f commonmark+task_lists input.md -o output.html</p><h1>标准 Markdown 移除智能标点</h1></p>
+<p>pandoc -f markdown-smart input.md -o output.html</p>
+</code></pre></p><hr><h2 id="epub-专用选项">EPUB 专用选项</h2></p><pre><code>--epub-chapter-level=NUMBER       # 定义章节级别（默认 1）</p>
+<p>--epub-cover-image=FILE           # 封面图片路径</p>
+<p>--epub-title-page[=true|false]    # 生成标题页（默认 true）</p>
+<p>--epub-metadata=FILE              # 元数据文件路径 (XML)</p>
+<p>--epub-embed-font=FILE            # 嵌入字体（可多次指定）</p>
+<p>--epub-subdirectory=DIRNAME       # 内容子目录（默认 EPUB）</p>
+<p>--split-level=NUMBER              # 文件分割级别</p>
+</code></pre></p><hr><h2 id="调试与诊断">调试与诊断</h2></p><pre><code>--trace[=true|false]              # 显示详细执行追踪</p>
+<p>--dump-args[=true|false]          # 输出解析后的参数</p>
+<p>--ignore-args[=true|false]        # 忽略其他参数</p>
+<p>--verbose                         # 详细输出</p>
+<p>--quiet                           # 静默模式</p>
+<p>--fail-if-warnings[=true|false]   # 有警告时退出码为非零</p>
+<p>--log=FILE                        # 写入日志文件</p>
+</code></pre></p><h3 id="信息查询">信息查询</h3></p><pre><code>pandoc --list-input-formats               # 列出输入格式</p>
+<p>pandoc --list-output-formats              # 列出输出格式</p>
+<p>pandoc --list-extensions[=FORMAT]         # 列出格式扩展</p>
+<p>pandoc --list-highlight-languages         # 列出支持的高亮语言</p>
+<p>pandoc --list-highlight-styles            # 列出高亮主题</p>
+<p>pandoc -D FORMAT                          # 打印默认模板</p>
+<p>pandoc --print-default-data-file=FILE     # 打印默认数据文件</p>
+<p>pandoc --print-highlight-style=STYLE      # 打印高亮样式定义</p>
+</code></pre></p><hr><h2 id="支持的语言高亮">支持的语言高亮</h2></p><p>共支持 <strong>163</strong> 种语言，以下为常用语言：</p><h3 id="通用语言">通用语言</h3></p><code>bash</code>, <code>c</code>, <code>cpp</code>, <code>cs</code>, <code>go</code>, <code>java</code>, <code>javascript</code>, <code>json</code>, <code>kotlin</code>, <code>lua</code>, <code>perl</code>, <code>php</code>, <code>python</code>, <code>ruby</code>, <code>rust</code>, <code>sql</code>, <code>swift</code>, <code>typescript</code>, <code>xml</code>, <code>yaml</code></p><h3 id="web-前端">Web 前端</h3></p><code>html</code>, <code>css</code>, <code>scss</code>, <code>less</code>, <code>jsx</code>, <code>tsx</code>, <code>vue</code>, <code>svelte</code>, <code>graphql</code></p><h3 id="数据与配置">数据与配置</h3></p><code>dockerfile</code>, <code>toml</code>, <code>ini</code>, <code>makefile</code>, <code>cmake</code>, <code>diff</code>, <code>regex</code>, <code>protobuf</code>, <code>avro</code></p><h3 id="函数式与学术">函数式与学术</h3></p><code>haskell</code>, <code>scala</code>, <code>clojure</code>, <code>elixir</code>, <code>erlang</code>, <code>ocaml</code>, <code>fsharp</code>, <code>r</code>, <code>julia</code>, <code>matlab</code>, <code>latex</code>, <code>tex</code></p><h3 id="查看完整列表">查看完整列表</h3></p><pre><code>pandoc --list-highlight-languages | tr ',' '\n' | sed 's/^ //'</p>
+</code></pre></p><hr><h2 id="高亮主题">高亮主题</h2></p><table><thead><tr><th>主题</th><th>风格</th></tr></thead><tbody><tr><td><code>pygments</code></td><td>经典 Pygments 风格</td></tr><tr><td><code>tango</code></td><td>柔和彩色</td></tr><tr><td><code>espresso</code></td><td>暗色 Espresso</td></tr><tr><td><code>zenburn</code></td><td>暗色 Zenburn</td></tr><tr><td><code>kate</code></td><td>Kate 编辑器风格</td></tr><tr><td><code>monochrome</code></td><td>无彩色</td></tr><tr><td><code>breezedark</code></td><td>KDE Breeze 暗色</td></tr><tr><td><code>haddock</code></td><td>Haddock 风格</td></tr></tbody></table></p>
+<h3 id="使用示例">使用示例</h3></p><pre><code>pandoc input.md -o output.html --highlight-style=zenburn -s</p>
+</code></pre></p><h3 id="查看主题定义">查看主题定义</h3></p><pre><code>pandoc --print-highlight-style=tango</p>
+</code></pre></p><hr><h2 id="常用命令示例">常用命令示例</h2></p><h3 id="格式转换">格式转换</h3></p><pre><code><h1>Markdown → HTML（独立文档，带目录）</h1></p>
+<p>pandoc input.md -o output.html -s --toc --toc-depth=3 -V lang=zh-CN</p><h1>Markdown → PDF（中文支持）</h1></p>
+<p>pandoc input.md -o output.pdf \</p>
+<p>  --pdf-engine=xelatex \</p>
+<p>  -V CJKmainfont="PingFang SC" \</p>
+<p>  -V geometry:margin=2.5cm \</p>
+<p>  -N --toc</p><h1>Markdown → Word</h1></p>
+<p>pandoc input.md -o output.docx -s</p><h1>Word → Markdown</h1></p>
+<p>pandoc input.docx -t gfm -o output.md</p><h1>HTML → Markdown</h1></p>
+<p>pandoc input.html -t gfm --wrap=none -o output.md</p><h1>Markdown → EPUB</h1></p>
+<p>pandoc ch1.md ch2.md ch3.md -o book.epub \</p>
+<p>  -s --toc --epub-cover-image=cover.jpg \</p>
+<p>  -M title="书名" -M author="作者"</p><h1>Markdown → 纯文本（去除格式）</h1></p>
+<p>pandoc input.md -t plain -o output.txt --wrap=none</p><h1>Jupyter Notebook → Markdown</h1></p>
+<p>pandoc notebook.ipynb -t markdown -o output.md</p><h1>Markdown →reveal.js 幻灯片</h1></p>
+<p>pandoc slides.md -o presentation.html \</p>
+<p>  -t revealjs -V theme=moon --slide-level=2</p><h1>CSV → Markdown 表格</h1></p>
+<p>pandoc data.csv -t markdown -o table.md</p>
+</code></pre></p><h3 id="高级用法">高级用法</h3></p><pre><code><h1>使用参考文档样式（继承 Word 模板样式）</h1></p>
+<p>pandoc input.md -o output.docx --reference-doc=template.docx</p><h1>自定义模板</h1></p>
+<p>pandoc input.md -o output.html --template=mytemplate.html -s</p><h1>多个 Lua 过滤器</h1></p>
+<p>pandoc input.md --lua-filter=f1.lua --lua-filter=f2.lua -o output.html</p><h1>使用 defaults 文件</h1></p>
+<p>pandoc -d defaults.yaml input.md -o output.html</p><h1>合并多个 Markdown 文件为一个 PDF</h1></p>
+<p>pandoc part1.md part2.md part3.md \</p>
+<p>  -o combined.pdf \</p>
+<p>  --pdf-engine=xelatex \</p>
+<p>  -V CJKmainfont="PingFang SC" \</p>
+<p>  -s -N --toc</p><h1>生成带数学公式的 HTML（KaTeX）</h1></p>
+<p>pandoc math.md -o output.html -s --katex</p><h1>网页转 Markdown（从 URL）</h1></p>
+<p>curl -sL https://example.com | pandoc -f html -t gfm -o page.md</p><h1>批量转换</h1></p>
+<p>for f in *.md; do pandoc "$f" -o "${f%.md}.html" -s --toc; done</p>
+</code></pre></p><h3 id="参考文献处理">参考文献处理</h3></p><pre><code>pandoc paper.md -o output.pdf \</p>
+<p>  --citeproc \</p>
+<p>  --bibliography=references.bib \</p>
+<p>  --csl=apa-7th.csl \</p>
+<p>  --pdf-engine=xelatex</p>
+</code></pre></p>
+</main>
+  </div>
+</body>
+</html>
