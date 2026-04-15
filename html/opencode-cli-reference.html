@@ -34,6 +34,8 @@
       width: 280px;
       padding: 1.5rem;
       overflow-y: auto;
+      display: flex;
+      flex-direction: column;
       border-right: 1px solid var(--color-border);
       background: #302c2c;
       color: #fdfcfc;
@@ -186,47 +188,22 @@
       height: 100vh;
     }
     .sidebar-back {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
       display: flex;
       align-items: center;
       gap: 6px;
-      padding: 10px 20px;
-      color: #fff;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      padding: 10px 14px;
+      margin-top: auto;
+      color: var(--color-secondary, #8a8f98);
       text-decoration: none;
       font-size: 0.8125rem;
       font-weight: 500;
-      border-radius: 20px;
-      border: none;
-      z-index: 100;
-      transition: all 0.25s;
-      white-space: nowrap;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      border-radius: 8px;
+      border: 1px solid var(--color-border, rgba(255,255,255,0.08));
+      transition: all 0.2s;
     }
     .sidebar-back:hover {
-      background: rgba(0,0,0,0.85);
-      transform: translateX(-50%) translateY(-2px);
-      box-shadow: 0 6px 24px rgba(0,0,0,0.2);
-    }
-    @media (max-width: 768px) {
-      .sidebar-back {
-        bottom: 20px;
-        padding: 8px 16px;
-        font-size: 0.75rem;
-      }
-    }
-    @media (max-width: 480px) {
-      .sidebar-back {
-        bottom: 16px;
-        padding: 7px 14px;
-        font-size: 0.6875rem;
-        border-radius: 16px;
-      }
+      color: var(--color-accent, #7170ff);
+      border-color: var(--color-accent, #7170ff);
     }
     .sidebar nav { display: flex; flex-direction: column; gap: 2px; }
     
@@ -342,6 +319,10 @@
 <a href="#opencode-uninstall" style="padding-left: 1rem;">`opencode uninstall`</a>
 <a href="#文件路径说明" >文件路径说明</a>
 <a href="#配置文件" >配置文件</a></nav>
+          <a href="./index.html" class="sidebar-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        返回文档列表
+      </a>
     </aside>
     <main class="main"><h1>OpenCode CLI 参考手册</h1></p><blockquote>版本：1.3.15 | 安装路径：<code>/opt/homebrew/bin/opencode</code></blockquote></p><h2 id="概述">概述</h2></p><p>OpenCode 是一个交互式 CLI 工具，提供 TUI（终端用户界面）和 headless 模式，用于与 AI 模型交互、管理会话、操作代码等。它支持多种 AI 提供商、MCP/ACP 协议、GitHub 集成和插件扩展。</p><h2 id="快速开始">快速开始</h2></p><pre><code><h1>在当前目录启动 TUI 交互界面</h1></p>
 <p>opencode</p><h1>在指定项目目录启动</h1></p>
@@ -565,9 +546,5 @@
       }, { passive: true });
     })();
   </script>
-  <a href="./index.html" class="sidebar-back">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
-    返回文档列表
-  </a>
 </body>
 </html>

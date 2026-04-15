@@ -185,47 +185,22 @@
       height: 100vh;
     }
     .sidebar-back {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
       display: flex;
       align-items: center;
       gap: 6px;
-      padding: 10px 20px;
-      color: #fff;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      padding: 10px 14px;
+      margin-top: auto;
+      color: var(--color-secondary, #8a8f98);
       text-decoration: none;
       font-size: 0.8125rem;
       font-weight: 500;
-      border-radius: 20px;
-      border: none;
-      z-index: 100;
-      transition: all 0.25s;
-      white-space: nowrap;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      border-radius: 8px;
+      border: 1px solid var(--color-border, rgba(255,255,255,0.08));
+      transition: all 0.2s;
     }
     .sidebar-back:hover {
-      background: rgba(0,0,0,0.85);
-      transform: translateX(-50%) translateY(-2px);
-      box-shadow: 0 6px 24px rgba(0,0,0,0.2);
-    }
-    @media (max-width: 768px) {
-      .sidebar-back {
-        bottom: 20px;
-        padding: 8px 16px;
-        font-size: 0.75rem;
-      }
-    }
-    @media (max-width: 480px) {
-      .sidebar-back {
-        bottom: 16px;
-        padding: 7px 14px;
-        font-size: 0.6875rem;
-        border-radius: 16px;
-      }
+      color: var(--color-accent, #7170ff);
+      border-color: var(--color-accent, #7170ff);
     }
     .sidebar nav { display: flex; flex-direction: column; gap: 2px; }
     
@@ -312,6 +287,10 @@
 <a href="#系统内置工具" >系统内置工具</a>
 <a href="#其他工具" >其他工具</a>
 <a href="#参考手册索引" >参考手册索引</a></nav>
+          <a href="./index.html" class="sidebar-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        返回文档列表
+      </a>
     </aside>
     <main class="main"><h1>本机 CLI 工具清单</h1></p><blockquote>统计时间：2026-04-12 | 系统：macOS ARM64 (Apple Silicon)</blockquote></p><h2 id="homebrew-formula">Homebrew Formula</h2></p><table><thead><tr><th>工具</th><th>说明</th></tr></thead><tbody><tr><td><code>ffmpeg</code></td><td>音视频转码处理</td></tr><tr><td><code>gh</code></td><td>GitHub 官方 CLI</td></tr><tr><td><code>opencode</code></td><td>OpenCode 终端 AI 编程工具</td></tr><tr><td><code>pandoc</code></td><td>通用文档格式转换</td></tr><tr><td><code>ripgrep</code> (rg)</td><td>高速文本搜索</td></tr><tr><td><code>osx-cpu-temp</code></td><td>CPU 温度监控</td></tr><tr><td><code>obsidian-cli</code></td><td>Obsidian CLI</td></tr></tbody></table></p>
 <hr><h2 id="homebrew-cask">Homebrew Cask</h2></p><table><thead><tr><th>工具</th><th>说明</th></tr></thead><tbody><tr><td><code>android-platform-tools</code></td><td>adb/fastboot 调试工具</td></tr><tr><td><code>entire</code></td><td>系统监控工具</td></tr><tr><td><code>stats</code></td><td>系统状态监控面板</td></tr></tbody></table></p>
@@ -357,9 +336,5 @@
       }, { passive: true });
     })();
   </script>
-  <a href="./index.html" class="sidebar-back">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
-    返回文档列表
-  </a>
 </body>
 </html>

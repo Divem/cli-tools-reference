@@ -71,47 +71,22 @@
       height: 100vh;
     }
     .sidebar-back {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
       display: flex;
       align-items: center;
       gap: 6px;
-      padding: 10px 20px;
-      color: #fff;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      padding: 10px 14px;
+      margin-top: auto;
+      color: var(--color-secondary, #8a8f98);
       text-decoration: none;
       font-size: 0.8125rem;
       font-weight: 500;
-      border-radius: 20px;
-      border: none;
-      z-index: 100;
-      transition: all 0.25s;
-      white-space: nowrap;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      border-radius: 8px;
+      border: 1px solid var(--color-border, rgba(255,255,255,0.08));
+      transition: all 0.2s;
     }
     .sidebar-back:hover {
-      background: rgba(0,0,0,0.85);
-      transform: translateX(-50%) translateY(-2px);
-      box-shadow: 0 6px 24px rgba(0,0,0,0.2);
-    }
-    @media (max-width: 768px) {
-      .sidebar-back {
-        bottom: 20px;
-        padding: 8px 16px;
-        font-size: 0.75rem;
-      }
-    }
-    @media (max-width: 480px) {
-      .sidebar-back {
-        bottom: 16px;
-        padding: 7px 14px;
-        font-size: 0.6875rem;
-        border-radius: 16px;
-      }
+      color: var(--color-accent, #7170ff);
+      border-color: var(--color-accent, #7170ff);
     }
     .sidebar nav { display: flex; flex-direction: column; gap: 2px; }
     
@@ -254,6 +229,10 @@
 <a href="#openclaw-reset-重置" style="padding-left: 1rem;">openclaw reset — 重置</a>
 <a href="#openclaw-uninstall-卸载" style="padding-left: 1rem;">openclaw uninstall — 卸载</a>
 <a href="#文件路径说明" >文件路径说明</a></nav>
+          <a href="./index.html" class="sidebar-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        返回文档列表
+      </a>
     </aside>
     <main class="main"><h1>OpenClaw CLI 参考手册</h1></p><blockquote>版本：2026.3.13 | 安装路径：<code>/Users/dawinyuan/.npm-global/bin/openclaw</code></blockquote></p><h2 id="概述">概述</h2></p><p>OpenClaw 是一个本地 AI 代理网关（AI Agent Gateway），提供 WebSocket 网关服务、多渠道消息集成（WhatsApp/Telegram/Discord/Slack/飞书等）、浏览器自动化、模型管理、技能扩展、定时任务等功能。它支持本地运行和 Tailscale 广域网暴露，是一个全能型的个人 AI 基础设施。</p><h2 id="快速开始">快速开始</h2></p><pre><code><h1>交互式初始配置</h1></p>
 <p>openclaw setup</p><h1>启动网关服务（前台运行）</h1></p>
@@ -423,9 +402,5 @@
       }, { passive: true });
     })();
   </script>
-  <a href="./index.html" class="sidebar-back">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
-    返回文档列表
-  </a>
 </body>
 </html>

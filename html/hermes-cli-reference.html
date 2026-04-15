@@ -75,47 +75,22 @@
       height: 100vh;
     }
     .sidebar-back {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
       display: flex;
       align-items: center;
       gap: 6px;
-      padding: 10px 20px;
-      color: #fff;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      padding: 10px 14px;
+      margin-top: auto;
+      color: var(--color-secondary, #8a8f98);
       text-decoration: none;
       font-size: 0.8125rem;
       font-weight: 500;
-      border-radius: 20px;
-      border: none;
-      z-index: 100;
-      transition: all 0.25s;
-      white-space: nowrap;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      border-radius: 8px;
+      border: 1px solid var(--color-border, rgba(255,255,255,0.08));
+      transition: all 0.2s;
     }
     .sidebar-back:hover {
-      background: rgba(0,0,0,0.85);
-      transform: translateX(-50%) translateY(-2px);
-      box-shadow: 0 6px 24px rgba(0,0,0,0.2);
-    }
-    @media (max-width: 768px) {
-      .sidebar-back {
-        bottom: 20px;
-        padding: 8px 16px;
-        font-size: 0.75rem;
-      }
-    }
-    @media (max-width: 480px) {
-      .sidebar-back {
-        bottom: 16px;
-        padding: 7px 14px;
-        font-size: 0.6875rem;
-        border-radius: 16px;
-      }
+      color: var(--color-accent, #7170ff);
+      border-color: var(--color-accent, #7170ff);
     }
     .sidebar nav { display: flex; flex-direction: column; gap: 2px; }
     .sidebar-back { color: var(--color-gray); border-color: var(--color-border); }
@@ -251,6 +226,10 @@
 <a href="#技能安装" style="padding-left: 1rem;">技能安装</a>
 <a href="#多平台部署" style="padding-left: 1rem;">多平台部署</a>
 <a href="#调试排障" style="padding-left: 1rem;">调试排障</a></nav>
+          <a href="./index.html" class="sidebar-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        返回文档列表
+      </a>
     </aside>
     <main class="main"><h1>Hermes CLI 参考手册</h1></p><blockquote>版本：v0.9.0 (2026.4.13) | 安装路径：<code>~/.hermes/hermes-agent/</code></blockquote></p><p>Hermes Agent 是一个具备工具调用能力的 AI 助手，支持多推理提供商、多消息平台集成（Telegram/Discord/WhatsApp）、技能系统、插件体系、定时任务和 MCP 协议。</p><hr><h2 id="快速开始">快速开始</h2></p><pre><code><h1>首次配置</h1></p>
 <p>hermes setup</p><h1>启动交互式对话</h1></p>
@@ -514,9 +493,5 @@
       }, { passive: true });
     })();
   </script>
-  <a href="./index.html" class="sidebar-back">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
-    返回文档列表
-  </a>
 </body>
 </html>

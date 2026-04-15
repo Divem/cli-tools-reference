@@ -42,6 +42,8 @@
       width: 280px;
       padding: 1.5rem;
       overflow-y: auto;
+      display: flex;
+      flex-direction: column;
       border-right: 1px solid var(--color-border);
       background: var(--color-sidebar-bg);
     }
@@ -194,47 +196,22 @@
       height: 100vh;
     }
     .sidebar-back {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
       display: flex;
       align-items: center;
       gap: 6px;
-      padding: 10px 20px;
-      color: #fff;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      padding: 10px 14px;
+      margin-top: auto;
+      color: var(--color-secondary, #8a8f98);
       text-decoration: none;
       font-size: 0.8125rem;
       font-weight: 500;
-      border-radius: 20px;
-      border: none;
-      z-index: 100;
-      transition: all 0.25s;
-      white-space: nowrap;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      border-radius: 8px;
+      border: 1px solid var(--color-border, rgba(255,255,255,0.08));
+      transition: all 0.2s;
     }
     .sidebar-back:hover {
-      background: rgba(0,0,0,0.85);
-      transform: translateX(-50%) translateY(-2px);
-      box-shadow: 0 6px 24px rgba(0,0,0,0.2);
-    }
-    @media (max-width: 768px) {
-      .sidebar-back {
-        bottom: 20px;
-        padding: 8px 16px;
-        font-size: 0.75rem;
-      }
-    }
-    @media (max-width: 480px) {
-      .sidebar-back {
-        bottom: 16px;
-        padding: 7px 14px;
-        font-size: 0.6875rem;
-        border-radius: 16px;
-      }
+      color: var(--color-accent, #7170ff);
+      border-color: var(--color-accent, #7170ff);
     }
     .sidebar nav { display: flex; flex-direction: column; gap: 2px; }
     
@@ -326,6 +303,10 @@
 <a href="#canvas-design-视觉艺术设计" >Canvas Design — 视觉艺术设计</a>
 <a href="#其他设计类技能" >其他设计类技能</a>
 <a href="#快速选择指南" >快速选择指南</a></nav>
+          <a href="./index.html" class="sidebar-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        返回文档列表
+      </a>
     </aside>
     <main class="main"><h1>Claude Skills 设计风格参考手册</h1></p><blockquote>适用于 Claude Code / Claude Desktop 的设计类技能，覆盖品牌风格、主题工厂、前端设计、图表、视觉艺术等。</blockquote></p><hr><h2 id="概述">概述</h2></p><p>Claude Skills 中与设计相关的技能分为几大类：</p><table><thead><tr><th>技能</th><th>用途</th><th>来源</th></tr></thead><tbody><tr><td><strong>brand-design-md</strong></td><td>从 getdesign.md 获取 62 个顶级品牌设计规范，生成匹配品牌风格的 UI 代码</td><td><code>brand-design-md</code></td></tr><tr><td><strong>theme-factory</strong></td><td>10 个预设主题（配色 + 字体），可应用到幻灯片、文档、HTML 等</td><td><code>theme-factory</code></td></tr><tr><td><strong>frontend-design</strong></td><td>自由美学方向，生成独特的生产级前端界面</td><td><code>frontend-design</code></td></tr><tr><td><strong>anthropic-diagram</strong></td><td>生成 Anthropic 博客风格的 .drawio 图表/流程图</td><td><code>anthropic-diagram</code></td></tr><tr><td><strong>canvas-design</strong></td><td>创建海报、视觉艺术（.png/.pdf）</td><td><code>canvas-design</code></td></tr><tr><td><strong>design-shotgun</strong></td><td>一次生成多个设计变体，对比选择</td><td><code>design-shotgun</code></td></tr><tr><td><strong>design-consultation</strong></td><td>从零创建完整设计系统</td><td><code>design-consultation</code></td></tr><tr><td><strong>design-html</strong></td><td>将设计稿转化为生产级 HTML/CSS</td><td><code>design-html</code></td></tr><tr><td><strong>brand-guidelines</strong></td><td>应用 Anthropic 官方品牌色和排版</td><td><code>brand-guidelines</code></td></tr></tbody></table></p>
 <hr><h2 id="brand-design-md-62-个品牌风格">Brand Design MD — 62 个品牌风格</h2></p><p>从 <a href="https://getdesign.md">getdesign.md</a> 自动获取品牌设计规范（颜色、字体、间距、圆角、阴影），严格按规范数值生成 UI 代码。</p><strong>触发方式：</strong> 提到"XX风格"、"做成XX的感觉"、"参考XX设计"。</p><h3 id="科技-ai-产品32-个">科技 / AI 产品（32 个）</h3></p><table><thead><tr><th>品牌</th><th>Slug</th><th>风格关键词</th></tr></thead><tbody><tr><td>苹果 / Apple</td><td><code>apple</code></td><td>极致留白 + SF Pro + 电影质感</td></tr><tr><td>Claude / Anthropic</td><td><code>claude</code></td><td>赭石强调色 + 编辑排版 + 温暖智识感</td></tr><tr><td>Cursor / AI 编辑器</td><td><code>cursor</code></td><td>深色 + 渐变强调 + AI 原生</td></tr><tr><td>ElevenLabs / 语音 AI</td><td><code>elevenlabs</code></td><td>—</td></tr><tr><td>Figma / 设计工具</td><td><code>figma</code></td><td>多彩活泼 + 专业 + 协作感</td></tr><tr><td>Framer / 建站工具</td><td><code>framer</code></td><td>—</td></tr><tr><td>Lovable</td><td><code>lovable</code></td><td>—</td></tr><tr><td>Meta / Facebook</td><td><code>meta</code></td><td>—</td></tr><tr><td>MiniMax</td><td><code>minimax</code></td><td>—</td></tr><tr><td>Mintlify / 文档平台</td><td><code>mintlify</code></td><td>—</td></tr><tr><td>Mistral / Mistral AI</td><td><code>mistral.ai</code></td><td>—</td></tr><tr><td>Notion / 笔记工具</td><td><code>notion</code></td><td>暖色极简 + 衬线标题 + 柔和表面</td></tr><tr><td>Ollama</td><td><code>ollama</code></td><td>—</td></tr><tr><td>OpenCode</td><td><code>opencode.ai</code></td><td>—</td></tr><tr><td>PostHog</td><td><code>posthog</code></td><td>—</td></tr><tr><td>Raycast</td><td><code>raycast</code></td><td>深色铬面 + 渐变强调 + 效率感</td></tr><tr><td>Replicate</td><td><code>replicate</code></td><td>—</td></tr><tr><td>Resend</td><td><code>resend</code></td><td>—</td></tr><tr><td>Runway / RunwayML</td><td><code>runwayml</code></td><td>—</td></tr><tr><td>Sanity / CMS</td><td><code>sanity</code></td><td>—</td></tr><tr><td>Sentry</td><td><code>sentry</code></td><td>—</td></tr><tr><td>Supabase</td><td><code>supabase</code></td><td>深色翠绿 + 代码优先 + 开发者感</td></tr><tr><td>Superhuman / 邮件</td><td><code>superhuman</code></td><td>—</td></tr><tr><td>Together AI</td><td><code>together.ai</code></td><td>—</td></tr><tr><td>Vercel</td><td><code>vercel</code></td><td>黑白精准 + Geist 字体 + 极简</td></tr><tr><td>VoltAgent</td><td><code>voltagent</code></td><td>—</td></tr><tr><td>Warp / 终端</td><td><code>warp</code></td><td>—</td></tr><tr><td>Webflow</td><td><code>webflow</code></td><td>—</td></tr><tr><td>X.AI / Grok</td><td><code>x.ai</code></td><td>—</td></tr><tr><td>Zapier</td><td><code>zapier</code></td><td>—</td></tr></tbody></table></p>
@@ -419,9 +400,5 @@
       }, { passive: true });
     })();
   </script>
-  <a href="./index.html" class="sidebar-back">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
-    返回文档列表
-  </a>
 </body>
 </html>

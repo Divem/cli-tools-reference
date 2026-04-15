@@ -34,6 +34,8 @@
       width: 280px;
       padding: 1.5rem;
       overflow-y: auto;
+      display: flex;
+      flex-direction: column;
       border-right: 1px solid var(--color-border);
       background: var(--color-sidebar-bg);
     }
@@ -184,47 +186,22 @@
       height: 100vh;
     }
     .sidebar-back {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
       display: flex;
       align-items: center;
       gap: 6px;
-      padding: 10px 20px;
-      color: #fff;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      padding: 10px 14px;
+      margin-top: auto;
+      color: var(--color-secondary, #8a8f98);
       text-decoration: none;
       font-size: 0.8125rem;
       font-weight: 500;
-      border-radius: 20px;
-      border: none;
-      z-index: 100;
-      transition: all 0.25s;
-      white-space: nowrap;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      border-radius: 8px;
+      border: 1px solid var(--color-border, rgba(255,255,255,0.08));
+      transition: all 0.2s;
     }
     .sidebar-back:hover {
-      background: rgba(0,0,0,0.85);
-      transform: translateX(-50%) translateY(-2px);
-      box-shadow: 0 6px 24px rgba(0,0,0,0.2);
-    }
-    @media (max-width: 768px) {
-      .sidebar-back {
-        bottom: 20px;
-        padding: 8px 16px;
-        font-size: 0.75rem;
-      }
-    }
-    @media (max-width: 480px) {
-      .sidebar-back {
-        bottom: 16px;
-        padding: 7px 14px;
-        font-size: 0.6875rem;
-        border-radius: 16px;
-      }
+      color: var(--color-accent, #7170ff);
+      border-color: var(--color-accent, #7170ff);
     }
     .sidebar nav { display: flex; flex-direction: column; gap: 2px; }
     
@@ -331,6 +308,10 @@
 <a href="#选择-hermes-如果你需要" style="padding-left: 1rem;">选择 Hermes 如果你需要：</a>
 <a href="#可以共存使用" style="padding-left: 1rem;">可以共存使用：</a>
 <a href="#总结" >总结</a></nav>
+          <a href="./index.html" class="sidebar-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        返回文档列表
+      </a>
     </aside>
     <main class="main"><h1>OpenClaw vs Hermes 对比报告</h1></p><blockquote>基于本地安装的 OpenClaw 2026.3.13 与 Hermes Agent v0.9.0，结合官方文档与 GitHub 仓库编写</blockquote></p><hr><h2 id="基本信息">基本信息</h2></p><table><thead><tr><th>维度</th><th>OpenClaw</th><th>Hermes</th></tr></thead><tbody><tr><td><strong>版本</strong></td><td>2026.3.13 (commit 61d171a)</td><td>v0.9.0 (2026.4.13)</td></tr><tr><td><strong>作者</strong></td><td>anpicasso（独立开发者）</td><td>Nous Research（研究团队）</td></tr><tr><td><strong>语言</strong></td><td>TypeScript / Node.js</td><td>Python</td></tr><tr><td><strong>许可证</strong></td><td>专有（npm 包）</td><td>MIT（开源）</td></tr><tr><td><strong>安装方式</strong></td><td><code>npm install -g openclaw</code></td><td><code>curl ... \</td><td>bash</code>（安装脚本）</td></tr><tr><td><strong>仓库</strong></td><td>npm registry（闭源）</td><td><a href="https://github.com/NousResearch/hermes-agent">github.com/NousResearch/hermes-agent</a></td></tr><tr><td><strong>配置格式</strong></td><td><code>openclaw.json</code>（JSON）</td><td><code>config.yaml</code>（YAML） + <code>.env</code></td></tr><tr><td><strong>数据目录</strong></td><td><code>~/.openclaw/</code></td><td><code>~/.hermes/</code></td></tr><tr><td><strong>Python 版本</strong></td><td>不依赖</td><td>Python 3.14.0</td></tr><tr><td><strong>OpenAI SDK</strong></td><td>内置</td><td>2.11.0</td></tr><tr><td><strong>文档站点</strong></td><td>docs.openclaw.ai</td><td>hermes-agent.nousresearch.com</td></tr></tbody></table></p>
 <hr><h2 id="定位与设计哲学">定位与设计哲学</h2></p><h3 id="openclaw-ai-代理网关">OpenClaw — "AI 代理网关"</h3></p><p>OpenClaw 定位为<strong>全能型本地 AI 基础设施</strong>，核心是 WebSocket 网关服务，围绕网关构建了消息平台集成、浏览器自动化、多 Agent 管理、设备控制、DNS 发现等功能。设计理念是<strong>网关中心化</strong>——所有功能通过网关 RPC 协调，CLI 是网关的客户端。</p>
@@ -526,9 +507,5 @@
       }, { passive: true });
     })();
   </script>
-  <a href="./index.html" class="sidebar-back">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
-    返回文档列表
-  </a>
 </body>
 </html>
