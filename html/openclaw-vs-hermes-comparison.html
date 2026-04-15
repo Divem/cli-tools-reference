@@ -160,7 +160,7 @@
 
     .card-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
       gap: 1.25rem;
     }
     .card {
@@ -484,12 +484,67 @@
 
     @media (max-width: 768px) {
       .page { padding: 0 1rem; }
-      .hero { padding: 3rem 0 2rem; }
-      .arch-grid, .arch-diff, .recommend-grid { grid-template-columns: 1fr; }
+      .nav-inner { padding: 0.6rem 1rem; gap: 1rem; }
+      .hero { padding: 2.5rem 0 1.5rem; }
+      .hero h1 { font-size: 2rem; }
+      .hero-sub { font-size: 1rem; }
+      .vs-badge { gap: 0.5rem; margin-top: 1.5rem; }
+      .badge { font-size: 0.75rem; padding: 0.35rem 0.75rem; }
+
+      .section { padding: 2rem 0; }
+      .section-title { font-size: 1.35rem; }
+      .section-desc { font-size: 0.88rem; margin-bottom: 1.25rem; }
+
+      .card-grid { grid-template-columns: 1fr; gap: 1rem; }
+      .card { padding: 1.25rem; }
+      .card h3 { font-size: 1rem; }
+      .card p, .card ul { font-size: 0.84rem; }
+
       .info-grid { grid-template-columns: 1fr; }
       .info-divider { display: none; }
-      .card-grid { grid-template-columns: 1fr; }
-      .nav-inner { padding: 0.75rem 1rem; gap: 1rem; }
+      .info-col { padding: 1.25rem; }
+      .info-col h4 { font-size: 1.05rem; margin-bottom: 1rem; }
+      .info-row { font-size: 0.84rem; padding: 0.5rem 0; }
+      .info-row .value { font-size: 0.8rem; }
+
+      .feature-table-wrap { margin: 0 -1rem; border-radius: 0; border-left: none; border-right: none; }
+      .feature-table { font-size: 0.8rem; }
+      .feature-table th { padding: 0.65rem 0.75rem; font-size: 0.7rem; }
+      .feature-table td { padding: 0.55rem 0.75rem; }
+
+      .arch-section { padding: 1.25rem; border-radius: var(--radius-sm); }
+      .arch-section h3 { font-size: 1.05rem; margin-bottom: 1rem; }
+      .arch-grid { grid-template-columns: 1fr; gap: 1rem; }
+      .arch-box { padding: 1rem; }
+      .arch-box h4 { font-size: 0.9rem; }
+      .arch-box pre { font-size: 0.65rem; padding: 0.75rem; line-height: 1.5; }
+      .arch-diff { grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 1rem; }
+      .arch-diff-item { padding: 0.75rem; font-size: 0.78rem; }
+      .arch-diff-item .dl { font-size: 0.68rem; }
+
+      .recommend-grid { grid-template-columns: 1fr; gap: 1rem; }
+      .recommend-card { padding: 1.5rem; }
+
+      .summary-bar { padding: 1.5rem; border-radius: var(--radius-sm); }
+      .summary-bar h3 { font-size: 1.2rem; }
+      .summary-bar p { font-size: 0.88rem; }
+
+      .score-bar-wrap { gap: 0.5rem; }
+      .score-label { min-width: 60px; font-size: 0.78rem; }
+      .score-value { font-size: 0.72rem; min-width: 20px; }
+
+      .full-card { padding: 1.25rem; }
+      .full-card h3 { font-size: 1rem; }
+
+      .footer { padding: 2rem 0; font-size: 0.78rem; }
+    }
+
+    @media (max-width: 400px) {
+      .page { padding: 0 0.75rem; }
+      .hero h1 { font-size: 1.7rem; }
+      .card { padding: 1rem; }
+      .arch-diff { grid-template-columns: 1fr; }
+      .badge { font-size: 0.7rem; padding: 0.3rem 0.6rem; }
     }
   </style>
 </head>
