@@ -132,6 +132,16 @@
             padding-bottom: 80px;
         }
 
+        .group-label {
+            font-size: 0.6875rem;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 20px 18px 6px;
+            user-select: none;
+        }
+
         .doc-item {
             display: flex;
             align-items: center;
@@ -273,33 +283,13 @@
         <div class="divider"></div>
 
         <div class="doc-list">
+            <div class="group-label">CLI 参考手册</div>
+
             <a href="./claude-cli-reference.html" class="doc-item">
                 <div class="doc-icon">C</div>
                 <div class="doc-body">
                     <div class="doc-name">Claude Code CLI 参考手册</div>
                     <div class="doc-tag">Anthropic AI 编程助手</div>
-                </div>
-                <div class="doc-arrow">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                </div>
-            </a>
-
-            <a href="./cli-tools-inventory.html" class="doc-item">
-                <div class="doc-icon">INV</div>
-                <div class="doc-body">
-                    <div class="doc-name">CLI 工具清单</div>
-                    <div class="doc-tag">工具索引与概览</div>
-                </div>
-                <div class="doc-arrow">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                </div>
-            </a>
-
-            <a href="./design-skills-reference.html" class="doc-item">
-                <div class="doc-icon">DS</div>
-                <div class="doc-body">
-                    <div class="doc-name">Design Skills 参考手册</div>
-                    <div class="doc-tag">62 品牌设计风格 + 主题工厂</div>
                 </div>
                 <div class="doc-arrow">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -328,28 +318,6 @@
                 </div>
             </a>
 
-            <a href="./granularity.html" class="doc-item">
-                <div class="doc-icon">GR</div>
-                <div class="doc-body">
-                    <div class="doc-name">Granularity 参考手册</div>
-                    <div class="doc-tag">设计粒度控制</div>
-                </div>
-                <div class="doc-arrow">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                </div>
-            </a>
-
-            <a href="./granularity-apple.html" class="doc-item">
-                <div class="doc-icon">AP</div>
-                <div class="doc-body">
-                    <div class="doc-name">Granularity Apple 风格</div>
-                    <div class="doc-tag">Apple 设计风格参考</div>
-                </div>
-                <div class="doc-arrow">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                </div>
-            </a>
-
             <a href="./lark-cli-reference.html" class="doc-item">
                 <div class="doc-icon">L</div>
                 <div class="doc-body">
@@ -366,17 +334,6 @@
                 <div class="doc-body">
                     <div class="doc-name">OpenCode CLI 参考手册</div>
                     <div class="doc-tag">终端 AI 编程工具</div>
-                </div>
-                <div class="doc-arrow">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                </div>
-            </a>
-
-            <a href="./openclaw-vs-hermes-comparison.html" class="doc-item">
-                <div class="doc-icon">VS</div>
-                <div class="doc-body">
-                    <div class="doc-name">OpenClaw vs Hermes 对比</div>
-                    <div class="doc-tag">AI 编程工具对比分析</div>
                 </div>
                 <div class="doc-arrow">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -410,6 +367,63 @@
                 <div class="doc-body">
                     <div class="doc-name">Playwright CLI 参考手册</div>
                     <div class="doc-tag">E2E 测试框架</div>
+                </div>
+                <div class="doc-arrow">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </div>
+            </a>
+
+            <a href="./cli-tools-inventory.html" class="doc-item">
+                <div class="doc-icon">INV</div>
+                <div class="doc-body">
+                    <div class="doc-name">CLI 工具清单</div>
+                    <div class="doc-tag">工具索引与概览</div>
+                </div>
+                <div class="doc-arrow">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </div>
+            </a>
+
+            <div class="group-label">专题与对比</div>
+
+            <a href="./openclaw-vs-hermes-comparison.html" class="doc-item">
+                <div class="doc-icon">VS</div>
+                <div class="doc-body">
+                    <div class="doc-name">OpenClaw vs Hermes 对比</div>
+                    <div class="doc-tag">AI 编程工具对比分析</div>
+                </div>
+                <div class="doc-arrow">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </div>
+            </a>
+
+            <a href="./design-skills-reference.html" class="doc-item">
+                <div class="doc-icon">DS</div>
+                <div class="doc-body">
+                    <div class="doc-name">Design Skills 参考手册</div>
+                    <div class="doc-tag">62 品牌设计风格 + 主题工厂</div>
+                </div>
+                <div class="doc-arrow">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </div>
+            </a>
+
+            <a href="./granularity.html" class="doc-item">
+                <div class="doc-icon">GR</div>
+                <div class="doc-body">
+                    <div class="doc-name">Granularity 参考手册</div>
+                    <div class="doc-tag">设计粒度控制</div>
+                </div>
+                <div class="doc-arrow">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </div>
+            </a>
+
+            <a href="./granularity-apple.html" class="doc-item">
+                <div class="doc-icon">AP</div>
+                <div class="doc-body">
+                    <div class="doc-name">Granularity Apple 风格</div>
+                    <div class="doc-tag">Apple 设计风格参考</div>
                 </div>
                 <div class="doc-arrow">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
