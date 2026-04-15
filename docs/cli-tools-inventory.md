@@ -48,6 +48,8 @@
 | `@pencil.dev/cli` | `pencil` | AI 驱动设计文件操作工具 |
 | `@playwright/cli` | `playwright` | 微软 E2E 测试框架 CLI |
 | `corepack` | `corepack` | Node.js 包管理器工具 |
+| `openclaw` | `openclaw` | AI 代理网关（多渠道/浏览器/模型管理） |
+| `hermes` | `hermes` | AI 助手（工具调用/多平台/技能/MCP，`~/.hermes/hermes-agent/`） |
 | `npm` | `npm` | Node.js 包管理器 |
 
 ---
@@ -131,4 +133,7 @@
 | Pencil | [pencil-cli-reference.md](./pencil-cli-reference.md) | AI 设计文件操作 |
 | Playwright | [playwright-cli-reference.md](./playwright-cli-reference.md) | E2E 测试框架 |
 | Pandoc | [pandoc-cli-reference.md](./pandoc-cli-reference.md) | 文档格式转换 |
+| OpenClaw | [openclaw-cli-reference.md](./openclaw-cli-reference.md) | AI 代理网关（多渠道/浏览器/模型管理） |
+| Hermes | [hermes-cli-reference.md](./hermes-cli-reference.md) | AI 助手（工具调用/多平台/技能/MCP） |
 | Claude Skills 设计风格 | [design-skills-reference.md](./design-skills-reference.md) | 62 个品牌风格 + 10 个主题 + 设计技能总览 |
+| OpenClaw vs Hermes 对比 | [openclaw-vs-hermes-comparison.md](./openclaw-vs-hermes-comparison.md) | AI 助手工具对比分析报告 |
