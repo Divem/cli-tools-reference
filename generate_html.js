@@ -131,6 +131,25 @@ function sharedDrawerCss() {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+    .sidebar-search {
+      width: 100%;
+      padding: 8px 12px;
+      margin-bottom: 0.75rem;
+      font-size: 0.875rem;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      background: var(--color-bg, #fff);
+      color: var(--color-text);
+    }
+    .sidebar-search:focus {
+      outline: 2px solid var(--color-accent, #333);
+      outline-offset: 1px;
+    }
+    .search-highlight {
+      background: rgba(255, 193, 7, 0.45);
+      border-radius: 2px;
+      padding: 0 2px;
     }`;
 }
 
@@ -276,6 +295,43 @@ function sharedDrawerHtml() {
         header.classList.toggle('visible', rect.bottom < 0);
       }, { passive: true });
     })();
+    // 页面内搜索
+    (function() {
+      var input = document.getElementById('pageSearch');
+      if (!input) return;
+      var main = document.querySelector('.main');
+      function clearHighlights() {
+        document.querySelectorAll('.search-highlight').forEach(function(el) {
+          var parent = el.parentNode;
+          parent.replaceChild(document.createTextNode(el.textContent), el);
+          parent.normalize();
+        });
+      }
+      input.addEventListener('input', function() {
+        clearHighlights();
+        var query = input.value.trim();
+        if (!query) return;
+        var regex = new RegExp('(' + query.replace(/[.*+?^\\${}()|[\\]\\\\]/g, '\\\\$&') + ')', 'gi');
+        var walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT, null, false);
+        var nodes = [];
+        var node;
+        while (node = walker.nextNode()) {
+          if (node.parentNode.tagName !== 'SCRIPT' && node.parentNode.tagName !== 'STYLE' && regex.test(node.textContent)) {
+            nodes.push(node);
+          }
+        }
+        if (!nodes.length) return;
+        nodes.forEach(function(n) {
+          var span = document.createElement('span');
+          span.innerHTML = n.textContent.replace(regex, '<mark class="search-highlight">$1</mark>');
+          var frag = document.createDocumentFragment();
+          while (span.firstChild) frag.appendChild(span.firstChild);
+          n.parentNode.replaceChild(frag, n);
+        });
+        var first = document.querySelector('.search-highlight');
+        if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    })();
   </script>`;
 }
 
@@ -285,6 +341,11 @@ function sidebarBackLink() {
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
         返回文档列表
       </a>`;
+}
+
+// 搜索框 HTML
+function sidebarSearchHtml() {
+  return `<input type="search" class="sidebar-search" id="pageSearch" placeholder="搜索页面内容..." autocomplete="off">`;
 }
 
 // favicon
@@ -383,6 +444,7 @@ function claudeTemplate(content, toc, title) {
     <aside class="sidebar">
       ${sidebarBackLink()}
       <h2>目录</h2>
+      ${sidebarSearchHtml()}
       <nav>${tocHtml}</nav>
     </aside>
     <main class="main">${content}</main>
@@ -451,6 +513,7 @@ function figmaTemplate(content, toc, title) {
     <aside class="sidebar">
       ${sidebarBackLink()}
       <h2>Contents</h2>
+      ${sidebarSearchHtml()}
       <nav>${tocHtml}</nav>
     </aside>
     <main class="main">${content}</main>
@@ -525,6 +588,7 @@ function spacexTemplate(content, toc, title) {
     <aside class="sidebar">
       ${sidebarBackLink()}
       <h2>Navigation</h2>
+      ${sidebarSearchHtml()}
       <nav>${tocHtml}</nav>
     </aside>
     <main class="main">${content}</main>
@@ -591,6 +655,7 @@ function vercelTemplate(content, toc, title) {
     <aside class="sidebar">
       ${sidebarBackLink()}
       <h2>Documentation</h2>
+      ${sidebarSearchHtml()}
       <nav>${tocHtml}</nav>
     </aside>
     <main class="main">${content}</main>
@@ -664,6 +729,7 @@ function cursorTemplate(content, toc, title) {
     <aside class="sidebar">
       ${sidebarBackLink()}
       <h2>Table of Contents</h2>
+      ${sidebarSearchHtml()}
       <nav>${tocHtml}</nav>
     </aside>
     <main class="main">${content}</main>
@@ -731,6 +797,7 @@ function notionTemplate(content, toc, title) {
     <aside class="sidebar">
       ${sidebarBackLink()}
       <h2>Contents</h2>
+      ${sidebarSearchHtml()}
       <nav>${tocHtml}</nav>
     </aside>
     <main class="main">${content}</main>
@@ -798,6 +865,7 @@ function stripeTemplate(content, toc, title) {
     <aside class="sidebar">
       ${sidebarBackLink()}
       <h2>Documentation</h2>
+      ${sidebarSearchHtml()}
       <nav>${tocHtml}</nav>
     </aside>
     <main class="main">${content}</main>
@@ -865,6 +933,7 @@ function linearTemplate(content, toc, title) {
     <aside class="sidebar">
       ${sidebarBackLink()}
       <h2>Navigation</h2>
+      ${sidebarSearchHtml()}
       <nav>${tocHtml}</nav>
     </aside>
     <main class="main">${content}</main>

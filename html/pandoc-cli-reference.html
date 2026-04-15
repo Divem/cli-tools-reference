@@ -283,12 +283,32 @@
       code { font-size: 0.8125rem; }
       table { font-size: 0.75rem; }
     }
+    .sidebar-search {
+      width: 100%;
+      padding: 8px 12px;
+      margin-bottom: 0.75rem;
+      font-size: 0.875rem;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      background: var(--color-bg, #fff);
+      color: var(--color-text);
+    }
+    .sidebar-search:focus {
+      outline: 2px solid var(--color-accent, #333);
+      outline-offset: 1px;
+    }
+    .search-highlight {
+      background: rgba(255, 193, 7, 0.45);
+      border-radius: 2px;
+      padding: 0 2px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <aside class="sidebar">
       <h2>Contents</h2>
+      <input type="search" class="sidebar-search" id="pageSearch" placeholder="搜索页面内容..." autocomplete="off">
       <nav><a href="#目录" >目录</a>
 <a href="#安装信息" >安装信息</a>
 <a href="#版本信息" style="padding-left: 1rem;">版本信息</a>
@@ -700,6 +720,43 @@
         var rect = h1el.getBoundingClientRect();
         header.classList.toggle('visible', rect.bottom < 0);
       }, { passive: true });
+    })();
+    // 页面内搜索
+    (function() {
+      var input = document.getElementById('pageSearch');
+      if (!input) return;
+      var main = document.querySelector('.main');
+      function clearHighlights() {
+        document.querySelectorAll('.search-highlight').forEach(function(el) {
+          var parent = el.parentNode;
+          parent.replaceChild(document.createTextNode(el.textContent), el);
+          parent.normalize();
+        });
+      }
+      input.addEventListener('input', function() {
+        clearHighlights();
+        var query = input.value.trim();
+        if (!query) return;
+        var regex = new RegExp('(' + query.replace(/[.*+?^\${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+        var walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT, null, false);
+        var nodes = [];
+        var node;
+        while (node = walker.nextNode()) {
+          if (node.parentNode.tagName !== 'SCRIPT' && node.parentNode.tagName !== 'STYLE' && regex.test(node.textContent)) {
+            nodes.push(node);
+          }
+        }
+        if (!nodes.length) return;
+        nodes.forEach(function(n) {
+          var span = document.createElement('span');
+          span.innerHTML = n.textContent.replace(regex, '<mark class="search-highlight">$1</mark>');
+          var frag = document.createDocumentFragment();
+          while (span.firstChild) frag.appendChild(span.firstChild);
+          n.parentNode.replaceChild(frag, n);
+        });
+        var first = document.querySelector('.search-highlight');
+        if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
     })();
   </script>
 </body>
