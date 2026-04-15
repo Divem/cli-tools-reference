@@ -364,32 +364,7 @@
 <a href="#cicd-集成" style="padding-left: 1rem;">CI/CD 集成</a></nav>
     </aside>
     <main class="main"><h1>Pencil CLI 参考手册</h1></p><blockquote>本机版本：<strong>@pencil.dev/cli 0.2.4</strong> | 安装路径：<code>~/.nvm/versions/node/v22.22.1/lib/node_modules/@pencil.dev/cli</code></blockquote></p>
-<blockquote>登录账号：imyuanwen@gmail.com | 后端 API：https://api.pencil.dev</blockquote></p><p>Pencil CLI 是 Pencil.dev 推出的 AI 驱动设计文件操作命令行工具。通过自然语言 Prompt 直接生成或修改 <code>.pen</code> 设计文件，支持交互式 Shell（MCP 工具调用）、批量任务、多模型选择和图片导出，适合将 AI 设计能力集成到开发工作流中。</p><h2 id="目录">目录</h2></p>
-<ul><li><a href="#安装信息">安装信息</a></li></p>
-<li><a href="#基础语法">基础语法</a></li></p>
-<li><a href="#认证管理">认证管理</a></li></p>
-<li><a href="#单次命令模式">单次命令模式</a></li></p>
-<li><a href="#交互式-shell">交互式 Shell</a></li></p>
-<li><a href="#启动方式">启动方式</a></li></p>
-<li><a href="#shell-内置命令">Shell 内置命令</a></li></p>
-<li><a href="#mcp-工具一览">MCP 工具一览</a></li></p>
-<li><a href="#batch</em>design-操作详解">batch<em>design 操作详解</a></li></p>
-<li><a href="#insert-i--插入节点">Insert (I) — 插入节点</a></li></p>
-<li><a href="#copy-c--复制节点">Copy (C) — 复制节点</a></li></p>
-<li><a href="#update-u--更新节点">Update (U) — 更新节点</a></li></p>
-<li><a href="#replace-r--替换节点">Replace (R) — 替换节点</a></li></p>
-<li><a href="#move-m--移动节点">Move (M) — 移动节点</a></li></p>
-<li><a href="#delete-d--删除节点">Delete (D) — 删除节点</a></li></p>
-<li><a href="#generate-image-g--生成图片">Generate Image (G) — 生成图片</a></li></p>
-<li><a href="#batch</em>get-查询详解">batch<em>get 查询详解</a></li></p>
-<li><a href="#其他-mcp-工具">其他 MCP 工具</a></li></p>
-<li><a href="#模型选择">模型选择</a></li></p>
-<li><a href="#环境变量">环境变量</a></li></p>
-<li><a href="#批量任务">批量任务</a></li></p>
-<li><a href="#导出功能">导出功能</a></li></p>
-<li><a href="#常用命令示例">常用命令示例</a></li></p>
-</ul></p>
-<hr><h2 id="安装信息">安装信息</h2></p><h3 id="安装方式">安装方式</h3></p><pre><code>npm install -g @pencil.dev/cli</p>
+<blockquote>登录账号：imyuanwen@gmail.com | 后端 API：https://api.pencil.dev</blockquote></p><p>Pencil CLI 是 Pencil.dev 推出的 AI 驱动设计文件操作命令行工具。通过自然语言 Prompt 直接生成或修改 <code>.pen</code> 设计文件，支持交互式 Shell（MCP 工具调用）、批量任务、多模型选择和图片导出，适合将 AI 设计能力集成到开发工作流中。</p><h2 id="安装信息">安装信息</h2></p><h3 id="安装方式">安装方式</h3></p><pre><code>npm install -g @pencil.dev/cli</p>
 </code></pre></p><h3 id="本机配置">本机配置</h3></p><table><thead><tr><th>项目</th><th>值</th></tr></thead><tbody><tr><td>版本</td><td>0.2.4</td></tr><tr><td>可执行文件</td><td><code>~/.nvm/versions/node/v22.22.1/bin/pencil</code></td></tr><tr><td>配置目录</td><td><code>~/.pencil/</code></td></tr><tr><td>会话文件</td><td><code>~/.pencil/session-cli.json</code></td></tr><tr><td>后端 API</td><td><code>https://api.pencil.dev</code></td></tr><tr><td>设计文件格式</td><td><code>.pen</code></td></tr></tbody></table></p>
 <h3 id="目录结构">目录结构</h3></p><pre><code>~/.pencil/</p>
 <p>├── apps/                  # 应用配置</p>

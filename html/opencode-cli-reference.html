@@ -343,48 +343,7 @@
 <a href="#文件路径说明" >文件路径说明</a>
 <a href="#配置文件" >配置文件</a></nav>
     </aside>
-    <main class="main"><h1>OpenCode CLI 参考手册</h1></p><blockquote>版本：1.3.15 | 安装路径：<code>/opt/homebrew/bin/opencode</code></blockquote></p><h2 id="目录">目录</h2></p>
-<ul><li><a href="#概述">概述</a></li></p>
-<li><a href="#快速开始">快速开始</a></li></p>
-<li><a href="#全局选项">全局选项</a></li></p>
-<li><a href="#核心命令">核心命令</a></li></p>
-<li><a href="#opencode-启动-tui">opencode</a></li></p>
-<li><a href="#opencode-run--message">run</a></li></p>
-<li><a href="#opencode-serve">serve</a></li></p>
-<li><a href="#opencode-web">web</a></li></p>
-<li><a href="#opencode-attach-url">attach</a></li></p>
-<li><a href="#会话管理">会话管理</a></li></p>
-<li><a href="#opencode-session">session</a></li></p>
-<li><a href="#opencode-export-sessionid">export</a></li></p>
-<li><a href="#opencode-import-file">import</a></li></p>
-<li><a href="#opencode-stats">stats</a></li></p>
-<li><a href="#模型与提供商">模型与提供商</a></li></p>
-<li><a href="#opencode-models-provider">models</a></li></p>
-<li><a href="#opencode-providers-别名-auth">providers</a></li></p>
-<li><a href="#agent-管理">Agent 管理</a></li></p>
-<li><a href="#opencode-agent">agent</a></li></p>
-<li><a href="#mcp-服务器管理">MCP 服务器管理</a></li></p>
-<li><a href="#opencode-mcp">mcp</a></li></p>
-<li><a href="#acp-服务器">ACP 服务器</a></li></p>
-<li><a href="#opencode-acp">acp</a></li></p>
-<li><a href="#插件管理">插件管理</a></li></p>
-<li><a href="#opencode-plugin-module-别名-plug">plugin</a></li></p>
-<li><a href="#github-集成">GitHub 集成</a></li></p>
-<li><a href="#opencode-github">github</a></li></p>
-<li><a href="#opencode-pr-number">pr</a></li></p>
-<li><a href="#调试工具">调试工具</a></li></p>
-<li><a href="#opencode-debug">debug</a></li></p>
-<li><a href="#数据库工具">数据库工具</a></li></p>
-<li><a href="#opencode-db">db</a></li></p>
-<li><a href="#shell-补全">Shell 补全</a></li></p>
-<li><a href="#opencode-completion">completion</a></li></p>
-<li><a href="#系统维护">系统维护</a></li></p>
-<li><a href="#opencode-upgrade-target">upgrade</a></li></p>
-<li><a href="#opencode-uninstall">uninstall</a></li></p>
-<li><a href="#文件路径说明">文件路径说明</a></li></p>
-<li><a href="#配置文件">配置文件</a></li></p>
-</ul></p>
-<hr><h2 id="概述">概述</h2></p><p>OpenCode 是一个交互式 CLI 工具，提供 TUI（终端用户界面）和 headless 模式，用于与 AI 模型交互、管理会话、操作代码等。它支持多种 AI 提供商、MCP/ACP 协议、GitHub 集成和插件扩展。</p><h2 id="快速开始">快速开始</h2></p><pre><code><h1>在当前目录启动 TUI 交互界面</h1></p>
+    <main class="main"><h1>OpenCode CLI 参考手册</h1></p><blockquote>版本：1.3.15 | 安装路径：<code>/opt/homebrew/bin/opencode</code></blockquote></p><h2 id="概述">概述</h2></p><p>OpenCode 是一个交互式 CLI 工具，提供 TUI（终端用户界面）和 headless 模式，用于与 AI 模型交互、管理会话、操作代码等。它支持多种 AI 提供商、MCP/ACP 协议、GitHub 集成和插件扩展。</p><h2 id="快速开始">快速开始</h2></p><pre><code><h1>在当前目录启动 TUI 交互界面</h1></p>
 <p>opencode</p><h1>在指定项目目录启动</h1></p>
 <p>opencode /path/to/project</p><h1>直接运行一条命令（非交互模式）</h1></p>
 <p>opencode run "帮我写一个 hello world"</p><h1>继续上一次的会话</h1></p>

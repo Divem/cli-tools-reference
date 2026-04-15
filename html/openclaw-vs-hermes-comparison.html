@@ -332,28 +332,7 @@
 <a href="#可以共存使用" style="padding-left: 1rem;">可以共存使用：</a>
 <a href="#总结" >总结</a></nav>
     </aside>
-    <main class="main"><h1>OpenClaw vs Hermes 对比报告</h1></p><blockquote>基于本地安装的 OpenClaw 2026.3.13 与 Hermes Agent v0.9.0，结合官方文档与 GitHub 仓库编写</blockquote></p><hr><h2 id="目录">目录</h2></p>
-<ul><li><a href="#基本信息">基本信息</a></li></p>
-<li><a href="#定位与设计哲学">定位与设计哲学</a></li></p>
-<li><a href="#技术架构">技术架构</a></li></p>
-<li><a href="#功能对比总表">功能对比总表</a></li></p>
-<li><a href="#核心功能深度对比">核心功能深度对比</a></li></p>
-<li><a href="#消息平台集成">消息平台集成</a></li></p>
-<li><a href="#推理模型支持">推理模型支持</a></li></p>
-<li><a href="#技能系统">技能系统</a></li></p>
-<li><a href="#浏览器控制">浏览器控制</a></li></p>
-<li><a href="#记忆与上下文">记忆与上下文</a></li></p>
-<li><a href="#定时任务">定时任务</a></li></p>
-<li><a href="#安全机制">安全机制</a></li></p>
-<li><a href="#多-agent-隔离">多 Agent 隔离</a></li></p>
-<li><a href="#cli-命令对比">CLI 命令对比</a></li></p>
-<li><a href="#生态与扩展">生态与扩展</a></li></p>
-<li><a href="#运维能力">运维能力</a></li></p>
-<li><a href="#迁移路径">迁移路径</a></li></p>
-<li><a href="#适用场景推荐">适用场景推荐</a></li></p>
-<li><a href="#总结">总结</a></li></p>
-</ul></p>
-<hr><h2 id="基本信息">基本信息</h2></p><table><thead><tr><th>维度</th><th>OpenClaw</th><th>Hermes</th></tr></thead><tbody><tr><td><strong>版本</strong></td><td>2026.3.13 (commit 61d171a)</td><td>v0.9.0 (2026.4.13)</td></tr><tr><td><strong>作者</strong></td><td>anpicasso（独立开发者）</td><td>Nous Research（研究团队）</td></tr><tr><td><strong>语言</strong></td><td>TypeScript / Node.js</td><td>Python</td></tr><tr><td><strong>许可证</strong></td><td>专有（npm 包）</td><td>MIT（开源）</td></tr><tr><td><strong>安装方式</strong></td><td><code>npm install -g openclaw</code></td><td><code>curl ... \</td><td>bash</code>（安装脚本）</td></tr><tr><td><strong>仓库</strong></td><td>npm registry（闭源）</td><td><a href="https://github.com/NousResearch/hermes-agent">github.com/NousResearch/hermes-agent</a></td></tr><tr><td><strong>配置格式</strong></td><td><code>openclaw.json</code>（JSON）</td><td><code>config.yaml</code>（YAML） + <code>.env</code></td></tr><tr><td><strong>数据目录</strong></td><td><code>~/.openclaw/</code></td><td><code>~/.hermes/</code></td></tr><tr><td><strong>Python 版本</strong></td><td>不依赖</td><td>Python 3.14.0</td></tr><tr><td><strong>OpenAI SDK</strong></td><td>内置</td><td>2.11.0</td></tr><tr><td><strong>文档站点</strong></td><td>docs.openclaw.ai</td><td>hermes-agent.nousresearch.com</td></tr></tbody></table></p>
+    <main class="main"><h1>OpenClaw vs Hermes 对比报告</h1></p><blockquote>基于本地安装的 OpenClaw 2026.3.13 与 Hermes Agent v0.9.0，结合官方文档与 GitHub 仓库编写</blockquote></p><hr><h2 id="基本信息">基本信息</h2></p><table><thead><tr><th>维度</th><th>OpenClaw</th><th>Hermes</th></tr></thead><tbody><tr><td><strong>版本</strong></td><td>2026.3.13 (commit 61d171a)</td><td>v0.9.0 (2026.4.13)</td></tr><tr><td><strong>作者</strong></td><td>anpicasso（独立开发者）</td><td>Nous Research（研究团队）</td></tr><tr><td><strong>语言</strong></td><td>TypeScript / Node.js</td><td>Python</td></tr><tr><td><strong>许可证</strong></td><td>专有（npm 包）</td><td>MIT（开源）</td></tr><tr><td><strong>安装方式</strong></td><td><code>npm install -g openclaw</code></td><td><code>curl ... \</td><td>bash</code>（安装脚本）</td></tr><tr><td><strong>仓库</strong></td><td>npm registry（闭源）</td><td><a href="https://github.com/NousResearch/hermes-agent">github.com/NousResearch/hermes-agent</a></td></tr><tr><td><strong>配置格式</strong></td><td><code>openclaw.json</code>（JSON）</td><td><code>config.yaml</code>（YAML） + <code>.env</code></td></tr><tr><td><strong>数据目录</strong></td><td><code>~/.openclaw/</code></td><td><code>~/.hermes/</code></td></tr><tr><td><strong>Python 版本</strong></td><td>不依赖</td><td>Python 3.14.0</td></tr><tr><td><strong>OpenAI SDK</strong></td><td>内置</td><td>2.11.0</td></tr><tr><td><strong>文档站点</strong></td><td>docs.openclaw.ai</td><td>hermes-agent.nousresearch.com</td></tr></tbody></table></p>
 <hr><h2 id="定位与设计哲学">定位与设计哲学</h2></p><h3 id="openclaw-ai-代理网关">OpenClaw — "AI 代理网关"</h3></p><p>OpenClaw 定位为<strong>全能型本地 AI 基础设施</strong>，核心是 WebSocket 网关服务，围绕网关构建了消息平台集成、浏览器自动化、多 Agent 管理、设备控制、DNS 发现等功能。设计理念是<strong>网关中心化</strong>——所有功能通过网关 RPC 协调，CLI 是网关的客户端。</p>
 <ul><li>强调<strong>系统级集成</strong>：浏览器控制、设备配对、DNS 发现、沙箱隔离、安全审计</li></p>
 <li>追求<strong>功能广度</strong>：50+ 顶级命令，涵盖从消息发送到设备摄像头截图的所有场景</li></p>

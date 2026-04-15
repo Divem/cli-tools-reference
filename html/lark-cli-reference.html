@@ -368,34 +368,7 @@
 <a href="#常见错误" style="padding-left: 1rem;">常见错误</a>
 <a href="#相关链接" >相关链接</a></nav>
     </aside>
-    <main class="main"><h1>Lark CLI 参考手册</h1></p><blockquote>本机版本：<strong>lark-cli v1.0.0</strong> | 安装路径：<code>~/.nvm/versions/node/v22.22.1/lib/node_modules/@larksuite/cli</code></blockquote></p><p>Lark CLI 是飞书/Lark 官方命令行工具，支持通过终端直接调用飞书开放平台 API，覆盖消息、日历、邮件、文档、云盘、多维表格、通讯录等核心模块，适合快速集成飞书能力到自动化工作流中。</p><hr><h2 id="目录">目录</h2></p>
-<ul><li><a href="#概述">概述</a></li></p>
-<li><a href="#安装与初始化">安装与初始化</a></li></p>
-<li><a href="#全局标志">全局标志</a></li></p>
-<li><a href="#认证管理-auth">认证管理 (auth)</a></li></p>
-<li><a href="#配置管理-config">配置管理 (config)</a></li></p>
-<li><a href="#通用-api-调用-api">通用 API 调用 (api)</a></li></p>
-<li><a href="#schema-查询-schema">Schema 查询 (schema)</a></li></p>
-<li><a href="#健康检查-doctor">健康检查 (doctor)</a></li></p>
-<li><a href="#消息与群聊-im">消息与群聊 (im)</a></li></p>
-<li><a href="#日历-calendar">日历 (calendar)</a></li></p>
-<li><a href="#邮件-mail">邮件 (mail)</a></li></p>
-<li><a href="#云文档-docs">云文档 (docs)</a></li></p>
-<li><a href="#云盘-drive">云盘 (drive)</a></li></p>
-<li><a href="#多维表格-base">多维表格 (base)</a></li></p>
-<li><a href="#电子表格-sheets">电子表格 (sheets)</a></li></p>
-<li><a href="#任务-task">任务 (task)</a></li></p>
-<li><a href="#通讯录-contact">通讯录 (contact)</a></li></p>
-<li><a href="#视频会议-vc">视频会议 (vc)</a></li></p>
-<li><a href="#妙记-minutes">妙记 (minutes)</a></li></p>
-<li><a href="#知识库-wiki">知识库 (wiki)</a></li></p>
-<li><a href="#事件订阅-event">事件订阅 (event)</a></li></p>
-<li><a href="#输出格式">输出格式</a></li></p>
-<li><a href="#分页控制">分页控制</a></li></p>
-<li><a href="#身份类型">身份类型</a></li></p>
-<li><a href="#ai-agent-技能集成">AI Agent 技能集成</a></li></p>
-</ul></p>
-<hr><h2 id="概述">概述</h2></p><code>lark-cli</code> 是飞书/Lark 的官方命令行工具，用于在终端中操作飞书的各项能力：消息、日历、邮件、云文档、云盘、多维表格、电子表格、任务、通讯录、视频会议等。</p><strong>基本语法：</strong></p><pre><code>lark-cli <command> [subcommand] [method] [flags]</p>
+    <main class="main"><h1>Lark CLI 参考手册</h1></p><blockquote>本机版本：<strong>lark-cli v1.0.0</strong> | 安装路径：<code>~/.nvm/versions/node/v22.22.1/lib/node_modules/@larksuite/cli</code></blockquote></p><p>Lark CLI 是飞书/Lark 官方命令行工具，支持通过终端直接调用飞书开放平台 API，覆盖消息、日历、邮件、文档、云盘、多维表格、通讯录等核心模块，适合快速集成飞书能力到自动化工作流中。</p><hr><h2 id="概述">概述</h2></p><code>lark-cli</code> 是飞书/Lark 的官方命令行工具，用于在终端中操作飞书的各项能力：消息、日历、邮件、云文档、云盘、多维表格、电子表格、任务、通讯录、视频会议等。</p><strong>基本语法：</strong></p><pre><code>lark-cli <command> [subcommand] [method] [flags]</p>
 <p>lark-cli api <method> <path> [--params <json>] [--data <json>]</p>
 <p>lark-cli schema <service.resource.method> [--format pretty]</p>
 </code></pre></p><strong>命令快捷方式（<code>+</code> 前缀）：</strong> 许多子命令提供 <code>+xxx</code> 形式的高级快捷命令，封装了多步 API 调用，使用更简便。例如 <code>lark-cli calendar +agenda</code> 比 <code>lark-cli calendar events list</code> 更易用。</p><hr><h2 id="安装与初始化">安装与初始化</h2></p><h3 id="安装">安装</h3></p><pre><code>npm install -g @larksuite/cli</p>
