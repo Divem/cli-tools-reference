@@ -276,7 +276,7 @@
       pre { padding: 1rem; font-size: 0.8125rem; }
       table { font-size: 0.8125rem; display: block; overflow-x: auto; }
       th, td { padding: 0.5rem; min-width: 60px; }
-      .sticky-search-input { font-size: 16px; padding: 6px 26px; }
+      .sticky-search-input { font-size: 16px; padding: 6px 36px; }
     }
     @media (max-width: 480px) {
       .main { padding: 4.5rem 1rem 1.5rem; }
@@ -349,7 +349,7 @@
     .sticky-header-search-btn { background: transparent; border: none; font-size: 1rem; cursor: pointer; padding: 4px; line-height: 1; }
     .sticky-header-search { display: flex; align-items: center; gap: 6px; flex: 1; }
     .sticky-search-input-wrap { position: relative; flex: 1; display: flex; align-items: center; }
-    .sticky-search-input { width: 100%; padding: 6px 10px; font-size: 0.875rem; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-bg, #fff); color: var(--color-text); }
+    .sticky-search-input { width: 100%; padding: 6px 30px; font-size: 0.875rem; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-bg, #fff); color: var(--color-text); }
     .sticky-search-prev, .sticky-search-next { position: absolute; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; padding: 0; border: none; background: transparent; color: var(--color-text); font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .sticky-search-prev { left: 2px; }
     .sticky-search-next { right: 2px; }
@@ -423,7 +423,9 @@
         返回文档列表
       </a>
     </aside>
-    <main class="main"><h1>GitHub CLI (<code>gh</code>) 命令行参考手册</h1></p><blockquote>本机版本：<strong>gh 2.88.1</strong> | 安装路径：<code>/opt/homebrew/bin/gh</code></blockquote></p>
+    <main class="main"><h1>GitHub CLI (<code>gh</code>) 命令行参考手册</h1></p>
+<blockquote>版本：2.88.1 | 安装路径：<code>/opt/homebrew/bin/gh</code></blockquote></p>
+<blockquote>官方地址：<a href="https://cli.github.com/">https://cli.github.com/</a> | 安装命令：<code>brew install gh</code></blockquote></p>
 <blockquote>来源: https://cli.github.com/manual</blockquote></p><p>GitHub CLI（<code>gh</code>）是 GitHub 官方命令行工具，无需离开终端即可管理仓库、Issue、PR、Actions、Release 等，支持脚本自动化与 CI/CD 集成。</p><h2 id="安装与配置">安装与配置</h2></p><h3 id="安装">安装</h3></p><p>参考 <a href="https://github.com/cli/cli#installation">安装说明</a>。</p><h3 id="配置">配置</h3></p><pre><code><h1>登录认证</h1></p>
 <p>gh auth login</p><h1>设置偏好编辑器</h1></p>
 <p>gh config set editor <editor></p><h1>设置别名</h1></p>
@@ -715,7 +717,7 @@
             var el = highlights[currentIndex];
             var headerHeight = document.querySelector('.sticky-header') ? document.querySelector('.sticky-header').offsetHeight : 56;
             var top = el.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
-            window.scrollTo({ top: top, behavior: 'smooth' });
+            window.scrollTo({ top: top, behavior: 'auto' });
           } else {
             highlights[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
           }

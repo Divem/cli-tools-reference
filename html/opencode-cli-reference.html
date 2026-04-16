@@ -277,7 +277,7 @@
       pre { padding: 1rem; font-size: 0.8125rem; }
       table { font-size: 0.8125rem; display: block; overflow-x: auto; }
       th, td { padding: 0.5rem; min-width: 60px; }
-      .sticky-search-input { font-size: 16px; padding: 6px 26px; }
+      .sticky-search-input { font-size: 16px; padding: 6px 36px; }
     }
     @media (max-width: 480px) {
       .main { padding: 4.5rem 1rem 1.5rem; }
@@ -350,7 +350,7 @@
     .sticky-header-search-btn { background: transparent; border: none; font-size: 1rem; cursor: pointer; padding: 4px; line-height: 1; }
     .sticky-header-search { display: flex; align-items: center; gap: 6px; flex: 1; }
     .sticky-search-input-wrap { position: relative; flex: 1; display: flex; align-items: center; }
-    .sticky-search-input { width: 100%; padding: 6px 10px; font-size: 0.875rem; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-bg, #fff); color: var(--color-text); }
+    .sticky-search-input { width: 100%; padding: 6px 30px; font-size: 0.875rem; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-bg, #fff); color: var(--color-text); }
     .sticky-search-prev, .sticky-search-next { position: absolute; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; padding: 0; border: none; background: transparent; color: var(--color-text); font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .sticky-search-prev { left: 2px; }
     .sticky-search-next { right: 2px; }
@@ -425,7 +425,9 @@
         返回文档列表
       </a>
     </aside>
-    <main class="main"><h1>OpenCode CLI 参考手册</h1></p><blockquote>版本：1.3.15 | 安装路径：<code>/opt/homebrew/bin/opencode</code></blockquote></p><h2 id="概述">概述</h2></p><p>OpenCode 是一个交互式 CLI 工具，提供 TUI（终端用户界面）和 headless 模式，用于与 AI 模型交互、管理会话、操作代码等。它支持多种 AI 提供商、MCP/ACP 协议、GitHub 集成和插件扩展。</p><h2 id="快速开始">快速开始</h2></p><pre><code><h1>在当前目录启动 TUI 交互界面</h1></p>
+    <main class="main"><h1>OpenCode CLI 参考手册</h1></p>
+<blockquote>版本：1.3.15 | 安装路径：<code>/opt/homebrew/bin/opencode</code></blockquote></p>
+<blockquote>官方地址：<a href="https://opencode.ai/">https://opencode.ai/</a> | 安装命令：<code>curl -fsSL https://opencode.ai/install.sh | bash</code></blockquote></p><h2 id="概述">概述</h2></p><p>OpenCode 是一个交互式 CLI 工具，提供 TUI（终端用户界面）和 headless 模式，用于与 AI 模型交互、管理会话、操作代码等。它支持多种 AI 提供商、MCP/ACP 协议、GitHub 集成和插件扩展。</p><h2 id="快速开始">快速开始</h2></p><pre><code><h1>在当前目录启动 TUI 交互界面</h1></p>
 <p>opencode</p><h1>在指定项目目录启动</h1></p>
 <p>opencode /path/to/project</p><h1>直接运行一条命令（非交互模式）</h1></p>
 <p>opencode run "帮我写一个 hello world"</p><h1>继续上一次的会话</h1></p>
@@ -721,7 +723,7 @@
             var el = highlights[currentIndex];
             var headerHeight = document.querySelector('.sticky-header') ? document.querySelector('.sticky-header').offsetHeight : 56;
             var top = el.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
-            window.scrollTo({ top: top, behavior: 'smooth' });
+            window.scrollTo({ top: top, behavior: 'auto' });
           } else {
             highlights[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
           }

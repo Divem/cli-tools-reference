@@ -679,7 +679,9 @@
         返回文档列表
       </a>
     </aside>
-    <main class="main"><h1>Lark CLI 参考手册</h1></p><blockquote>本机版本：<strong>lark-cli v1.0.0</strong> | 安装路径：<code>~/.nvm/versions/node/v22.22.1/lib/node_modules/@larksuite/cli</code></blockquote></p><p>Lark CLI 是飞书/Lark 官方命令行工具，支持通过终端直接调用飞书开放平台 API，覆盖消息、日历、邮件、文档、云盘、多维表格、通讯录等核心模块，适合快速集成飞书能力到自动化工作流中。</p><hr><h2 id="概述">概述</h2></p><code>lark-cli</code> 是飞书/Lark 的官方命令行工具，用于在终端中操作飞书的各项能力：消息、日历、邮件、云文档、云盘、多维表格、电子表格、任务、通讯录、视频会议等。</p><strong>基本语法：</strong></p><pre><code>lark-cli &lt;command&gt; [subcommand] [method] [flags]</p>
+    <main class="main"><h1>Lark CLI 参考手册</h1></p>
+<blockquote>版本：v1.0.0 | 安装路径：<code>~/.nvm/versions/node/v22.22.1/lib/node_modules/@larksuite/cli</code></blockquote></p>
+<blockquote>官方地址：<a href="https://open.feishu.cn/document/tools-and-resources/lark-cli/introduction">https://open.feishu.cn/document/tools-and-resources/lark-cli/introduction</a> | 安装命令：<code>npm install -g @larksuite/cli</code></blockquote></p><p>Lark CLI 是飞书/Lark 官方命令行工具，支持通过终端直接调用飞书开放平台 API，覆盖消息、日历、邮件、文档、云盘、多维表格、通讯录等核心模块，适合快速集成飞书能力到自动化工作流中。</p><hr><h2 id="概述">概述</h2></p><code>lark-cli</code> 是飞书/Lark 的官方命令行工具，用于在终端中操作飞书的各项能力：消息、日历、邮件、云文档、云盘、多维表格、电子表格、任务、通讯录、视频会议等。</p><strong>基本语法：</strong></p><pre><code>lark-cli &lt;command&gt; [subcommand] [method] [flags]</p>
 <p>lark-cli api &lt;method&gt; &lt;path&gt; [--params &lt;json&gt;] [--data &lt;json&gt;]</p>
 <p>lark-cli schema &lt;service.resource.method&gt; [--format pretty]</p>
 </code></pre></p><strong>命令快捷方式（<code>+</code> 前缀）：</strong> 许多子命令提供 <code>+xxx</code> 形式的高级快捷命令，封装了多步 API 调用，使用更简便。例如 <code>lark-cli calendar +agenda</code> 比 <code>lark-cli calendar events list</code> 更易用。</p><hr><h2 id="安装与初始化">安装与初始化</h2></p><h3 id="安装">安装</h3></p><pre><code>npm install -g @larksuite/cli</p>
@@ -1001,12 +1003,11 @@
 <li><strong>飞书开放平台文档:</strong> https://open.feishu.cn/document/</li></p>
 <li><strong>Lark 开放平台文档:</strong> https://open.larksuite.com/document/</li></p>
 </ul></p></main>
+    <button class="drawer-toggle" id="drawerToggle" onclick="toggleDrawer()" title="打开目录">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="overlay" id="overlay" onclick="toggleDrawer()"></div>
   </div>
-
-  <button class="drawer-toggle" id="drawerToggle" onclick="toggleDrawer()" title="打开目录">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-  </button>
-  <div class="overlay" id="overlay" onclick="toggleDrawer()"></div>
 
   <script>
     function toggleDrawer() {
@@ -1109,7 +1110,7 @@
             var el = highlights[currentIndex];
             var headerHeight = document.querySelector('.sticky-header') ? document.querySelector('.sticky-header').offsetHeight : 56;
             var top = el.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
-            window.scrollTo({ top: top, behavior: 'smooth' });
+            window.scrollTo({ top: top, behavior: 'auto' });
           } else {
             highlights[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
           }

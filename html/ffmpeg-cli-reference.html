@@ -277,7 +277,7 @@
       pre { padding: 1rem; font-size: 0.8125rem; }
       table { font-size: 0.8125rem; display: block; overflow-x: auto; }
       th, td { padding: 0.5rem; min-width: 60px; }
-      .sticky-search-input { font-size: 16px; padding: 6px 26px; }
+      .sticky-search-input { font-size: 16px; padding: 6px 36px; }
     }
     @media (max-width: 480px) {
       .main { padding: 4.5rem 1rem 1.5rem; }
@@ -350,7 +350,7 @@
     .sticky-header-search-btn { background: transparent; border: none; font-size: 1rem; cursor: pointer; padding: 4px; line-height: 1; }
     .sticky-header-search { display: flex; align-items: center; gap: 6px; flex: 1; }
     .sticky-search-input-wrap { position: relative; flex: 1; display: flex; align-items: center; }
-    .sticky-search-input { width: 100%; padding: 6px 10px; font-size: 0.875rem; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-bg, #fff); color: var(--color-text); }
+    .sticky-search-input { width: 100%; padding: 6px 30px; font-size: 0.875rem; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-bg, #fff); color: var(--color-text); }
     .sticky-search-prev, .sticky-search-next { position: absolute; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; padding: 0; border: none; background: transparent; color: var(--color-text); font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .sticky-search-prev { left: 2px; }
     .sticky-search-next { right: 2px; }
@@ -427,7 +427,9 @@
         返回文档列表
       </a>
     </aside>
-    <main class="main"><h1>FFmpeg CLI 参考手册</h1></p><blockquote>本机版本：<strong>ffmpeg 8.0.1</strong> | 安装路径：<code>/opt/homebrew/bin/ffmpeg</code></blockquote></p>
+    <main class="main"><h1>FFmpeg CLI 参考手册</h1></p>
+<blockquote>版本：8.0.1 | 安装路径：<code>/opt/homebrew/bin/ffmpeg</code></blockquote></p>
+<blockquote>官方地址：<a href="https://ffmpeg.org/">https://ffmpeg.org/</a> | 安装命令：<code>brew install ffmpeg</code></blockquote></p>
 <blockquote>编译器：Apple clang 17.0.0 | 架构：ARM64 (Apple Silicon)</blockquote></p><p>FFmpeg 是开源的跨平台音视频处理工具集，支持几乎所有音视频格式的录制、转换、流化处理。核心由 <code>ffmpeg</code>（转码）、<code>ffprobe</code>（分析）、<code>ffplay</code>（播放）三个命令组成。</p><h2 id="安装信息">安装信息</h2></p><h3 id="编译配置">编译配置</h3></p><pre><code>--prefix=/opt/homebrew/Cellar/ffmpeg/8.0.1_4</p>
 <p>--enable-shared</p>
 <p>--enable-pthreads</p>
@@ -681,7 +683,7 @@
             var el = highlights[currentIndex];
             var headerHeight = document.querySelector('.sticky-header') ? document.querySelector('.sticky-header').offsetHeight : 56;
             var top = el.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
-            window.scrollTo({ top: top, behavior: 'smooth' });
+            window.scrollTo({ top: top, behavior: 'auto' });
           } else {
             highlights[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
           }

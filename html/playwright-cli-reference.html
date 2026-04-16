@@ -279,7 +279,7 @@
       pre { padding: 1rem; font-size: 0.8125rem; }
       table { font-size: 0.8125rem; display: block; overflow-x: auto; }
       th, td { padding: 0.5rem; min-width: 60px; }
-      .sticky-search-input { font-size: 16px; padding: 6px 26px; }
+      .sticky-search-input { font-size: 16px; padding: 6px 36px; }
     }
     @media (max-width: 480px) {
       .main { padding: 4.5rem 1rem 1.5rem; }
@@ -352,7 +352,7 @@
     .sticky-header-search-btn { background: transparent; border: none; font-size: 1rem; cursor: pointer; padding: 4px; line-height: 1; }
     .sticky-header-search { display: flex; align-items: center; gap: 6px; flex: 1; }
     .sticky-search-input-wrap { position: relative; flex: 1; display: flex; align-items: center; }
-    .sticky-search-input { width: 100%; padding: 6px 10px; font-size: 0.875rem; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-bg, #fff); color: var(--color-text); }
+    .sticky-search-input { width: 100%; padding: 6px 30px; font-size: 0.875rem; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-bg, #fff); color: var(--color-text); }
     .sticky-search-prev, .sticky-search-next { position: absolute; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; padding: 0; border: none; background: transparent; color: var(--color-text); font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .sticky-search-prev { left: 2px; }
     .sticky-search-next { right: 2px; }
@@ -405,7 +405,9 @@
         返回文档列表
       </a>
     </aside>
-    <main class="main"><h1>Playwright CLI 参考手册</h1></p><blockquote>当前安装版本：<strong>1.59.1</strong></blockquote></p><h2 id="概述">概述</h2></p><p>Playwright CLI 是 Playwright 测试框架自带的命令行工具，提供浏览器管理、测试执行、页面操作、代码录制等功能。</p><pre><code>npx playwright [options] [command]</p>
+    <main class="main"><h1>Playwright CLI 参考手册</h1></p>
+<blockquote>版本：1.59.1 | 安装路径：<code>npx playwright</code></blockquote></p>
+<blockquote>官方地址：<a href="https://playwright.dev/">https://playwright.dev/</a> | 安装命令：<code>npm init playwright@latest</code></blockquote></p><h2 id="概述">概述</h2></p><p>Playwright CLI 是 Playwright 测试框架自带的命令行工具，提供浏览器管理、测试执行、页面操作、代码录制等功能。</p><pre><code>npx playwright [options] [command]</p>
 </code></pre></p><h2 id="全局选项">全局选项</h2></p><table><thead><tr><th>选项</th><th>说明</th></tr></thead><tbody><tr><td><code>-V, --version</code></td><td>输出版本号</td></tr><tr><td><code>-h, --help</code></td><td>显示帮助信息</td></tr></tbody></table></p>
 <hr><h2 id="命令列表">命令列表</h2></p><h3 id="open---打开浏览器页面">open - 打开浏览器页面</h3></p><p>在指定浏览器中打开页面。</p><pre><code>npx playwright open [options] [url]</p>
 </code></pre></p><strong>示例：</strong></p><pre><code>npx playwright open</p>
@@ -582,7 +584,7 @@
             var el = highlights[currentIndex];
             var headerHeight = document.querySelector('.sticky-header') ? document.querySelector('.sticky-header').offsetHeight : 56;
             var top = el.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
-            window.scrollTo({ top: top, behavior: 'smooth' });
+            window.scrollTo({ top: top, behavior: 'auto' });
           } else {
             highlights[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
           }

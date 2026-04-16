@@ -279,7 +279,7 @@
       pre { padding: 1rem; font-size: 0.8125rem; }
       table { font-size: 0.8125rem; display: block; overflow-x: auto; }
       th, td { padding: 0.5rem; min-width: 60px; }
-      .sticky-search-input { font-size: 16px; padding: 6px 26px; }
+      .sticky-search-input { font-size: 16px; padding: 6px 36px; }
     }
     @media (max-width: 480px) {
       .main { padding: 4.5rem 1rem 1.5rem; }
@@ -352,7 +352,7 @@
     .sticky-header-search-btn { background: transparent; border: none; font-size: 1rem; cursor: pointer; padding: 4px; line-height: 1; }
     .sticky-header-search { display: flex; align-items: center; gap: 6px; flex: 1; }
     .sticky-search-input-wrap { position: relative; flex: 1; display: flex; align-items: center; }
-    .sticky-search-input { width: 100%; padding: 6px 10px; font-size: 0.875rem; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-bg, #fff); color: var(--color-text); }
+    .sticky-search-input { width: 100%; padding: 6px 30px; font-size: 0.875rem; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-bg, #fff); color: var(--color-text); }
     .sticky-search-prev, .sticky-search-next { position: absolute; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; padding: 0; border: none; background: transparent; color: var(--color-text); font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .sticky-search-prev { left: 2px; }
     .sticky-search-next { right: 2px; }
@@ -442,7 +442,9 @@
         返回文档列表
       </a>
     </aside>
-    <main class="main"><h1>Pencil CLI 参考手册</h1></p><blockquote>本机版本：<strong>@pencil.dev/cli 0.2.4</strong> | 安装路径：<code>~/.nvm/versions/node/v22.22.1/lib/node_modules/@pencil.dev/cli</code></blockquote></p>
+    <main class="main"><h1>Pencil CLI 参考手册</h1></p>
+<blockquote>版本：0.2.4 | 安装路径：<code>~/.nvm/versions/node/v22.22.1/lib/node_modules/@pencil.dev/cli</code></blockquote></p>
+<blockquote>官方地址：<a href="https://pencil.dev/">https://pencil.dev/</a> | 安装命令：<code>npm install -g @pencil.dev/cli</code></blockquote></p>
 <blockquote>登录账号：imyuanwen@gmail.com | 后端 API：https://api.pencil.dev</blockquote></p><p>Pencil CLI 是 Pencil.dev 推出的 AI 驱动设计文件操作命令行工具。通过自然语言 Prompt 直接生成或修改 <code>.pen</code> 设计文件，支持交互式 Shell（MCP 工具调用）、批量任务、多模型选择和图片导出，适合将 AI 设计能力集成到开发工作流中。</p><h2 id="安装信息">安装信息</h2></p><h3 id="安装方式">安装方式</h3></p><pre><code>npm install -g @pencil.dev/cli</p>
 </code></pre></p><h3 id="本机配置">本机配置</h3></p><table><thead><tr><th>项目</th><th>值</th></tr></thead><tbody><tr><td>版本</td><td>0.2.4</td></tr><tr><td>可执行文件</td><td><code>~/.nvm/versions/node/v22.22.1/bin/pencil</code></td></tr><tr><td>配置目录</td><td><code>~/.pencil/</code></td></tr><tr><td>会话文件</td><td><code>~/.pencil/session-cli.json</code></td></tr><tr><td>后端 API</td><td><code>https://api.pencil.dev</code></td></tr><tr><td>设计文件格式</td><td><code>.pen</code></td></tr></tbody></table></p>
 <h3 id="目录结构">目录结构</h3></p><pre><code>~/.pencil/</p>
@@ -732,7 +734,7 @@
             var el = highlights[currentIndex];
             var headerHeight = document.querySelector('.sticky-header') ? document.querySelector('.sticky-header').offsetHeight : 56;
             var top = el.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
-            window.scrollTo({ top: top, behavior: 'smooth' });
+            window.scrollTo({ top: top, behavior: 'auto' });
           } else {
             highlights[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
           }
