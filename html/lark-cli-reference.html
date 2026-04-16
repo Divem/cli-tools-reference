@@ -1023,6 +1023,7 @@
       header.innerHTML = '<div class="sticky-header-inner"><h1>' + title + '</h1><button class="sticky-header-search-btn" title="搜索">&#128269;</button><div class="sticky-header-search" style="display:none;"><input type="search" class="sticky-search-input" id="stickySearchInput" placeholder="搜索页面内容..." autocomplete="off"><button class="sticky-search-prev" id="stickySearchPrev">&#60;</button><span class="sticky-search-count" id="stickySearchCount">0/0</span><button class="sticky-search-next" id="stickySearchNext">&#62;</button><button class="sticky-search-close" id="stickySearchClose">&#10005;</button></div></div>';
       h1el.parentNode.insertBefore(header, h1el.nextSibling);
       window.addEventListener('scroll', function() {
+        if (window.innerWidth <= 768) return;
         var rect = h1el.getBoundingClientRect();
         header.classList.toggle('visible', rect.bottom < 0);
       }, { passive: true });
