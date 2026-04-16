@@ -279,7 +279,7 @@
       pre { padding: 1rem; font-size: 0.8125rem; }
       table { font-size: 0.8125rem; display: block; overflow-x: auto; }
       th, td { padding: 0.5rem; min-width: 60px; }
-      .sticky-search-input { font-size: 16px; }
+      .sticky-search-input { font-size: 16px; padding: 6px 26px; }
     }
     @media (max-width: 480px) {
       .main { padding: 4.5rem 1rem 1.5rem; }
@@ -351,11 +351,24 @@
     .sticky-header h1 { flex: 1; }
     .sticky-header-search-btn { background: transparent; border: none; font-size: 1rem; cursor: pointer; padding: 4px; line-height: 1; }
     .sticky-header-search { display: flex; align-items: center; gap: 6px; flex: 1; }
-    .sticky-search-input { flex: 1; padding: 6px 10px; font-size: 0.875rem; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-bg, #fff); color: var(--color-text); }
-    .sticky-search-prev, .sticky-search-next, .sticky-search-close { display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; padding: 0; font-size: 0.75rem; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-bg, #fff); color: var(--color-text); cursor: pointer; }
-    @media (min-width: 769px) { .sticky-header-search-btn { display: none; } }
-    @media (max-width: 768px) { .sidebar .sidebar-search, .sidebar .search-controls { display: none !important; .sticky-search-prev,  .sticky-search-next,  .sticky-search-close { width: 28px; height: 28px; }
- }
+    .sticky-search-input-wrap { position: relative; flex: 1; display: flex; align-items: center; }
+    .sticky-search-input { width: 100%; padding: 6px 10px; font-size: 0.875rem; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-bg, #fff); color: var(--color-text); }
+    .sticky-search-prev, .sticky-search-next { position: absolute; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; padding: 0; border: none; background: transparent; color: var(--color-text); font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .sticky-search-prev { left: 2px; }
+    .sticky-search-next { right: 2px; }
+    .sticky-search-close { display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; padding: 0; font-size: 0.75rem; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-bg, #fff); color: var(--color-text); cursor: pointer; }
+    .sticky-search-count { font-size: 0.75rem; color: var(--color-secondary, #666); min-width: 2.5em; text-align: center; }
+    @media (min-width: 769px) { .sticky-header-search-btn { display: none; } .sticky-search-count { display: inline; } }
+    @media (max-width: 768px) { .sidebar .sidebar-search, .sidebar .search-controls, .sticky-search-count { display: none !important; } }
+    @media (max-width: 480px) { .sticky-search-prev, .sticky-search-next, .sticky-search-close { width: 28px; height: 28px; } }
+
+    @media (max-width: 768px) {
+      .sticky-header { position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; margin: 0 !important; padding: 12px 1rem 12px 64px !important; display: block !important; background: var(--color-bg, #fff) !important; border-bottom: 1px solid var(--color-border) !important; }
+      .main { padding-top: 5rem !important; }
+    }
+    @media (max-width: 480px) {
+      .main { padding-top: 4.5rem !important; }
+    }
   </style>
 </head>
 <body>
@@ -487,7 +500,7 @@
       var title = h1el.textContent;
       var header = document.createElement('div');
       header.className = 'sticky-header';
-      header.innerHTML = '<div class="sticky-header-inner"><h1>' + title + '</h1><button class="sticky-header-search-btn" title="搜索">&#128269;</button><div class="sticky-header-search" style="display:none;"><input type="search" class="sticky-search-input" id="stickySearchInput" placeholder="搜索页面内容..." autocomplete="off"><button class="sticky-search-prev" id="stickySearchPrev">&#60;</button><span class="sticky-search-count" id="stickySearchCount">0/0</span><button class="sticky-search-next" id="stickySearchNext">&#62;</button><button class="sticky-search-close" id="stickySearchClose">&#10005;</button></div></div>';
+      header.innerHTML = '<div class="sticky-header-inner"><h1>' + title + '</h1><button class="sticky-header-search-btn" title="搜索">&#128269;</button><div class="sticky-header-search" style="display:none;"><div class="sticky-search-input-wrap"><button class="sticky-search-prev" id="stickySearchPrev">&#60;</button><input type="search" class="sticky-search-input" id="stickySearchInput" placeholder="搜索页面内容..." autocomplete="off"><button class="sticky-search-next" id="stickySearchNext">&#62;</button></div><span class="sticky-search-count" id="stickySearchCount">0/0</span><button class="sticky-search-close" id="stickySearchClose">&#10005;</button></div></div>';
       h1el.parentNode.insertBefore(header, h1el.nextSibling);
       window.addEventListener('scroll', function() {
         if (window.innerWidth <= 768) return;
@@ -629,8 +642,8 @@
       bindNav(desktopPrev, -1); bindNav(desktopNext, 1);
       bindNav(stickyPrev, -1); bindNav(stickyNext, 1);
       function onKey(e) { if (e.key === 'Enter') { e.preventDefault(); if (e.shiftKey) goTo(-1); else goTo(1); } }
-      if (desktopInput) desktopInput.addEventListener('keydown', onKey);
-      if (stickyInput) stickyInput.addEventListener('keydown', onKey);
+      if (desktopInput) { desktopInput.addEventListener('keydown', onKey); desktopInput.addEventListener('search', function(e) { e.preventDefault(); if (desktopInput.value.trim()) goTo(1); }); }
+      if (stickyInput) { stickyInput.addEventListener('keydown', onKey); stickyInput.addEventListener('search', function(e) { e.preventDefault(); if (stickyInput.value.trim()) goTo(1); }); }
     })();
   </script>
 </body>
