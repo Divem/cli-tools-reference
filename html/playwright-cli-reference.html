@@ -205,7 +205,10 @@
       border: 1px solid var(--color-border, rgba(255,255,255,0.08));
       transition: all 0.2s;
       position: sticky; bottom: 0;
-      background: var(--surface);
+      background: var(--surface, var(--color-bg, var(--color-sidebar-bg, #fff)));
+      margin-bottom: -1.5rem;
+      padding-bottom: calc(10px + 1.5rem);
+      z-index: 5;
     }
     .sidebar-back:hover {
       color: var(--color-accent, #7170ff);

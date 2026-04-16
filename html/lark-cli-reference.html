@@ -129,7 +129,7 @@
       font-weight: 500;
       border: 1px solid var(--border);
       border-radius: var(--radius-xs);
-      background: var(--surface);
+      background: var(--surface, var(--color-bg, var(--color-sidebar-bg, #fff)));
       color: var(--text-primary);
       transition: all 0.2s ease;
     }
@@ -161,7 +161,7 @@
       padding: 0;
       border: 1px solid var(--border);
       border-radius: 6px;
-      background: var(--surface);
+      background: var(--surface, var(--color-bg, var(--color-sidebar-bg, #fff)));
       color: var(--text-primary);
       cursor: pointer;
       font-size: 0.75rem;
@@ -199,10 +199,13 @@
       font-weight: 500;
       border-radius: var(--radius-xs);
       border: 1px solid var(--border);
-      background: var(--surface);
+      background: var(--surface, var(--color-bg, var(--color-sidebar-bg, #fff)));
       transition: all 0.2s ease;
       position: sticky; bottom: 0;
-      background: var(--surface);
+      background: var(--surface, var(--color-bg, var(--color-sidebar-bg, #fff)));
+      margin-bottom: -2rem;
+      padding-bottom: calc(10px + 2rem);
+      z-index: 5;
     }
 
     .sidebar-back:hover {
@@ -271,7 +274,7 @@
 
     code {
       font-family: 'SF Mono', 'Fira Code', Monaco, monospace;
-      background: var(--surface);
+      background: var(--surface, var(--color-bg, var(--color-sidebar-bg, #fff)));
       padding: 0.2rem 0.5rem;
       border-radius: 6px;
       font-size: 0.85em;
@@ -319,7 +322,7 @@
       border-radius: var(--radius-sm);
       overflow: hidden;
       border: 1px solid var(--border);
-      background: var(--surface);
+      background: var(--surface, var(--color-bg, var(--color-sidebar-bg, #fff)));
     }
 
     th, td {
@@ -345,7 +348,7 @@
       padding: 1rem 1.25rem;
       margin: 1.5rem 0;
       color: var(--text-secondary);
-      background: var(--surface);
+      background: var(--surface, var(--color-bg, var(--color-sidebar-bg, #fff)));
       border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
       border-left: 3px solid var(--accent);
     }
@@ -428,7 +431,7 @@
       font-size: 0.875rem;
       border: 1px solid var(--border);
       border-radius: var(--radius-xs);
-      background: var(--surface);
+      background: var(--surface, var(--color-bg, var(--color-sidebar-bg, #fff)));
       color: var(--text-primary);
     }
 
@@ -449,7 +452,7 @@
       font-size: 0.75rem;
       border: 1px solid var(--border);
       border-radius: 6px;
-      background: var(--surface);
+      background: var(--surface, var(--color-bg, var(--color-sidebar-bg, #fff)));
       color: var(--text-primary);
       cursor: pointer;
       transition: all 0.15s ease;
