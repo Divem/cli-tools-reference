@@ -288,21 +288,23 @@ function sharedMobileCss() {
         pointer-events: auto;
       }
       /* 移动端粘性标题：左侧留出菜单按钮空间 */
-      .sticky-header { margin: 0 -1.5rem 1rem; padding: 12px 1rem 12px 64px; }
-      .main { padding: 2.5rem 1.5rem 2rem; }
+      .sticky-header { position: fixed; top: 0; left: 0; right: 0; margin: 0; padding: 12px 1rem 12px 64px; display: block !important; background: var(--color-bg, #fff); border-bottom: 1px solid var(--color-border); }
+      .main { padding: 5rem 1.5rem 2rem; }
       h1 { font-size: 1.75rem; }
       h2 { font-size: 1.375rem; }
       pre { padding: 1rem; font-size: 0.8125rem; }
       table { font-size: 0.8125rem; display: block; overflow-x: auto; }
       th, td { padding: 0.5rem; min-width: 60px; }
+      .sticky-search-input { font-size: 16px; }
     }
     @media (max-width: 480px) {
-      .main { padding: 1.25rem 1rem; }
+      .main { padding: 4.5rem 1rem 1.5rem; }
       h1 { font-size: 1.5rem; }
       h2 { font-size: 1.25rem; }
       pre { padding: 0.75rem; font-size: 0.75rem; border-radius: 6px; }
       code { font-size: 0.8125rem; }
       table { font-size: 0.75rem; }
+      .sticky-search-prev, .sticky-search-next, .sticky-search-close { width: 28px; height: 28px; }
     }`;
 }
 
