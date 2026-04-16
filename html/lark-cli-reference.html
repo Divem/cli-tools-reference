@@ -4,217 +4,489 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lark CLI 参考手册</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect rx=%2212%22 width=%22100%22 height=%22100%22 fill=%22%231a1a2e%22/><text x=%2250%22 y=%2268%22 font-size=%2255%22 font-family=%22monospace%22 font-weight=%22bold%22 text-anchor=%22middle%22 fill=%22%2300d4aa%22>&gt;_</text></svg>">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect rx='18' width='100' height='100' fill='%230a0a0f'/%3E%3Ctext x='50' y='68' font-size='50' font-family='monospace' font-weight='bold' text-anchor='middle' fill='%236366f1'%3E%26gt%3B_%3C/text%3E%3C/svg%3E">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --color-bg: #f5f4ed;
-      --color-text: #141413;
-      --color-secondary: #5e5d59;
-      --color-tertiary: #87867f;
-      --color-accent: #c96442;
-      --color-accent-light: #f5e9e4;
-      --color-border: #f0eee6;
-      --color-code-bg: #f5f5f0;
-      --color-sidebar-bg: #faf9f5;
-      --color-btn-bg: #e8e6dc;
-      --color-btn-text: #4d4c48;
+      --bg: #070708;
+      --surface: #0f0f12;
+      --surface-elevated: #131318;
+      --text-primary: #f7f7f8;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --accent: #6366f1;
+      --accent-hover: #818cf8;
+      --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+      --border: rgba(255, 255, 255, 0.06);
+      --border-hover: rgba(255, 255, 255, 0.10);
+      --code-bg: #0a0a0c;
+      --success: #10b981;
+      --radius: 16px;
+      --radius-sm: 12px;
+      --radius-xs: 8px;
     }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-      background: var(--color-bg);
-      color: var(--color-text);
-      line-height: 1.6;
-      font-size: 16px;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.65;
+      font-size: 15px;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
-    .container { display: flex; max-width: 1400px; margin: 0 auto; }
+
+    .page-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% -10%, rgba(99, 102, 241, 0.12), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 0%, rgba(139, 92, 246, 0.08), transparent),
+        radial-gradient(ellipse 50% 30% at 50% 100%, rgba(236, 72, 153, 0.06), transparent);
+    }
+
+    .container {
+      display: flex;
+      max-width: 1440px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Sidebar */
     .sidebar {
-      width: 280px;
-      padding: 1.5rem;
+      width: 300px;
+      padding: 2rem 1.5rem;
       position: sticky;
       top: 0;
       height: 100vh;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      border-right: 1px solid var(--color-border);
-      background: var(--color-sidebar-bg);
+      background: rgba(15, 15, 18, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-right: 1px solid var(--border);
       flex-shrink: 0;
     }
-    .sidebar h2 {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--color-accent);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 1rem;
+
+    .sidebar-brand {
+      font-size: 1.125rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
+
+    .sidebar h2 {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 0.875rem;
+      padding-left: 0.75rem;
+    }
+
+    .sidebar nav {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
     .sidebar a {
       display: block;
-      padding: 0.4rem 0.75rem;
-      color: var(--color-secondary);
+      padding: 0.5rem 0.75rem;
+      color: var(--text-secondary);
       text-decoration: none;
-      font-size: 0.875rem;
-      border-radius: 8px;
-      transition: all 0.15s;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      border-radius: var(--radius-xs);
+      transition: all 0.15s ease;
+      border-left: 2px solid transparent;
     }
+
     .sidebar a:hover {
-      color: var(--color-accent);
-      background: rgba(201,100,66,0.06);
+      color: var(--text-primary);
+      background: rgba(255,255,255,0.03);
+      border-left-color: var(--accent);
     }
+
+    .sidebar-search {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 0.75rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
+      background: var(--surface);
+      color: var(--text-primary);
+      transition: all 0.2s ease;
+    }
+
+    .sidebar-search:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+    }
+
+    .sidebar-search::placeholder { color: var(--text-tertiary); }
+
+    .search-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: -0.25rem 0 1rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      padding-left: 0.75rem;
+    }
+
+    .search-controls button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 0.75rem;
+      line-height: 1;
+      transition: all 0.15s ease;
+    }
+
+    .search-controls button:hover {
+      border-color: var(--accent);
+      color: var(--accent-hover);
+    }
+
+    .search-controls button:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      border-color: var(--border);
+    }
+
+    .search-controls span {
+      min-width: 2.5em;
+      text-align: center;
+      font-family: 'SF Mono', monospace;
+      font-size: 0.6875rem;
+    }
+
+    .sidebar-back {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      margin-top: auto;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      border-radius: var(--radius-xs);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      transition: all 0.2s ease;
+    }
+
+    .sidebar-back:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+      background: var(--surface-elevated);
+    }
+
+    /* Main */
     .main {
       flex: 1;
-      padding: 3rem 4rem;
+      padding: 4rem 3rem 6rem;
       max-width: 900px;
     }
-    h1 {
-      font-family: Georgia, 'Times New Roman', serif;
-      font-size: 2.5rem;
-      font-weight: 500;
+
+    .main > h1 {
+      font-size: 3.25rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
       margin-bottom: 1.5rem;
-      color: var(--color-text);
-      letter-spacing: -0.01em;
-      line-height: 1.15;
+      background: linear-gradient(180deg, #fff 0%, #a1a1aa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
+
     h2 {
-      font-size: 1.5rem;
-      font-weight: 500;
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-top: 3.5rem;
+      margin-bottom: 1.25rem;
+      color: var(--text-primary);
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
       margin-top: 2.5rem;
       margin-bottom: 1rem;
-      color: var(--color-text);
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid var(--color-border);
-      letter-spacing: -0.01em;
+      color: var(--text-primary);
     }
-    h3 {
-      font-size: 1.125rem;
-      font-weight: 600;
-      margin-top: 2rem;
-      margin-bottom: 0.75rem;
-      color: var(--color-text);
-    }
+
     p {
-      margin-bottom: 1rem;
-      color: var(--color-secondary);
+      margin-bottom: 1.25rem;
+      color: var(--text-secondary);
     }
+
+    strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    a {
+      color: var(--accent-hover);
+      text-decoration: none;
+      font-weight: 500;
+      transition: opacity 0.15s ease;
+    }
+
+    a:hover { opacity: 0.85; text-decoration: underline; text-underline-offset: 3px; }
+
     code {
       font-family: 'SF Mono', 'Fira Code', Monaco, monospace;
-      background: var(--color-code-bg);
-      padding: 0.2rem 0.45rem;
-      border-radius: 4px;
-      font-size: 0.875em;
-      color: var(--color-accent);
-    }    pre {
-      background: var(--color-code-bg);
-      padding: 1.25rem 1.5rem 1.25rem 2.6rem;
-      border-radius: 8px;
+      background: var(--surface);
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.85em;
+      color: var(--accent-hover);
+      border: 1px solid var(--border);
+    }
+
+    pre {
+      background: var(--code-bg);
+      padding: 1.5rem 1.5rem 1.5rem 2.75rem;
+      border-radius: var(--radius-sm);
       overflow-x: auto;
       margin: 1.5rem 0;
       position: relative;
+      border: 1px solid var(--border);
     }
+
     pre::before {
-      content: '❯';
+      content: '$';
       position: absolute;
-      top: 1.25rem;
-      left: 1rem;
-      color: #4ade80;
+      top: 1.5rem;
+      left: 1.125rem;
+      color: var(--success);
       font-size: 0.875rem;
-      font-weight: 600;
-      line-height: 1.7;
+      font-weight: 700;
+      line-height: 1.6;
+      font-family: 'SF Mono', monospace;
     }
+
     pre code {
       background: none;
       padding: 0;
-      color: var(--color-text);
-      font-size: 0.875rem;
+      color: var(--text-primary);
+      font-size: 0.8125rem;
       line-height: 1.7;
+      border: none;
     }
+
     table {
       width: 100%;
-      border-collapse: collapse;
+      border-collapse: separate;
+      border-spacing: 0;
       margin: 1.5rem 0;
       font-size: 0.875rem;
-      border-radius: 8px;
+      border-radius: var(--radius-sm);
       overflow: hidden;
-      box-shadow: 0px 0px 0px 1px var(--color-border);
+      border: 1px solid var(--border);
+      background: var(--surface);
     }
+
     th, td {
-      padding: 0.75rem 1rem;
+      padding: 0.875rem 1.125rem;
       text-align: left;
-      border-bottom: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--border);
     }
+
     th {
       font-weight: 600;
-      background: var(--color-accent-light);
-      color: var(--color-accent);
+      background: var(--surface-elevated);
+      color: var(--text-primary);
+      font-size: 0.8125rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
+
+    tr:last-child td { border-bottom: none; }
+
+    tr:hover td { background: rgba(255,255,255,0.02); }
+
     blockquote {
-      padding: 0.75rem 1rem;
+      padding: 1rem 1.25rem;
       margin: 1.5rem 0;
-      color: var(--color-tertiary);
-      font-style: italic;
-      background: var(--color-sidebar-bg);
-      border-radius: 0 8px 8px 0;
+      color: var(--text-secondary);
+      background: var(--surface);
+      border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
+      border-left: 3px solid var(--accent);
     }
-    ul { margin: 1rem 0; padding-left: 1.5rem; }
-    li { margin: 0.5rem 0; color: var(--color-secondary); }
-    hr { border: none; border-top: 1px solid var(--color-border); margin: 2.5rem 0; }
-    a { color: var(--color-accent); text-decoration: none; }
-    a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
-    
-    /* 桌面端：菜单按钮和遮罩层隐藏 */
+
+    ul, ol { margin: 1.25rem 0; padding-left: 1.5rem; }
+    li { margin: 0.625rem 0; color: var(--text-secondary); }
+    li::marker { color: var(--accent); }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 3rem 0;
+    }
+
+    /* Drawer & overlay */
     .drawer-toggle { display: none; }
     .overlay { display: none; }
-    /* 粘性标题 */
+
+    /* Sticky header */
     .sticky-header {
       position: sticky;
       top: 0;
       z-index: 100;
-      background: var(--color-bg);
-      padding: 12px 1.5rem;
-      margin: 0 -4rem 1.5rem;
-      border-bottom: 1px solid var(--color-border);
+      background: rgba(7, 7, 8, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 14px 1.5rem;
+      margin: 0 -3rem 1.5rem;
+      border-bottom: 1px solid var(--border);
       display: none;
     }
+
     .sticky-header.visible { display: block; }
+
     .sticky-header h1 {
-      font-family: Georgia, 'Times New Roman', serif;
       font-size: 1.125rem;
-      font-weight: 600;
+      font-weight: 700;
       margin: 0;
       letter-spacing: -0.01em;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      color: var(--text-primary);
+      background: none;
+      -webkit-text-fill-color: currentColor;
     }
-    .drawer-toggle { background: var(--color-sidebar-bg); }
-    
-    .sidebar-back {
+
+    .sticky-header-inner {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 10px 14px;
-      margin-top: auto;
-      color: var(--color-secondary, #8a8f98);
-      text-decoration: none;
-      font-size: 0.8125rem;
-      font-weight: 500;
-      border-radius: 8px;
-      border: 1px solid var(--color-border, rgba(255,255,255,0.08));
-      transition: all 0.2s;
+      justify-content: space-between;
+      gap: 12px;
+      max-width: 900px;
+      margin: 0 auto;
     }
-    .sidebar-back:hover {
-      color: var(--color-accent, #7170ff);
-      border-color: var(--color-accent, #7170ff);
+
+    .sticky-header-search-btn {
+      background: transparent;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 4px;
+      line-height: 1;
+      color: var(--text-secondary);
+      transition: color 0.15s ease;
     }
-    .sidebar nav { display: flex; flex-direction: column; gap: 2px; }
-    
+
+    .sticky-header-search-btn:hover { color: var(--text-primary); }
+
+    .sticky-header-search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .sticky-search-input {
+      flex: 1;
+      padding: 8px 12px;
+      font-size: 0.875rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
+      background: var(--surface);
+      color: var(--text-primary);
+    }
+
+    .sticky-search-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .sticky-search-prev,
+    .sticky-search-next,
+    .sticky-search-close {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      font-size: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .sticky-search-prev:hover,
+    .sticky-search-next:hover,
+    .sticky-search-close:hover {
+      border-color: var(--accent);
+      color: var(--accent-hover);
+    }
+
+    .sticky-search-count {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      min-width: 2.5em;
+      text-align: center;
+      font-family: 'SF Mono', monospace;
+    }
+
+    /* Search highlights */
+    .search-highlight {
+      background: rgba(99, 102, 241, 0.25);
+      border-radius: 3px;
+      padding: 0 2px;
+      color: var(--text-primary);
+    }
+
+    .search-highlight-current {
+      background: var(--accent);
+      border-radius: 3px;
+      padding: 0 2px;
+      color: #fff;
+    }
+
+    /* Mobile */
     @media (max-width: 768px) {
       .container { flex-direction: column; }
-      /* 移动端：侧边栏变为抽屉 */
+
       .sidebar {
         position: fixed;
         top: 0;
@@ -224,139 +496,104 @@
         z-index: 1000;
         padding: 1.5rem;
         transform: translateX(-100%);
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         box-shadow: none;
+        background: rgba(11, 11, 14, 0.95);
       }
+
       .sidebar.open {
         transform: translateX(0);
-        box-shadow: 4px 0 24px rgba(0,0,0,0.08);
+        box-shadow: 8px 0 40px rgba(0,0,0,0.4);
       }
-      /* 移动端：显示菜单按钮 */
+
       .drawer-toggle {
         display: flex;
         position: fixed;
-        bottom: 72px;
-        left: 16px;
+        bottom: 24px;
+        left: 24px;
         z-index: 1100;
-        width: 40px;
-        height: 40px;
-        border-radius: 12px;
-        border: 1px solid var(--color-border);
-        background: var(--color-sidebar-bg);
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: var(--surface-elevated);
         cursor: pointer;
         align-items: center;
         justify-content: center;
-        box-shadow: 0px 0px 0px 1px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.04);
-        transition: all 0.2s;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+        transition: all 0.2s ease;
       }
-      .drawer-toggle:hover { box-shadow: 0px 0px 0px 1px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.06); }
-      .drawer-toggle svg { transition: transform 0.3s ease; }
+
+      .drawer-toggle:hover {
+        transform: scale(1.05);
+        border-color: var(--accent);
+      }
+
+      .drawer-toggle svg { transition: transform 0.3s ease; color: var(--text-primary); }
       .drawer-toggle.active svg { transform: rotate(180deg); }
-      /* 移动端：显示遮罩层 */
+
       .overlay {
         display: block;
         position: fixed;
         inset: 0;
-        background: rgba(20,20,19,0.15);
+        background: rgba(0,0,0,0.6);
         z-index: 999;
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.3s;
+        backdrop-filter: blur(2px);
       }
+
       .overlay.active {
         opacity: 1;
         pointer-events: auto;
       }
-      /* 移动端粘性标题：左侧留出菜单按钮空间 */
-      .sticky-header { position: fixed; top: 0; left: 0; right: 0; margin: 0; padding: 12px 1rem 12px 64px; display: block !important; background: var(--color-bg, #fff); border-bottom: 1px solid var(--color-border); }
-      .main { padding: 5rem 1.5rem 2rem; }
-      h1 { font-size: 1.75rem; }
-      h2 { font-size: 1.375rem; }
-      pre { padding: 1rem; font-size: 0.8125rem; }
+
+      .sticky-header {
+        margin: 0 -1.5rem 1rem;
+        padding: 12px 1rem 12px 80px;
+      }
+
+      .main {
+        padding: 2.5rem 1.5rem;
+      }
+
+      .main > h1 { font-size: 2.25rem; }
+      h2 { font-size: 1.5rem; margin-top: 2.5rem; }
+      h3 { font-size: 1.125rem; margin-top: 2rem; }
+      pre { padding: 1.25rem; font-size: 0.8125rem; }
+      pre::before { top: 1.25rem; left: 1rem; }
       table { font-size: 0.8125rem; display: block; overflow-x: auto; }
-      th, td { padding: 0.5rem; min-width: 60px; }
-      .sticky-search-input { font-size: 16px; }
+      th, td { padding: 0.75rem 1rem; min-width: 60px; }
     }
+
     @media (max-width: 480px) {
-      .main { padding: 4.5rem 1rem 1.5rem; }
-      h1 { font-size: 1.5rem; }
-      h2 { font-size: 1.25rem; }
-      pre { padding: 0.75rem; font-size: 0.75rem; border-radius: 6px; }
+      .main { padding: 2rem 1rem; }
+      .main > h1 { font-size: 1.875rem; }
+      h2 { font-size: 1.375rem; }
+      h3 { font-size: 1.0625rem; }
+      pre { padding: 1rem; font-size: 0.75rem; border-radius: var(--radius-xs); }
+      pre::before { top: 1rem; left: 0.875rem; }
       code { font-size: 0.8125rem; }
       table { font-size: 0.75rem; }
+      .drawer-toggle { width: 44px; height: 44px; bottom: 20px; left: 16px; }
     }
-    .sidebar-search {
-      width: 100%;
-      padding: 8px 12px;
-      margin-bottom: 0.75rem;
-      font-size: 0.875rem;
-      border: 1px solid var(--color-border);
-      border-radius: 8px;
-      background: var(--color-bg, #fff);
-      color: var(--color-text);
+
+    @media (min-width: 769px) {
+      .sticky-header-search-btn { display: none; }
     }
-    .sidebar-search:focus {
-      outline: 2px solid var(--color-accent, #333);
-      outline-offset: 1px;
+
+    @media (max-width: 768px) {
+      .sidebar .sidebar-search,
+      .sidebar .search-controls { display: none !important; }
     }
-    .search-controls {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin: -0.25rem 0 0.75rem;
-      font-size: 0.75rem;
-      color: var(--color-secondary, #666);
-    }
-    .search-controls button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 22px;
-      height: 22px;
-      padding: 0;
-      border: 1px solid var(--color-border);
-      border-radius: 4px;
-      background: var(--color-bg, #fff);
-      color: var(--color-text);
-      cursor: pointer;
-      font-size: 0.75rem;
-      line-height: 1;
-    }
-    .search-controls button:hover {
-      border-color: var(--color-accent, #333);
-    }
-    .search-controls button:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-    .search-controls span {
-      min-width: 2.5em;
-      text-align: center;
-    }
-    .search-highlight-current {
-      background: rgba(255, 165, 0, 0.75);
-      border-radius: 2px;
-      padding: 0 2px;
-    }
-    .search-highlight {
-      background: rgba(255, 193, 7, 0.35);
-      border-radius: 2px;
-      padding: 0 2px;
-    }
-    .sticky-header-inner { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .sticky-header h1 { flex: 1; }
-    .sticky-header-search-btn { background: transparent; border: none; font-size: 1rem; cursor: pointer; padding: 4px; line-height: 1; }
-    .sticky-header-search { display: flex; align-items: center; gap: 6px; flex: 1; }
-    .sticky-search-input { flex: 1; padding: 6px 10px; font-size: 0.875rem; border: 1px solid var(--color-border); border-radius: 6px; background: var(--color-bg, #fff); color: var(--color-text); }
-    .sticky-search-prev, .sticky-search-next, .sticky-search-close { display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; padding: 0; font-size: 0.75rem; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-bg, #fff); color: var(--color-text); cursor: pointer; }
-    @media (min-width: 769px) { .sticky-header-search-btn { display: none; } }
-    @media (max-width: 768px) { .sidebar .sidebar-search, .sidebar .search-controls { display: none !important; .sticky-search-prev,  .sticky-search-next,  .sticky-search-close { width: 28px; height: 28px; }
- }
   </style>
 </head>
 <body>
+  <div class="page-bg"></div>
   <div class="container">
     <aside class="sidebar">
+      <div class="sidebar-brand">Lark CLI</div>
       <h2>目录</h2>
       <input type="search" class="sidebar-search" id="pageSearch" placeholder="搜索页面内容..." autocomplete="off">
       <div class="search-controls" id="searchControls" style="display:none;">
@@ -429,22 +666,22 @@
         返回文档列表
       </a>
     </aside>
-    <main class="main"><h1>Lark CLI 参考手册</h1></p><blockquote>本机版本：<strong>lark-cli v1.0.0</strong> | 安装路径：<code>~/.nvm/versions/node/v22.22.1/lib/node_modules/@larksuite/cli</code></blockquote></p><p>Lark CLI 是飞书/Lark 官方命令行工具，支持通过终端直接调用飞书开放平台 API，覆盖消息、日历、邮件、文档、云盘、多维表格、通讯录等核心模块，适合快速集成飞书能力到自动化工作流中。</p><hr><h2 id="概述">概述</h2></p><code>lark-cli</code> 是飞书/Lark 的官方命令行工具，用于在终端中操作飞书的各项能力：消息、日历、邮件、云文档、云盘、多维表格、电子表格、任务、通讯录、视频会议等。</p><strong>基本语法：</strong></p><pre><code>lark-cli <command> [subcommand] [method] [flags]</p>
-<p>lark-cli api <method> <path> [--params <json>] [--data <json>]</p>
-<p>lark-cli schema <service.resource.method> [--format pretty]</p>
+    <main class="main"><h1>Lark CLI 参考手册</h1></p><blockquote>本机版本：<strong>lark-cli v1.0.0</strong> | 安装路径：<code>~/.nvm/versions/node/v22.22.1/lib/node_modules/@larksuite/cli</code></blockquote></p><p>Lark CLI 是飞书/Lark 官方命令行工具，支持通过终端直接调用飞书开放平台 API，覆盖消息、日历、邮件、文档、云盘、多维表格、通讯录等核心模块，适合快速集成飞书能力到自动化工作流中。</p><hr><h2 id="概述">概述</h2></p><code>lark-cli</code> 是飞书/Lark 的官方命令行工具，用于在终端中操作飞书的各项能力：消息、日历、邮件、云文档、云盘、多维表格、电子表格、任务、通讯录、视频会议等。</p><strong>基本语法：</strong></p><pre><code>lark-cli &lt;command&gt; [subcommand] [method] [flags]</p>
+<p>lark-cli api &lt;method&gt; &lt;path&gt; [--params &lt;json&gt;] [--data &lt;json&gt;]</p>
+<p>lark-cli schema &lt;service.resource.method&gt; [--format pretty]</p>
 </code></pre></p><strong>命令快捷方式（<code>+</code> 前缀）：</strong> 许多子命令提供 <code>+xxx</code> 形式的高级快捷命令，封装了多步 API 调用，使用更简便。例如 <code>lark-cli calendar +agenda</code> 比 <code>lark-cli calendar events list</code> 更易用。</p><hr><h2 id="安装与初始化">安装与初始化</h2></p><h3 id="安装">安装</h3></p><pre><code>npm install -g @larksuite/cli</p>
 </code></pre></p><h3 id="初始化配置">初始化配置</h3></p><pre><code><h1>交互式初始化（引导创建应用或输入已有 App ID/Secret）</h1></p>
 <p>lark-cli config init</p><h1>非交互式初始化</h1></p>
-<p>lark-cli config init --app-id <APP_ID> --brand feishu</p><h1>从标准输入读取 App Secret（安全方式，避免出现在进程列表中）</h1></p>
-<p>echo "your-app-secret" | lark-cli config init --app-id <APP_ID> --app-secret-stdin</p><h1>直接创建新应用</h1></p>
+<p>lark-cli config init --app-id &lt;APP_ID&gt; --brand feishu</p><h1>从标准输入读取 App Secret（安全方式，避免出现在进程列表中）</h1></p>
+<p>echo "your-app-secret" | lark-cli config init --app-id &lt;APP_ID&gt; --app-secret-stdin</p><h1>直接创建新应用</h1></p>
 <p>lark-cli config init --new</p>
 </code></pre></p><h3 id="登录授权">登录授权</h3></p><pre><code><h1>交互式登录（设备码流程，在浏览器中完成授权）</h1></p>
 <p>lark-cli auth login</p><h1>只请求推荐权限（自动审批）</h1></p>
 <p>lark-cli auth login --recommend</p><h1>指定授权域</h1></p>
 <p>lark-cli auth login --domain calendar,task,im</p><h1>非阻塞模式（获取验证 URL 后立即返回）</h1></p>
 <p>lark-cli auth login --no-wait</p><h1>用设备码完成授权（配合 --no-wait 使用）</h1></p>
-<p>lark-cli auth login --device-code <CODE></p>
-</code></pre></p><strong>可用的域（domain）：</strong> <code>base</code>, <code>calendar</code>, <code>contact</code>, <code>docs</code>, <code>drive</code>, <code>event</code>, <code>im</code>, <code>mail</code>, <code>minutes</code>, <code>sheets</code>, <code>task</code>, <code>vc</code>, <code>wiki</code>, <code>all</code></p><hr><h2 id="全局标志">全局标志</h2></p><table><thead><tr><th>标志</th><th>说明</th></tr></thead><tbody><tr><td><code>--as <type></code></td><td>身份类型：<code>user</code>、<code>bot</code>、<code>auto</code>（默认 <code>auto</code>）</td></tr><tr><td><code>--format <fmt></code></td><td>输出格式：<code>json</code>（默认）、<code>ndjson</code>、<code>table</code>、<code>csv</code>、<code>pretty</code></td></tr><tr><td><code>--params <json></code></td><td>URL/查询参数 JSON</td></tr><tr><td><code>--data <json></code></td><td>请求体 JSON（POST/PATCH/PUT/DELETE）</td></tr><tr><td><code>-o, --output <path></code></td><td>二进制响应的输出文件路径</td></tr><tr><td><code>--dry-run</code></td><td>只打印请求，不实际执行</td></tr><tr><td><code>--page-all</code></td><td>自动翻页获取所有数据</td></tr><tr><td><code>--page-size <N></code></td><td>每页数量（0 = 使用 API 默认值）</td></tr><tr><td><code>--page-limit <N></code></td><td><code>--page-all</code> 时的最大页数（默认 10，0 = 无限）</td></tr><tr><td><code>--page-delay <MS></code></td><td>翻页间隔毫秒数（默认 200，仅 <code>--page-all</code>）</td></tr><tr><td><code>-h, --help</code></td><td>显示帮助</td></tr><tr><td><code>-v, --version</code></td><td>显示版本</td></tr></tbody></table></p>
+<p>lark-cli auth login --device-code &lt;CODE&gt;</p>
+</code></pre></p><strong>可用的域（domain）：</strong> <code>base</code>, <code>calendar</code>, <code>contact</code>, <code>docs</code>, <code>drive</code>, <code>event</code>, <code>im</code>, <code>mail</code>, <code>minutes</code>, <code>sheets</code>, <code>task</code>, <code>vc</code>, <code>wiki</code>, <code>all</code></p><hr><h2 id="全局标志">全局标志</h2></p><table><thead><tr><th>标志</th><th>说明</th></tr></thead><tbody><tr><td><code>--as &lt;type&gt;</code></td><td>身份类型：<code>user</code>、<code>bot</code>、<code>auto</code>（默认 <code>auto</code>）</td></tr><tr><td><code>--format &lt;fmt&gt;</code></td><td>输出格式：<code>json</code>（默认）、<code>ndjson</code>、<code>table</code>、<code>csv</code>、<code>pretty</code></td></tr><tr><td><code>--params &lt;json&gt;</code></td><td>URL/查询参数 JSON</td></tr><tr><td><code>--data &lt;json&gt;</code></td><td>请求体 JSON（POST/PATCH/PUT/DELETE）</td></tr><tr><td><code>-o, --output &lt;path&gt;</code></td><td>二进制响应的输出文件路径</td></tr><tr><td><code>--dry-run</code></td><td>只打印请求，不实际执行</td></tr><tr><td><code>--page-all</code></td><td>自动翻页获取所有数据</td></tr><tr><td><code>--page-size &lt;N&gt;</code></td><td>每页数量（0 = 使用 API 默认值）</td></tr><tr><td><code>--page-limit &lt;N&gt;</code></td><td><code>--page-all</code> 时的最大页数（默认 10，0 = 无限）</td></tr><tr><td><code>--page-delay &lt;MS&gt;</code></td><td>翻页间隔毫秒数（默认 200，仅 <code>--page-all</code>）</td></tr><tr><td><code>-h, --help</code></td><td>显示帮助</td></tr><tr><td><code>-v, --version</code></td><td>显示版本</td></tr></tbody></table></p>
 <hr><h2 id="认证管理-auth">认证管理 (auth)</h2></p><table><thead><tr><th>命令</th><th>说明</th></tr></thead><tbody><tr><td><code>lark-cli auth login</code></td><td>设备码流程登录</td></tr><tr><td><code>lark-cli auth status</code></td><td>查看当前认证状态</td></tr><tr><td><code>lark-cli auth status --verify</code></td><td>在线验证 Token 有效性</td></tr><tr><td><code>lark-cli auth list</code></td><td>列出所有已登录用户</td></tr><tr><td><code>lark-cli auth logout</code></td><td>登出（清除 Token）</td></tr><tr><td><code>lark-cli auth scopes</code></td><td>查询应用已启用的权限范围</td></tr><tr><td><code>lark-cli auth check</code></td><td>检查当前 Token 是否有指定权限</td></tr></tbody></table></p>
 <hr><h2 id="配置管理-config">配置管理 (config)</h2></p><table><thead><tr><th>命令</th><th>说明</th></tr></thead><tbody><tr><td><code>lark-cli config init</code></td><td>初始化配置（App ID / App Secret / 品牌）</td></tr><tr><td><code>lark-cli config show</code></td><td>显示当前配置</td></tr><tr><td><code>lark-cli config remove</code></td><td>移除应用配置（清除所有 Token 和配置）</td></tr><tr><td><code>lark-cli config default-as</code></td><td>查看或设置默认身份类型</td></tr></tbody></table></p>
 <hr><h2 id="通用-api-调用-api">通用 API 调用 (api)</h2></p><p>直接调用任意飞书 Open API，适合没有快捷命令的场景。</p><pre><code><h1>GET 请求</h1></p>
@@ -731,7 +968,7 @@
 <p>lark-cli api GET /open-apis/contact/v3/users --page-all --page-size 50</p><h1>限制最大页数</h1></p>
 <p>lark-cli api GET /open-apis/contact/v3/users --page-all --page-limit 5</p><h1>翻页间隔（避免频率限制）</h1></p>
 <p>lark-cli api GET /open-apis/contact/v3/users --page-all --page-delay 500</p>
-</code></pre></p><table><thead><tr><th>标志</th><th>说明</th></tr></thead><tbody><tr><td><code>--page-all</code></td><td>自动翻页获取所有数据</td></tr><tr><td><code>--page-size <N></code></td><td>每页数量</td></tr><tr><td><code>--page-limit <N></code></td><td>最大页数（默认 10，0 = 无限）</td></tr><tr><td><code>--page-delay <MS></code></td><td>翻页间隔毫秒（默认 200）</td></tr></tbody></table></p>
+</code></pre></p><table><thead><tr><th>标志</th><th>说明</th></tr></thead><tbody><tr><td><code>--page-all</code></td><td>自动翻页获取所有数据</td></tr><tr><td><code>--page-size &lt;N&gt;</code></td><td>每页数量</td></tr><tr><td><code>--page-limit &lt;N&gt;</code></td><td>最大页数（默认 10，0 = 无限）</td></tr><tr><td><code>--page-delay &lt;MS&gt;</code></td><td>翻页间隔毫秒（默认 200）</td></tr></tbody></table></p>
 <hr><h2 id="身份类型">身份类型</h2></p><p>使用 <code>--as</code> 标志控制请求身份：</p><table><thead><tr><th>身份</th><th>说明</th></tr></thead><tbody><tr><td><code>auto</code></td><td>自动选择（默认）</td></tr><tr><td><code>user</code></td><td>以用户身份请求（需要用户授权）</td></tr><tr><td><code>bot</code></td><td>以机器人身份请求</td></tr></tbody></table></p>
 <pre><code>lark-cli im +messages-send --as bot --chat-id oc_xxx --text "机器人消息"</p>
 <p>lark-cli sheets +read --as user --spreadsheet-token xxx --range A1:D10</p>
@@ -752,11 +989,12 @@
 <li><strong>Lark 开放平台文档:</strong> https://open.larksuite.com/document/</li></p>
 </ul></p></main>
   </div>
-  
+
   <button class="drawer-toggle" id="drawerToggle" onclick="toggleDrawer()" title="打开目录">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
   <div class="overlay" id="overlay" onclick="toggleDrawer()"></div>
+
   <script>
     function toggleDrawer() {
       var s = document.querySelector('.sidebar');
@@ -766,13 +1004,11 @@
       o.classList.toggle('active');
       t.classList.toggle('active');
     }
-    // 点击侧边栏链接后自动关闭抽屉
     document.querySelectorAll('.sidebar nav a').forEach(function(a) {
       a.addEventListener('click', function() {
         if (document.querySelector('.sidebar').classList.contains('open')) toggleDrawer();
       });
     });
-    // 粘性标题
     (function() {
       var h1el = document.querySelector('.main > h1');
       if (!h1el) return;
@@ -786,7 +1022,6 @@
         header.classList.toggle('visible', rect.bottom < 0);
       }, { passive: true });
     })();
-    // 页面内搜索
     (function() {
       var main = document.querySelector('.main');
       var currentIndex = 0;
