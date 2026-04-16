@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CLI 参考手册 - 文档中心</title>
+    <title>Dawin's CLI - 基于本机安装的 CLI 读取</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;510;590&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -103,6 +103,17 @@
             font-weight: 400;
             margin-top: 10px;
             letter-spacing: -0.01em;
+        }
+
+        .intro {
+            margin-top: 28px;
+            padding: 18px 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-card);
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.7;
         }
 
         .header-right {
@@ -309,8 +320,8 @@
         <header>
             <div class="header-content">
                 <div class="header-left">
-                    <h1>CLI 参考手册</h1>
-                    <p class="subtitle">精选命令行工具速查文档</p>
+                    <h1>Dawin's CLI</h1>
+                    <p class="subtitle">基于本机安装的 CLI 读取，而非文档</p>
                 </div>
                 <div class="header-right">
                     <span class="doc-count">13 docs</span>
@@ -320,6 +331,7 @@
                     </button>
                 </div>
             </div>
+            <p class="intro">这里的每一份参考手册，都是从当前机器已安装的 CLI 工具中直接读取并生成的真实可用命令。不需要翻阅官方文档，打开即可复制即用。适用于日常开发中的快速查阅、命令补全记忆，以及自动化脚本编写时的参数核对。</p>
         </header>
 
         <div class="divider"></div>
