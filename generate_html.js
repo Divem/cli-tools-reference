@@ -398,7 +398,7 @@ function sharedDrawerHtml() {
         var controls = getControls();
         if (controls) controls.style.display = 'none';
       }
-      function updateUI() {
+      function updateUI(skipScroll) {
         var controls = getControls();
         var countEl = getCount();
         var prevBtn = getPrev();
@@ -414,19 +414,21 @@ function sharedDrawerHtml() {
         highlights.forEach(function(el, i) {
           el.className = i === currentIndex ? 'search-highlight-current' : 'search-highlight';
         });
-        if (isMobile()) {
-          var el = highlights[currentIndex];
-          var headerHeight = document.querySelector('.sticky-header') ? document.querySelector('.sticky-header').offsetHeight : 56;
-          var top = el.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
-          window.scrollTo({ top: top, behavior: 'smooth' });
-        } else {
-          highlights[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (!skipScroll) {
+          if (isMobile()) {
+            var el = highlights[currentIndex];
+            var headerHeight = document.querySelector('.sticky-header') ? document.querySelector('.sticky-header').offsetHeight : 56;
+            var top = el.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
+            window.scrollTo({ top: top, behavior: 'smooth' });
+          } else {
+            highlights[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
         }
       }
       function goTo(delta) {
         if (!highlights.length) return;
         currentIndex = Math.max(0, Math.min(highlights.length - 1, currentIndex + delta));
-        updateUI();
+        updateUI(false);
       }
       function performSearch(srcInput) {
         clearHighlights();
